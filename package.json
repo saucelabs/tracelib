@@ -1,0 +1,26 @@
+{
+  "name": "tracelib",
+  "version": "0.0.0",
+  "description": "A Node.js library that provides Chrome DevTools trace models to parse arbitrary trace logs.",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saucelabs/tracelib.git"
+  },
+  "keywords": [
+    "chrome",
+    "devtools"
+  ],
+  "author": "Christian Bromann <christian@saucelabs.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/saucelabs/tracelib/issues"
+  },
+  "homepage": "https://github.com/saucelabs/tracelib#readme",
+  "devDependencies": {
+    "typescript": "^3.5.3"
+  }
+}
