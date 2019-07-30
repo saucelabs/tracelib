@@ -65,6 +65,7 @@ typings/
 /*.js
 !babel.config.js
 !.eslintrc.js
+!jest.config.js
 package-lock.json
 .DS_Store
 
@@ -75,6 +76,3 @@ package-lock.json
 .*.swp
 .history
 .gradle
-wallaby.conf.js
-tags
-tests/.retry_succeeded

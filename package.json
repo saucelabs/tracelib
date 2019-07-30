@@ -5,7 +5,8 @@
   "main": "./build/index.js",
   "scripts": {
     "test": "run-s test:*",
-    "test:eslint": "eslint src"
+    "test:eslint": "eslint --ext ts src tests",
+    "test:unit": "jest --coverage"
   },
   "repository": {
     "type": "git",
@@ -22,10 +23,13 @@
   },
   "homepage": "https://github.com/saucelabs/tracelib#readme",
   "devDependencies": {
+    "@types/jest": "^24.0.16",
     "@typescript-eslint/eslint-plugin": "^1.13.0",
     "@typescript-eslint/parser": "^1.13.0",
     "eslint": "^6.1.0",
+    "jest": "^24.8.0",
     "npm-run-all": "^4.1.5",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.5.3"
   }
 }
