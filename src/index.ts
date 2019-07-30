@@ -1,5 +1,5 @@
-const world = 'foobar'
-
-export function hello(word: string = world): string {
-    return `Hello ${world} + ${word}!`
+export default class Tracium {
+    public constructor (tracelog: object): void {
+        this.tracelog = tracelog
+    }
 }

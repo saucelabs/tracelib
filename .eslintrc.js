@@ -26,6 +26,7 @@ module.exports = {
     'unicode-bom': ['error', 'never'],
     'object-curly-spacing': ['error', 'always'],
     'require-atomic-updates': 0,
-    '@typescript-eslint/explicit-function-return-type': 2
+    '@typescript-eslint/explicit-function-return-type': 2,
+    '@typescript-eslint/indent': 0
   }
 }

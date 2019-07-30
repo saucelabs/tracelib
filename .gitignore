@@ -66,6 +66,7 @@ typings/
 !babel.config.js
 !.eslintrc.js
 !jest.config.js
+!prettier.config.js
 package-lock.json
 .DS_Store
 
