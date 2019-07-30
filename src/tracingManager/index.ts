@@ -1,11 +1,13 @@
+import { Phase } from '../tracingModel/index'
+
 export interface EventPayload {
     cat?: string;
     pid: number;
     tid: number;
     ts: number;
-    ph: string;
+    ph: Phase;
     name: string;
-    args: object;
+    args: any;
     dur: number;
     id: string;
     id2: {

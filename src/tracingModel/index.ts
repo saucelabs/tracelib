@@ -50,7 +50,7 @@ export default class TracingModel {
     private _devToolsMetadataEvents: Event[]
     private _asyncEvents: Event[]
     private _openAsyncEvents: Map<string, AsyncEvent>
-    private _openNestableAsyncEvents: Map<string, AsyncEvent>
+    private _openNestableAsyncEvents: Map<string, AsyncEvent[]>
     private _profileGroups: Map<string, ProfileEventsGroup>
     private _parsedCategories: Map<string, Set<string>>
 
@@ -264,22 +264,22 @@ export default class TracingModel {
             this._devToolsMetadataEvents.push(event)
         }
 
-        if (payload.ph !== phase.Metadata) return
+        if (payload.ph !== Phase.Metadata) return
 
         switch (payload.name) {
-        case TracingModel.MetadataEvent.ProcessSortIndex:
-            process._setSortIndex(payload.args['sort_index'])
+        case MetadataEvent.ProcessSortIndex:
+            process.setSortIndex(payload.args['sort_index'])
             break
-        case TracingModel.MetadataEvent.ProcessName:
+        case MetadataEvent.ProcessName:
             const processName = payload.args['name']
-            process._setName(processName)
+            process.setName(processName)
             this._processByName.set(processName, process)
             break
-        case TracingModel.MetadataEvent.ThreadSortIndex:
-            process.threadById(payload.tid)._setSortIndex(payload.args['sort_index'])
+        case MetadataEvent.ThreadSortIndex:
+            process.threadById(payload.tid).setSortIndex(payload.args['sort_index'])
             break
-        case TracingModel.MetadataEvent.ThreadName:
-            process.threadById(payload.tid)._setName(payload.args['name'])
+        case MetadataEvent.ThreadName:
+            process.threadById(payload.tid).setName(payload.args['name'])
             break
         }
     }
@@ -292,7 +292,7 @@ export default class TracingModel {
         const group = this._profileGroups.get(id)
 
         if (group) {
-            group._addChild(event)
+            group.addChild(event)
             return
         }
 
@@ -325,14 +325,14 @@ export default class TracingModel {
      * @return {!Array.<!Process>}
      */
     public sortedProcesses (): Process[] {
-        return NamedObject._sort(this._processById.valuesArray())
+        return Process.sort([...this._processById.values()])
     }
 
     /**
      * @param {string} name
      * @return {?Process}
      */
-    public processByName (name: string): Process {
+    public processByName (name: string): Process | undefined {
         return this._processByName.get(name)
     }
 
@@ -349,7 +349,7 @@ export default class TracingModel {
      * @param {string} threadName
      * @return {?Thread}
      */
-    public threadByName (processName: string, threadName: string): Thread {
+    public threadByName (processName: string, threadName: string): Thread | null {
         const process = this.processByName(processName)
         return process && process.threadByName(threadName)
     }
@@ -385,12 +385,12 @@ export default class TracingModel {
             }
             const asyncEvent = new AsyncEvent(event)
             openEventsStack.push(asyncEvent)
-            event.thread._addAsyncEvent(asyncEvent)
+            event.thread.addAsyncEvent(asyncEvent)
             break
 
         case phase.NestableAsyncInstant:
             if (openEventsStack && openEventsStack.length) {
-                openEventsStack.peekLast()._addStep(event)
+                openEventsStack[openEventsStack.length - 1].addStep(event)
             }
             break
 
@@ -403,14 +403,14 @@ export default class TracingModel {
                 console.error(`Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`)
                 break
             }
-            top._addStep(event)
+            top.addStep(event)
         }
     }
 
     /**
      * @param {!Event} event
      */
-    private _addAsyncEvent (event: Event): void {
+    public addAsyncEvent (event: Event): void {
         const phase = Phase
         const key = event.categoriesString + '.' + event.name + '.' + event.id
         let asyncEvent = this._openAsyncEvents.get(key)
@@ -422,7 +422,7 @@ export default class TracingModel {
             }
             asyncEvent = new AsyncEvent(event)
             this._openAsyncEvents.set(key, asyncEvent)
-            event.thread._addAsyncEvent(asyncEvent)
+            event.thread.addAsyncEvent(asyncEvent)
             return
         }
         if (!asyncEvent) {
@@ -430,12 +430,12 @@ export default class TracingModel {
             return
         }
         if (event.phase === phase.AsyncEnd) {
-            asyncEvent._addStep(event)
+            asyncEvent.addStep(event)
             this._openAsyncEvents.delete(key)
             return
         }
         if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
-            const lastStep = asyncEvent.steps.peekLast()
+            const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1]
             if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
                 console.assert(
                     false,
@@ -450,7 +450,7 @@ export default class TracingModel {
                 )
                 return
             }
-            asyncEvent._addStep(event)
+            asyncEvent.addStep(event)
             return
         }
         console.assert(false, 'Invalid async event phase')

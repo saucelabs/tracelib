@@ -1,8 +1,8 @@
 import TracingModel from './index'
 
 export default class NamedObject {
-    private _model: TracingModel
-    private _id: number
+    protected _model: TracingModel
+    protected _id: number
     private _name: string
     private _sortIndex: number
 
@@ -10,7 +10,7 @@ export default class NamedObject {
      * @param {!TracingModel} model
      * @param {number} id
      */
-    public constructor (model: TracingModel, id: number): void {
+    public constructor (model: TracingModel, id: number) {
         this._model = model
         this._id = id
         this._name = ''
@@ -24,12 +24,12 @@ export default class NamedObject {
     /**
      * @param {!Array.<!TracingModel.NamedObject>} array
      */
-    private static _sort (array: NamedObject[]): NamedObject[] {
+    public static sort<T extends NamedObject> (array: T[]): T[] {
         /**
          * @param {!TracingModel.NamedObject} a
          * @param {!TracingModel.NamedObject} b
          */
-        function comparator (a: NamedObject, b: NamedObject): boolean {
+        function comparator<T extends NamedObject> (a: T, b: T): number {
             return a._sortIndex !== b._sortIndex ? a._sortIndex - b._sortIndex : a.name().localeCompare(b.name())
         }
         return array.sort(comparator)
@@ -38,7 +38,7 @@ export default class NamedObject {
     /**
      * @param {string} name
      */
-    private _setName (name: string): void {
+    protected _setName (name: string): void {
         this._name = name
     }
 
@@ -52,7 +52,7 @@ export default class NamedObject {
     /**
      * @param {number} sortIndex
      */
-    private _setSortIndex (sortIndex: number): void {
+    public setSortIndex (sortIndex: number): void {
         this._sortIndex = sortIndex
     }
 }

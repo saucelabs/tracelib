@@ -16,7 +16,7 @@ export default class AsyncEvent extends Event {
     /**
      * @param {!TracingModel.Event} event
      */
-    private _addStep (event: Event): void {
+    public addStep (event: Event): void {
         this.steps.push(event)
 
         if (event.phase === Phase.AsyncEnd || event.phase === Phase.NestableAsyncEnd) {

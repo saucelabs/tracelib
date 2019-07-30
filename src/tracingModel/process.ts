@@ -1,6 +1,8 @@
+import Event from './event'
 import Thread from './thread'
 import TracingModel from './index'
 import NamedObject from './namedObject'
+import { EventPayload } from '../tracingManager'
 
 export default class Process extends NamedObject {
     private _threads: Map<number, Thread>
@@ -10,7 +12,7 @@ export default class Process extends NamedObject {
      * @param {!TracingModel} model
      * @param {number} id
      */
-    public constructor (model: TracingModel, id: number): void {
+    public constructor (model: TracingModel, id: number) {
         super(model, id)
         this._threads = new Map()
         this._threadByName = new Map()
@@ -28,13 +30,21 @@ export default class Process extends NamedObject {
     }
 
     /**
+     * @override
+     * @param {string} name
+     */
+    public setName (name: string): void {
+        super._setName(name)
+    }
+
+    /**
      * @param {number} id
      * @return {!TracingModel.Thread}
      */
     public threadById (id: number): Thread {
         let thread = this._threads.get(id)
         if (!thread) {
-            thread = new TracingModel.Thread(this, id)
+            thread = new Thread(this, id)
             this._threads.set(id, thread)
         }
         return thread
@@ -60,14 +70,14 @@ export default class Process extends NamedObject {
      * @param {!TracingManager.EventPayload} payload
      * @return {?TracingModel.Event} event
      */
-    public addEvent (payload: EventPayload): Event {
-        return this.threadById(payload.tid)._addEvent(payload)
+    public addEvent (payload: EventPayload): Event | null {
+        return this.threadById(payload.tid).addEvent(payload)
     }
 
     /**
      * @return {!Array.<!TracingModel.Thread>}
      */
     public sortedThreads (): Thread[] {
-        return TracingModel.NamedObject._sort(this._threads.valuesArray())
+        return Thread.sort([...this._threads.values()])
     }
 }

@@ -5,15 +5,17 @@ import { EventPayload } from '../tracingManager'
 export default class Event {
     private _parsedCategories: Set<string>
 
-    public  categoriesString: string
-    public  name: string
-    public  phase: Phase
-    public  startTime: number
-    public  endTime?: number
-    public  duration?: number
-    public  thread: Thread
-    public  args: Record<string, any>
-    public  selfTime: number
+    public id?: string
+    public categoriesString: string
+    public name: string
+    public phase: Phase
+    public startTime: number
+    public endTime?: number
+    public duration?: number
+    public thread: Thread
+    public args: Record<string, any>
+    public selfTime: number
+    public bind_id?: string
 
     /**
      * @param {number} startTime     * @param {string|undefined} categories

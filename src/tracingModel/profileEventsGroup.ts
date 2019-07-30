@@ -1,10 +1,12 @@
 import Event from './event'
 
 export default class ProfileEventsGroup {
+    protected children: Event[]
+
     /**
      * @param {!TracingModel.Event} event
      */
-    public constructor (event: Event): void {
+    public constructor (event: Event) {
         /** @type {!Array<!TracingModel.Event>} */
         this.children = [event]
     }
@@ -12,7 +14,7 @@ export default class ProfileEventsGroup {
     /**
      * @param {!TracingModel.Event} event
      */
-    private _addChild (event: Event): void {
+    public addChild (event: Event): void {
         this.children.push(event)
     }
 }
