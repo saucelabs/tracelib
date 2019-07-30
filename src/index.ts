@@ -1,5 +1,7 @@
 export default class Tracium {
-    public constructor (tracelog: object): void {
+    public tracelog: object
+
+    public constructor (tracelog: object) {
         this.tracelog = tracelog
     }
 }

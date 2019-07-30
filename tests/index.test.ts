@@ -1,5 +1,6 @@
-import { hello } from '../src/index'
+import Tracelib from '../src/index'
 
 test('do a unit test', () => {
-    expect(hello('barfoo')).toBe('Hello foobar + barfoo!')
+    const trace = new Tracelib({ foo: 'bar' })
+    expect(trace.tracelog).toEqual({ foo: 'bar' })
 })

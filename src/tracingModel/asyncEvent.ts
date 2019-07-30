@@ -1,3 +1,4 @@
+import { Phase } from './'
 import Event from './event'
 
 export default class AsyncEvent extends Event {
@@ -6,7 +7,7 @@ export default class AsyncEvent extends Event {
     /**
      * @param {!TracingModel.Event} startEvent
      */
-    public constructor(startEvent: Event): void {
+    public constructor(startEvent: Event) {
         super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread)
         this.addArgs(startEvent.args)
         this.steps = [startEvent]
@@ -18,7 +19,7 @@ export default class AsyncEvent extends Event {
     private _addStep (event: Event): void {
         this.steps.push(event)
 
-        if (event.phase === TracingModel.Phase.AsyncEnd || event.phase === TracingModel.Phase.NestableAsyncEnd) {
+        if (event.phase === Phase.AsyncEnd || event.phase === Phase.NestableAsyncEnd) {
             this.setEndTime(event.startTime)
             // FIXME: ideally, we shouldn't do this, but this makes the logic of converting
             // async console events to sync ones much simpler.

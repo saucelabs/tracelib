@@ -3,15 +3,21 @@ import TracingModel from './index'
 import NamedObject from './namedObject'
 
 export default class Process extends NamedObject {
+    private _threads: Map<number, Thread>
+    private _threadByName: Map<string, Thread>
+
     /**
      * @param {!TracingModel} model
      * @param {number} id
      */
     public constructor (model: TracingModel, id: number): void {
         super(model, id)
-        /** @type {!Map<number, !TracingModel.Thread>} */
         this._threads = new Map()
         this._threadByName = new Map()
+    }
+
+    public get threads (): Map<number, Thread> {
+        return this._threads
     }
 
     /**
@@ -46,7 +52,7 @@ export default class Process extends NamedObject {
      * @param {string} name
      * @param {!TracingModel.Thread} thread
      */
-    private _setThreadByName (name: string, thread: Thread): void {
+    public setThreadByName (name: string, thread: Thread): void {
         this._threadByName.set(name, thread)
     }
 
@@ -54,7 +60,7 @@ export default class Process extends NamedObject {
      * @param {!TracingManager.EventPayload} payload
      * @return {?TracingModel.Event} event
      */
-    private _addEvent (payload: EventPayload): Event {
+    public addEvent (payload: EventPayload): Event {
         return this.threadById(payload.tid)._addEvent(payload)
     }
 

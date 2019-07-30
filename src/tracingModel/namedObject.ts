@@ -1,6 +1,11 @@
 import TracingModel from './index'
 
 export default class NamedObject {
+    private _model: TracingModel
+    private _id: number
+    private _name: string
+    private _sortIndex: number
+
     /**
      * @param {!TracingModel} model
      * @param {number} id
@@ -10,6 +15,10 @@ export default class NamedObject {
         this._id = id
         this._name = ''
         this._sortIndex = 0
+    }
+
+    public get model (): TracingModel {
+        return this._model
     }
 
     /**

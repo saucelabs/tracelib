@@ -7,64 +7,64 @@ import TracingEvent from './event'
 import ProfileEventsGroup from './profileEventsGroup'
 import { EventPayload } from '../tracingManager'
 
+export enum Phase {
+    Begin = 'B',
+    End = 'E',
+    Complete = 'X',
+    Instant = 'I',
+    AsyncBegin = 'S',
+    AsyncStepInto = 'T',
+    AsyncStepPast = 'p',
+    AsyncEnd = 'F',
+    NestableAsyncBegin = 'b',
+    NestableAsyncEnd = 'e',
+    NestableAsyncInstant = 'n',
+    FlowBegin = 's',
+    FlowStep = 't',
+    FlowEnd = 'f',
+    Metadata = 'M',
+    Counter = 'C',
+    Sample = 'P',
+    CreateObject = 'N',
+    SnapshotObject = 'O',
+    DeleteObject = 'D'
+}
+
+export enum MetadataEvent {
+    ProcessSortIndex = 'process_sort_index',
+    ProcessName = 'process_name',
+    ThreadSortIndex = 'thread_sort_index',
+    ThreadName = 'thread_name'
+}
+
+export const LegacyTopLevelEventCategory = 'toplevel'
+export const DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline'
+export const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline'
+export const FrameLifecycleEventCategory = 'cc,devtools'
+
 export default class TracingModel {
-    public static Phase = {
-        Begin: 'B',
-        End: 'E',
-        Complete: 'X',
-        Instant: 'I',
-        AsyncBegin: 'S',
-        AsyncStepInto: 'T',
-        AsyncStepPast: 'p',
-        AsyncEnd: 'F',
-        NestableAsyncBegin: 'b',
-        NestableAsyncEnd: 'e',
-        NestableAsyncInstant: 'n',
-        FlowBegin: 's',
-        FlowStep: 't',
-        FlowEnd: 'f',
-        Metadata: 'M',
-        Counter: 'C',
-        Sample: 'P',
-        CreateObject: 'N',
-        SnapshotObject: 'O',
-        DeleteObject: 'D'
-    }
-
-    public static MetadataEvent = {
-        ProcessSortIndex: 'process_sort_index',
-        ProcessName: 'process_name',
-        ThreadSortIndex: 'thread_sort_index',
-        ThreadName: 'thread_name'
-    }
-
-    public static LegacyTopLevelEventCategory = 'toplevel'
-    public static DevToolsMetadataEventCategory = 'disabled-by-default-devtools.timeline'
-    public static DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timeline'
-    public static FrameLifecycleEventCategory = 'cc,devtools'
-
-    private _processById = Map
-    private _processByName = Map
-    private _minimumRecordTime = number
-    private _maximumRecordTime = number
-    private _devToolsMetadataEvents = [Event]
-    private _asyncEvents = [Event];
-    private _openAsyncEvents = Map
-    private _openNestableAsyncEvents = Map
-    private _profileGroups = Map
-    private _parsedCategories = Map
+    private _processById: Map<number|string, Process>
+    private _processByName: Map<string|number, Process>
+    private _minimumRecordTime: number
+    private _maximumRecordTime: number
+    private _devToolsMetadataEvents: Event[]
+    private _asyncEvents: Event[]
+    private _openAsyncEvents: Map<string, AsyncEvent>
+    private _openNestableAsyncEvents: Map<string, AsyncEvent>
+    private _profileGroups: Map<string, ProfileEventsGroup>
+    private _parsedCategories: Map<string, Set<string>>
 
     public constructor() {
-        this._processById = new Map<string|number, Process>()
-        this._processByName = new Map<string|number, Process>()
+        this._processById = new Map()
+        this._processByName = new Map()
         this._minimumRecordTime = 0
         this._maximumRecordTime = 0
         this._devToolsMetadataEvents = []
         this._asyncEvents = []
-        this._openAsyncEvents = new Map<string, AsyncEvent>()
-        this._openNestableAsyncEvents = new Map<string, AsyncEvent>()
-        this._profileGroups = new Map<string, ProfileEventsGroup>()
-        this._parsedCategories = new Map<string, Set<string>>()
+        this._openAsyncEvents = new Map()
+        this._openNestableAsyncEvents = new Map()
+        this._profileGroups = new Map()
+        this._parsedCategories = new Map()
     }
 
     /**
@@ -111,9 +111,9 @@ export default class TracingModel {
      */
     public static isTopLevelEvent (event: TracingEvent): boolean {
         return (
-            (event.hasCategory(TracingModel.DevToolsTimelineEventCategory) && event.name === 'RunTask') ||
-            event.hasCategory(TracingModel.LegacyTopLevelEventCategory) ||
-            (event.hasCategory(TracingModel.DevToolsMetadataEventCategory) && event.name === 'Program')
+            (event.hasCategory(DevToolsTimelineEventCategory) && event.name === 'RunTask') ||
+            event.hasCategory(LegacyTopLevelEventCategory) ||
+            (event.hasCategory(DevToolsMetadataEventCategory) && event.name === 'Program')
         ) // Older timelines may have this instead of toplevel.
     }
 
@@ -121,7 +121,7 @@ export default class TracingModel {
      * @param {!TracingManager.EventPayload} payload
      * @return {string|undefined}
      */
-    private static _extractId (payload: EventPayload): string | undefined {
+    public static extractId (payload: EventPayload): string | undefined {
         const scope = payload.scope || ''
         if (typeof payload.id2 === 'undefined') {
             return scope && payload.id ? `${scope}@${payload.id}` : payload.id
@@ -171,8 +171,12 @@ export default class TracingModel {
         const tracingStartedInBrowser = tracingModel
             .devToolsMetadataEvents()
             .filter((e: Event): boolean => e.name === 'TracingStartedInBrowser')
-        if (tracingStartedInBrowser.length === 1) return tracingStartedInBrowser[0].thread
-        Common.console.error('Failed to find browser main thread in trace, some timeline features may be unavailable')
+
+        if (tracingStartedInBrowser.length === 1) {
+            return tracingStartedInBrowser[0].thread
+        }
+
+        console.error('Failed to find browser main thread in trace, some timeline features may be unavailable')
         return null
     }
 
@@ -186,7 +190,7 @@ export default class TracingModel {
     /**
      * @param {!Array.<!TracingManager.EventPayload>} events
      */
-    public addEvents (events: EventPayload): void {
+    public addEvents (events: EventPayload[]): void {
         for (let i = 0; i < events.length; ++i) {
             this._addEvent(events[i])
         }
@@ -199,7 +203,7 @@ export default class TracingModel {
         this._minimumRecordTime += offset
         this._maximumRecordTime += offset
         for (const process of this._processById.values()) {
-            for (const thread of process._threads.values()) {
+            for (const thread of process.threads.values()) {
                 for (const event of thread.events()) {
                     event.startTime += offset
                     if (typeof event.endTime === 'number') {
@@ -226,26 +230,25 @@ export default class TracingModel {
             this._processById.set(payload.pid, process)
         }
 
-        const phase = TracingModel.Phase
         const timestamp = payload.ts / 1000
         // We do allow records for unrelated threads to arrive out-of-order,
         // so there's a chance we're getting records from the past.
         if (
             timestamp &&
             (!this._minimumRecordTime || timestamp < this._minimumRecordTime) &&
-            (payload.ph === phase.Begin || payload.ph === phase.Complete || payload.ph === phase.Instant)
+            (payload.ph === Phase.Begin || payload.ph === Phase.Complete || payload.ph === Phase.Instant)
         ) {
             this._minimumRecordTime = timestamp
         }
 
         const endTimeStamp = (payload.ts + (payload.dur || 0)) / 1000
         this._maximumRecordTime = Math.max(this._maximumRecordTime, endTimeStamp)
-        const event = process._addEvent(payload)
+        const event = process.addEvent(payload)
         if (!event) {
             return
         }
 
-        if (payload.ph === phase.Sample) {
+        if (payload.ph === Phase.Sample) {
             this._addSampleEvent(event)
             return
         }
@@ -257,7 +260,7 @@ export default class TracingModel {
             this._asyncEvents.push(event)
         }
 
-        if (event.hasCategory(TracingModel.DevToolsMetadataEventCategory)) {
+        if (event.hasCategory(DevToolsMetadataEventCategory)) {
             this._devToolsMetadataEvents.push(event)
         }
 
@@ -370,7 +373,7 @@ export default class TracingModel {
      * @param {!Event} event
      */
     private _addNestableAsyncEvent (event: Event): void {
-        const phase = TracingModel.Phase
+        const phase = Phase
         const key = event.categoriesString + '.' + event.id
         let openEventsStack = this._openNestableAsyncEvents.get(key)
 
@@ -408,7 +411,7 @@ export default class TracingModel {
      * @param {!Event} event
      */
     private _addAsyncEvent (event: Event): void {
-        const phase = TracingModel.Phase
+        const phase = Phase
         const key = event.categoriesString + '.' + event.name + '.' + event.id
         let asyncEvent = this._openAsyncEvents.get(key)
 
@@ -457,7 +460,7 @@ export default class TracingModel {
      * @param {string} str
      * @return {!Set<string>}
      */
-    private _parsedCategoriesForString (str: string): Set<string> {
+    public parsedCategoriesForString (str: string): Set<string> {
         let parsedCategories = this._parsedCategories.get(str)
         if (!parsedCategories) {
             parsedCategories = new Set(str ? str.split(',') : [])
