@@ -4,7 +4,8 @@
   "description": "A Node.js library that provides Chrome DevTools trace models to parse arbitrary trace logs.",
   "main": "./build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "run-s test:*",
+    "test:eslint": "eslint src"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,10 @@
   },
   "homepage": "https://github.com/saucelabs/tracelib#readme",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^1.13.0",
+    "@typescript-eslint/parser": "^1.13.0",
+    "eslint": "^6.1.0",
+    "npm-run-all": "^4.1.5",
     "typescript": "^3.5.3"
   }
 }
