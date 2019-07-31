@@ -2,13 +2,14 @@ import CPUProfileNode from './cpuProfileNode'
 import ProfileNode from '../profileTreeModel/profileNode'
 import ProfileTreeModel from '../profileTreeModel'
 import { lowerBound } from '../utils'
+import { Profile } from '../types'
 
 export default class CPUProfileDataModel extends ProfileTreeModel {
     public profileStartTime: number
     public profileEndTime: number
     public timestamps: number[]
     public samples: number[]
-    public lines: any
+    public lines: number[]
     public totalHitCount: number
     public profileHead: ProfileNode
     public gcNode: ProfileNode
@@ -18,7 +19,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
     /**
      * @param {!Protocol.Profiler.Profile} profile
      */
-    public constructor (profile: any) {
+    public constructor (profile: Profile) {
         const isLegacyFormat = !!profile['head']
 
         if (isLegacyFormat) {
@@ -52,7 +53,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
     /**
      * @param {!Protocol.Profiler.Profile} profile
      */
-    private _compatibilityConversionHeadToNodes (profile: any): void {
+    private _compatibilityConversionHeadToNodes (profile: Profile): void {
         /** @type {!Array<!Protocol.Profiler.ProfileNode>} */
         const nodes: ProfileNode[] = []
 
@@ -79,7 +80,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * @param {!Protocol.Profiler.Profile} profile
      * @return {?Array<number>}
      */
-    private _convertTimeDeltas (profile: any): number[] {
+    private _convertTimeDeltas (profile: Profile): number[] {
         if (!profile.timeDeltas) {
             return null
         }

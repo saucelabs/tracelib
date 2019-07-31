@@ -1,8 +1,10 @@
+import { EventPayload } from '../tracingManager'
+
 interface PageFrameProcess {
-    time: number
-    processId: number
-    processPseudoId?: string
-    url: string
+    time: number;
+    processId: number;
+    processPseudoId?: string;
+    url: string;
 }
 
 export default class PageFrame {
@@ -13,12 +15,12 @@ export default class PageFrame {
     public parent: PageFrame
     public processes: PageFrameProcess[]
     public deletedTime: number
-    public ownerNode: any
+    // public ownerNode: any
 
     /**
      * @param {!Object} payload
      */
-    constructor (payload: any) {
+    public constructor (payload: EventPayload) {
         this.frameId = payload['frame']
         this.url = payload['url'] || ''
         this.name = payload['name']
@@ -28,14 +30,14 @@ export default class PageFrame {
         this.deletedTime = null
         // TODO(dgozman): figure this out.
         // this.ownerNode = target && payload['nodeId'] ? new SDK.DeferredDOMNode(target, payload['nodeId']) : null
-        this.ownerNode = null
+        // this.ownerNode = null
     }
 
     /**
      * @param {number} time
      * @param {!Object} payload
      */
-    public update (time:number, payload: any): void {
+    public update (time: number, payload: EventPayload): void {
         this.url = payload['url'] || ''
         this.name = payload['name']
         this.processes.push({
@@ -63,7 +65,7 @@ export default class PageFrame {
      * @param {!TimelineModel.TimelineModel.PageFrame} child
      */
     public addChild (child: PageFrame): void {
-        this.children.push(child);
-        child.parent = this;
+        this.children.push(child)
+        child.parent = this
     }
 }
