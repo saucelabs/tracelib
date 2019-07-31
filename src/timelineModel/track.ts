@@ -26,7 +26,7 @@ export default class Track {
 
     private _syncEvents: Event[]
 
-    constructor() {
+    public constructor () {
         this.name = ''
         this.url = ''
         this.type = TrackType.Other

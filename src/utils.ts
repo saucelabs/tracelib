@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export function upperBound<T extends number, S extends number>(self: any[], object: T, comparator: (object: any, arg1: any) => number, left?: number, right?: number): any {
     function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
         return a < b ? -1 : (a > b ? 1 : 0)
@@ -62,3 +64,4 @@ export function stableSort<L extends number, R extends number>(that: any[], comp
 
     return that
 }
+/* eslint-enable @typescript-eslint/no-explicit-any */
