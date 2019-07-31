@@ -72,7 +72,11 @@ export default class TracingModel {
      * @return {boolean}
      */
     public static isNestableAsyncPhase (phase: string): boolean {
-        return phase === 'b' || phase === 'e' || phase === 'n'
+        return (
+            phase === Phase.NestableAsyncBegin ||
+            phase === Phase.NestableAsyncEnd ||
+            phase === Phase.NestableAsyncInstant
+        )
     }
 
     /**
@@ -80,7 +84,7 @@ export default class TracingModel {
      * @return {boolean}
      */
     public static isAsyncBeginPhase (phase: string): boolean {
-        return phase === 'S' || phase === 'b'
+        return phase === Phase.AsyncBegin || phase === Phase.NestableAsyncBegin
     }
 
     /**
@@ -90,10 +94,10 @@ export default class TracingModel {
     public static isAsyncPhase (phase: string): boolean {
         return (
             TracingModel.isNestableAsyncPhase(phase) ||
-            phase === 'S' ||
-            phase === 'T' ||
-            phase === 'F' ||
-            phase === 'p'
+            phase === Phase.AsyncBegin ||
+            phase === Phase.AsyncStepInto ||
+            phase === Phase.AsyncEnd ||
+            phase === Phase.AsyncStepPast
         )
     }
 
@@ -102,7 +106,7 @@ export default class TracingModel {
      * @return {boolean}
      */
     public static isFlowPhase (phase: string): boolean {
-        return phase === 's' || phase === 't' || phase === 'f'
+        return phase === Phase.FlowBegin || phase === Phase.FlowStep || phase === Phase.FlowEnd
     }
 
     /**
