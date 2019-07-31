@@ -411,11 +411,10 @@ export default class TracingModel {
      * @param {!Event} event
      */
     public addAsyncEvent (event: Event): void {
-        const phase = Phase
         const key = event.categoriesString + '.' + event.name + '.' + event.id
         let asyncEvent = this._openAsyncEvents.get(key)
 
-        if (event.phase === phase.AsyncBegin) {
+        if (event.phase === Phase.AsyncBegin) {
             if (asyncEvent) {
                 console.error(`Event ${event.name} has already been started`)
                 return
@@ -429,14 +428,14 @@ export default class TracingModel {
             // Quietly ignore stray async events, we're probably too late for the start.
             return
         }
-        if (event.phase === phase.AsyncEnd) {
+        if (event.phase === Phase.AsyncEnd) {
             asyncEvent.addStep(event)
             this._openAsyncEvents.delete(key)
             return
         }
-        if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
+        if (event.phase === Phase.AsyncStepInto || event.phase === Phase.AsyncStepPast) {
             const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1]
-            if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
+            if (lastStep.phase !== Phase.AsyncBegin && lastStep.phase !== event.phase) {
                 console.assert(
                     false,
                     'Async event step phase mismatch: ' +
