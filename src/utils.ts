@@ -1,22 +1,22 @@
-export function upperBound<T extends number, S extends number>(self: Array<any>, object: T, comparator: (object: any, arg1: any) => number, left?: number, right?: number) {
+export function upperBound<T extends number, S extends number>(self: any[], object: T, comparator: (object: any, arg1: any) => number, left?: number, right?: number): any {
     function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
-        return a < b ? -1 : (a > b ? 1 : 0);
+        return a < b ? -1 : (a > b ? 1 : 0)
     }
-    comparator = comparator || defaultComparator;
-    let l = left || 0;
-    let r = right !== undefined ? right : self.length;
+    comparator = comparator || defaultComparator
+    let l = left || 0
+    let r = right !== undefined ? right : self.length
     while (l < r) {
-        const m = (l + r) >> 1;
+        const m = (l + r) >> 1
         if (comparator(object, self[m]) >= 0)
-            l = m + 1;
+            l = m + 1
         else
-            r = m;
+            r = m
     }
-    return r;
+    return r
 }
 
-export function stableSort<L extends number, R extends number>(that: any, comparator: (r: any, l: any) => number) {
-    function defaultComparator<L extends number, R extends number>(a: number, b: number) {
+export function stableSort<L extends number, R extends number>(that: any[], comparator: (r: any, l: any) => number): any {
+    function defaultComparator<L extends number, R extends number>(a: number, b: number): number {
         return a < b ? -1 : (a > b ? 1 : 0)
     }
     comparator = comparator || defaultComparator
@@ -33,7 +33,7 @@ export function stableSort<L extends number, R extends number>(that: any, compar
      * @param {number} b
      * @return {number}
      */
-    function indexComparator<L extends number, R extends number>(a: number, b: number) {
+    function indexComparator<L extends number, R extends number>(a: number, b: number): number {
         const result = comparator(self[a], self[b])
         return result ? result : a - b
     }
@@ -59,5 +59,6 @@ export function stableSort<L extends number, R extends number>(that: any, compar
             }
         }
     }
+
     return that
 }
