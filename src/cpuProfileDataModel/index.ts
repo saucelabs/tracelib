@@ -17,7 +17,6 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
 
     /**
      * @param {!Protocol.Profiler.Profile} profile
-     * @param {?SDK.Target} target
      */
     public constructor (profile: any) {
         const isLegacyFormat = !!profile['head']
