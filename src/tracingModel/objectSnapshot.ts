@@ -10,7 +10,7 @@ export default class ObjectSnapshot extends Event {
      * @param {number} startTime
      * @param {!SDK.TracingModel.Thread} thread
      */
-    constructor(category: string, name: string, startTime: number, thread: Thread) {
+    public constructor(category: string, name: string, startTime: number, thread: Thread) {
         super(category, name, Phase.SnapshotObject, startTime, thread)
     }
 

@@ -1,6 +1,7 @@
 import TracingModel, { Phase } from './index'
 import Thread from './thread'
 import { EventPayload } from '../tracingManager'
+import { TracelogArgs } from '../types'
 
 export default class Event {
     private _parsedCategories: Set<string>
@@ -13,8 +14,9 @@ export default class Event {
     public endTime?: number
     public duration?: number
     public thread: Thread
-    public args: Record<string, any>
+    public args: Record<string, TracelogArgs>
     public selfTime: number
+    // eslint-disable-next-line
     public bind_id?: string
 
     /**
@@ -114,7 +116,7 @@ export default class Event {
     /**
      * @param {!Object} args
      */
-    public addArgs (args: Record<string, any>): void {
+    public addArgs (args: Record<string, TracelogArgs>): void {
         // Shallow copy args to avoid modifying original payload which may be saved to file.
         for (const name in args) {
             if (name in this.args) {

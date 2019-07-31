@@ -1,4 +1,5 @@
 import { Phase } from '../tracingModel/index'
+import { TracelogArgs } from '../types'
 
 export interface EventPayload {
     cat?: string;
@@ -7,7 +8,7 @@ export interface EventPayload {
     ts: number;
     ph: Phase;
     name: string;
-    args: any;
+    args: TracelogArgs;
     dur: number;
     id: string;
     id2: {
