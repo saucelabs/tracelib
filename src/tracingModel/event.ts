@@ -1,5 +1,7 @@
 import TracingModel, { Phase } from './index'
 import Thread from './thread'
+import InvalidationTracker from '../timelineModel/invalidationTracker'
+import InvalidationTrackingEvent from '../timelineModel/invalidationTrackingEvent'
 import { TraceEvent, TracelogArgs, EventData } from '../types'
 
 export default class Event {
@@ -18,6 +20,7 @@ export default class Event {
     // eslint-disable-next-line
     public bind_id?: string
     public ordinal: number
+    public [InvalidationTracker.invalidationTrackingEventsSymbol]: InvalidationTrackingEvent[]
 
     /**
      * @param {number} startTime     * @param {string|undefined} categories

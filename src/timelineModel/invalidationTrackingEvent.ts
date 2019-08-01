@@ -13,7 +13,7 @@ export default class InvalidationTrackingEvent {
     /** @type {?string} */
     public nodeName?: string
     /** @type {?number} */
-    public invalidationSet?: string
+    public invalidationSet?: number
     /** @type {?string} */
     public invalidatedSelectorId?: string
     /** @type {?string} */

@@ -3,7 +3,7 @@ import InvalidationTrackingEvent from './InvalidationTrackingEvent'
 import { InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTracker {
-    private static readonly _invalidationTrackingEventsSymbol: unique symbol = Symbol('invalidationTrackingEvents')
+    public static readonly invalidationTrackingEventsSymbol: unique symbol = Symbol('invalidationTrackingEvents')
     private _lastRecalcStyle: Event
     private _lastPaintWithLayer: Event
     private _didPaint: boolean
@@ -24,7 +24,7 @@ export default class InvalidationTracker {
     public static invalidationEventsFor (
         event: Event
     ): InvalidationTrackingEvent[] | null {
-        return event[InvalidationTracker._invalidationTrackingEventsSymbol] || null
+        return event[InvalidationTracker.invalidationTrackingEventsSymbol] || null
     }
 
     /**
@@ -232,12 +232,12 @@ export default class InvalidationTracker {
             return
         }
 
-        if (!event[InvalidationTracker._invalidationTrackingEventsSymbol]) {
-            event[InvalidationTracker._invalidationTrackingEventsSymbol] = [invalidation]
+        if (!event[InvalidationTracker.invalidationTrackingEventsSymbol]) {
+            event[InvalidationTracker.invalidationTrackingEventsSymbol] = [invalidation]
             return
         }
 
-        event[InvalidationTracker._invalidationTrackingEventsSymbol].push(invalidation)
+        event[InvalidationTracker.invalidationTrackingEventsSymbol].push(invalidation)
     }
 
     /**

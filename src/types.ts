@@ -34,10 +34,11 @@ export interface EventData {
     stackTrace?: string[];
     url?: string;
     frame?: string;
+    frames?: string[];
     nodeId?: number;
     name?: string;
     nodeName?: string;
-    invalidationSet?: InvalidationMap;
+    invalidationSet?: number;
     invalidatedSelectorId?: string;
     layerId?: string;
     layerTreeId?: string;
