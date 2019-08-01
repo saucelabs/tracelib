@@ -227,7 +227,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             // Derive timestamps from profile start and stop times.
             const profileStartTime = this.profileStartTime
             const interval = (this.profileEndTime - profileStartTime) / this.samples.length
-            timestamps = new Float64Array(this.samples.length + 1)
+            timestamps = [...Array(this.samples.length + 1)].map((): number => 0)
 
             for (let i = 0; i < timestamps.length; ++i) {
                 timestamps[i] = profileStartTime + i * interval
