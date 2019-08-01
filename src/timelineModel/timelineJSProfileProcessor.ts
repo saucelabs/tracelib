@@ -1,10 +1,10 @@
 import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import Thread from '../tracingModel/thread'
-import TimelineModel, { RecordType } from './index'
+import TimelineModel from './index'
 import Event from '../tracingModel/event'
 import TracingModel, { DevToolsTimelineEventCategory, Phase, MetadataEvent } from '../tracingModel/index'
-import Runtime from './runtime'
-import { TraceEvent } from '../types'
+import Runtime from '../runtime'
+import { TraceEvent, RecordType } from '../types'
 import Common from '../common/index'
 
 export enum NativeGroups {

@@ -75,7 +75,6 @@ export default class TimelineData {
             data = new TimelineData()
             event.name = data
         }
-        return data
         return new TimelineData()
     }
 }
