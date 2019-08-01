@@ -203,7 +203,7 @@ export default class TimelineModel {
      * @return {string}
      */
     public static globalEventId(event: Event, field: string): string {
-        const data = event.args['data'] || event.args['beginData']
+        const data = event.args.data || event.args.beginData
         const id = data && data[field]
         if (!id) {
             return ''
@@ -467,7 +467,7 @@ export default class TimelineModel {
                     if (!workerMetaEvent) continue
                     this._workerIdByThread.set(
                         thread,
-                        workerMetaEvent.args['data']['workerId'] || ''
+                        workerMetaEvent.args.data.workerId || ''
                     )
                     this._processThreadEvents(
                         tracingModel,
@@ -535,9 +535,10 @@ export default class TimelineModel {
             return null
         }
 
-        const sessionId =
-            pageDevToolsMetadataEvents[0].args['sessionId'] ||
-            pageDevToolsMetadataEvents[0].args['data']['sessionId']
+        const sessionId = (
+            pageDevToolsMetadataEvents[0].args.sessionId ||
+            pageDevToolsMetadataEvents[0].args.data.sessionId
+        )
         this._sessionId = sessionId
 
         const mismatchingIds: Set<string> = new Set()
@@ -1312,7 +1313,7 @@ export default class TimelineModel {
                 this._browserFrameTracking = true
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
-                frames.forEach((payload: PageFrame): void => {
+                frames.forEach((payload: EventData): void => {
                     const parent = (
                         payload['parent'] &&
                         this._pageFrames.get(payload['parent'])

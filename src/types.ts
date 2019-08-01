@@ -21,7 +21,7 @@ export interface EventData {
     timeDeltas?: number[];
     stackTrace?: string[];
     url?: string;
-    frame?: number;
+    frame?: string;
     nodeId?: number;
     name: string;
     nodeName?: string;
@@ -32,8 +32,9 @@ export interface EventData {
     changedId?: string;
     workerThreadId: string;
     processId: number;
+    workerId: string;
     processPseudoId?: string;
-    frameTreeNodeId?: string;
+    frameTreeNodeId?: number;
     changedClass?: string;
     changedAttribute?: string;
     changedPseudo?: string;
