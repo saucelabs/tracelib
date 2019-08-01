@@ -1,5 +1,5 @@
-import ProfileNode from './profileTreeModel/profileNode'
 import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
+import ProfileNode from './profileTreeModel/profileNode'
 
 export interface TracelogArgs {
     name?: string;
@@ -23,30 +23,31 @@ export interface EventData {
     url?: string;
     frame?: string;
     nodeId?: number;
-    name: string;
+    name?: string;
     nodeName?: string;
     invalidationSet?: InvalidationMap;
     invalidatedSelectorId?: string;
     layerId?: string;
     layerTreeId?: string;
     changedId?: string;
-    workerThreadId: string;
-    processId: number;
-    workerId: string;
+    workerThreadId?: string;
+    processId?: number;
+    workerId?: string;
     processPseudoId?: string;
     frameTreeNodeId?: number;
+    persistentIds: number[];
     changedClass?: string;
     changedAttribute?: string;
     changedPseudo?: string;
     selectorPart?: string;
     extraData?: string;
-    invalidationList?: InvalidationMap[];
+    invalidationList?: InvalidationMap;
     reason?: string;
     mimeType?: string;
     scriptLine?: number;
     scriptName?: string;
     lineNumber?: number;
-    decodeBodyLength?: number;
+    decodedBodyLength?: number;
     encodedDataLength?: number;
     requestMethod?: string;
     timing?: Timing;
@@ -54,8 +55,10 @@ export interface EventData {
     fromCache?: boolean;
     priority?: ResourcePriority;
     isMainFrame?: boolean;
-    allottedMilliseconds: number;
-    sessionId: string;
+    allottedMilliseconds?: number;
+    sessionId?: string;
+    INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
+    INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: string;
 }
 
 export interface Profile {
