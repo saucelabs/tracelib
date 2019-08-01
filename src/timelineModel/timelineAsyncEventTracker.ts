@@ -9,9 +9,9 @@ type Initiatior = Map<string, {
 }>
 
 export default class TimelineAsyncEventTracker {
-    private static _asyncEvents: Event[]
+    private static _asyncEvents: Initiatior
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
-    private _typeToInitiator: Map<RecordType, RecordType>
+    private static _typeToInitiator: Map<RecordType | string, RecordType>
 
     public constructor () {
         TimelineAsyncEventTracker._initialize()
@@ -60,13 +60,13 @@ export default class TimelineAsyncEventTracker {
             joinBy: 'identifier',
         })
 
-        this._asyncEvents = events
+        TimelineAsyncEventTracker._asyncEvents = events
         /** @type {!Map<!TimelineModel.TimelineModel.RecordType, !TimelineModel.TimelineModel.RecordType>} */
         this._typeToInitiator = new Map()
         for (const entry of events) {
             const types = entry[1].causes
-            for (const type of types) {
-                this._typeToInitiator.set(type, entry[0])
+            for (let causeType of types) {
+                this._typeToInitiator.set(causeType, entry[0])
             }
         }
     }
@@ -76,7 +76,7 @@ export default class TimelineAsyncEventTracker {
      */
     public processEvent(event: Event): void {
         /** @type {!TimelineModel.TimelineModel.RecordType} */
-        let initiatorType: RecordType = TimelineAsyncEventTracker._typeToInitiator.get(event.name)
+        let initiatorType: RecordType | string = TimelineAsyncEventTracker._typeToInitiator.get(event.name)
         const isInitiator = !initiatorType
 
         if (!initiatorType) {

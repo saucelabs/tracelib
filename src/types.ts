@@ -1,5 +1,5 @@
-import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 import ProfileNode from './profileTreeModel/profileNode'
+import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 
 export interface TracelogArgs {
     name?: string;
