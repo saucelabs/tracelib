@@ -2,6 +2,8 @@ import ProfileNode from './profileNode'
 
 export default class ProfileTreeModel {
     public root: ProfileNode
+    public maxDepth: number
+    public total: number
 
     /**
      * @param {!SDK.ProfileNode} root
