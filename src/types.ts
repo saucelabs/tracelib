@@ -46,3 +46,8 @@ export interface PageFramePayload {
     processId: number;
     processPseudoId: string;
 }
+
+export interface invalidationCause {
+    reason: string
+    stackTrace: any
+}

@@ -18,6 +18,7 @@ export default class Event {
     public selfTime: number
     // eslint-disable-next-line
     public bind_id?: string
+    public ordinal: number
 
     /**
      * @param {number} startTime     * @param {string|undefined} categories

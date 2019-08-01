@@ -3,6 +3,7 @@ import Event from './event'
 
 export default class AsyncEvent extends Event {
     public steps: Event[]
+    public causedFrame: boolean
 
     /**
      * @param {!TracingModel.Event} startEvent
