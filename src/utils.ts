@@ -85,8 +85,14 @@ export function lowerBound<T extends number, S extends number> (
  * @this {Array.<?T>}
  * @template T
  */
-export function stableSort<L extends number, R extends number> (that: any[], comparator: (r: any, l: any) => number): any {
-    function defaultComparator<L extends number, R extends number>(a: number, b: number): number {
+export function stableSort<L extends number, R extends number> (
+    that: any[],
+    comparator: (r: any, l: any) => number
+): any {
+    function defaultComparator<L extends number, R extends number>(
+        a: L,
+        b: R
+    ): number {
         return a < b ? -1 : (a > b ? 1 : 0)
     }
     comparator = comparator || defaultComparator
@@ -133,9 +139,9 @@ export function stableSort<L extends number, R extends number> (that: any[], com
     return that
 }
 
-export function pushAll (original: Array<any>, newData: Array<any>): Array<any> {
+export function pushAll<T> (self: T[], newData: T[]): T[] {
     for (let i = 0; i < newData.length; ++i) {
-      original.push(newData[i]);
+        self.push(newData[i])
     }
     return newData
 }
@@ -148,24 +154,38 @@ export function pushAll (original: Array<any>, newData: Array<any>): Array<any> 
  * @return {!Array.<T>}
  * @template T
  */
-export function mergeOrIntersect(array1: Array<any>, array2: Array<any>, comparator: any, mergeNotIntersect: boolean) {
-    const result = [];
-    let i = 0;
-    let j = 0;
+export function mergeOrIntersect<T> (
+    array1: T[],
+    array2: T[],
+    comparator: (val1: T, val2: T) => number,
+    mergeNotIntersect: boolean
+): T[] {
+    const result = []
+    let i = 0
+    let j = 0
     while (i < array1.length && j < array2.length) {
-        const compareValue = comparator(array1[i], array2[j]);
-        if (mergeNotIntersect || !compareValue)
-        result.push(compareValue <= 0 ? array1[i] : array2[j]);
-        if (compareValue <= 0)
-        i++;
-        if (compareValue >= 0)
-        j++;
+        const compareValue = comparator(array1[i], array2[j])
+        if (mergeNotIntersect || !compareValue) {
+            result.push(compareValue <= 0 ? array1[i] : array2[j])
+        }
+
+        if (compareValue <= 0) {
+            i++
+        }
+
+        if (compareValue >= 0) {
+            j++
+        }
     }
+
     if (mergeNotIntersect) {
-        while (i < array1.length)
-        result.push(array1[i++]);
-        while (j < array2.length)
-        result.push(array2[j++]);
+        while (i < array1.length) {
+            result.push(array1[i++])
+        }
+
+        while (j < array2.length) {
+            result.push(array2[j++])
+        }
     }
-    return result;
+    return result
 }

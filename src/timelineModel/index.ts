@@ -1,19 +1,19 @@
-import TracingModel, {
-    Phase,
-    DevToolsMetadataEventCategory,
-} from '../tracingModel'
-import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import PageFrame from './pageFrame'
 import Track, { TrackType } from './track'
-import TimelineAsyncEventTracker from './timelineAsyncEventTracker'
-import InvalidationTracker from './invalidationTracker'
-import TimelineJSProfileProcessor from './timelineJSProfileProcessor'
-import AsyncEvent from '../tracingModel/AsyncEvent'
-import Event from '../tracingModel/event'
-import Thread from '../tracingModel/thread'
 import TimelineData from './TimelineData'
-import InvalidationTrackingEvent from './invalidationTrackingEvent'
 import NetworkRequest from './networkRequest'
+import InvalidationTracker from './invalidationTracker'
+import InvalidationTrackingEvent from './invalidationTrackingEvent'
+import TimelineAsyncEventTracker from './timelineAsyncEventTracker'
+import TimelineJSProfileProcessor from './timelineJSProfileProcessor'
+
+import TracingModel, { Phase, DevToolsMetadataEventCategory } from '../tracingModel'
+import CPUProfileDataModel from '../cpuProfileDataModel/index'
+import Event from '../tracingModel/event'
+import AsyncEvent from '../tracingModel/AsyncEvent'
+import Thread from '../tracingModel/thread'
+
+import { PageFramePayload } from '../types'
 
 import {
     upperBound,
@@ -214,6 +214,17 @@ interface Range {
     to: number
 }
 
+interface LayoutInvalidationMap {
+    [key: string]: Event
+}
+
+interface BrowserFrames {
+    from: number
+    to: number
+    main: object
+    url: string
+}
+
 export default class TimelineModel {
     private _isGenericTrace: boolean
     private _tracks: Track[]
@@ -231,19 +242,19 @@ export default class TimelineModel {
     private _persistentIds: boolean
     private _asyncEventTracker: TimelineAsyncEventTracker
     private _invalidationTracker: InvalidationTracker
-    private _layoutInvalidate: any // todo
-    private _lastScheduleStyleRecalculation: any // todo
-    private _paintImageEventByPixelRefId: any // todo
-    private _lastPaintForLayer: any // todo
-    private _lastRecalculateStylesEvent: any // todo
-    private _currentScriptEvent: any // todo
-    private _eventStack: any // todo
+    private _layoutInvalidate: LayoutInvalidationMap
+    private _lastScheduleStyleRecalculation: LayoutInvalidationMap
+    private _paintImageEventByPixelRefId: LayoutInvalidationMap
+    private _lastPaintForLayer: LayoutInvalidationMap
+    private _lastRecalculateStylesEvent: Event
+    private _currentScriptEvent: Event
+    private _eventStack: Event[]
     private _knownInputEvents: Set<string>
     private _browserFrameTracking: boolean
     private _legacyCurrentPage: boolean
     private _tracingModel: TracingModel
-    private _currentTaskLayoutAndRecalcEvents: any[]
-    private _mainFrameLayerTreeId: any //todo
+    private _currentTaskLayoutAndRecalcEvents: Event[]
+    private _mainFrameLayerTreeId: string | number
 
     public constructor() {
         this._reset()
@@ -414,7 +425,7 @@ export default class TimelineModel {
      * @param {!TracingModel.Event} event
      * @return {?SDK.Target}
      */
-    public targetByEvent(event: Event): null {
+    public targetByEvent(): null {
         /**
          * not applicable for loaded tracelogs
          */
@@ -563,7 +574,7 @@ export default class TimelineModel {
      * @param {!TracingModel} tracingModel
      */
     private _processThreadsForBrowserFrames(tracingModel: TracingModel): void {
-        const processData = new Map<number, Process>()
+        const processData = new Map<number, BrowserFrames[]>()
         for (const frame of this._pageFrames.values()) {
             for (let i = 0; i < frame.processes.length; i++) {
                 const pid = frame.processes[i].processId
@@ -572,10 +583,9 @@ export default class TimelineModel {
                     data = []
                     processData.set(pid, data)
                 }
-                const to =
-                    i === frame.processes.length - 1
-                        ? frame.deletedTime || this._maximumRecordTime
-                        : frame.processes[i + 1].time
+                const to = i === frame.processes.length - 1
+                    ? frame.deletedTime || this._maximumRecordTime
+                    : frame.processes[i + 1].time
 
                 data.push({
                     from: frame.processes[i].time,
@@ -594,8 +604,7 @@ export default class TimelineModel {
             }
 
             data.sort(
-                (a: any, b: any): number => a.from - b.from || a.to - b.to
-            )
+                (a: BrowserFrames, b: BrowserFrames): number => a.from - b.from || a.to - b.to)
             const ranges: Range[] = []
 
             let lastUrl = null
@@ -688,7 +697,10 @@ export default class TimelineModel {
      * @param {!TracingModel} tracingModel
      * @return {?TimelineModel.MetadataEvents}
      */
-    private _processMetadataEvents(tracingModel: TracingModel): any {
+    private _processMetadataEvents(tracingModel: TracingModel): {
+        page: Event[];
+        workers: Event[];
+    } | null {
         const metadataEvents = tracingModel.devToolsMetadataEvents()
 
         const pageDevToolsMetadataEvents = []
@@ -701,7 +713,7 @@ export default class TimelineModel {
                 }
 
                 const frames = (event.args.data && event.args.data.frames) || []
-                frames.forEach((payload: any): void =>
+                frames.forEach((payload: object): void =>
                     this._addPageFrame(event, payload)
                 )
                 this._mainFrame = this.rootFrames()[0]
@@ -1194,13 +1206,14 @@ export default class TimelineModel {
         if (
             this._currentScriptEvent &&
             event.startTime > this._currentScriptEvent.endTime
-        )
+        ) {
             this._currentScriptEvent = null
+        }
 
-        const eventData = event.args['data'] || event.args['beginData'] || {}
+        const eventData = event.args.data || event.args.beginData || {}
         const timelineData = TimelineData.forEvent(event)
-        if (eventData['stackTrace'])
-            timelineData.stackTrace = eventData['stackTrace']
+        if (eventData.stackTrace)
+            timelineData.stackTrace = eventData.stackTrace
         if (timelineData.stackTrace && event.name !== recordTypes.JSSample) {
             // TraceEvents come with 1-based line & column numbers. The frontend code
             // requires 0-based ones. Adjust the values.
@@ -1226,11 +1239,11 @@ export default class TimelineModel {
             timelineData.setInitiator(
                 eventStack[eventStack.length - 1] || null
             )
-            timelineData.url = eventData['url']
+            timelineData.url = eventData.url
             break
 
         case recordTypes.ScheduleStyleRecalculation:
-            this._lastScheduleStyleRecalculation[eventData['frame']] = event
+            this._lastScheduleStyleRecalculation[eventData.frame] = event
             break
 
         case recordTypes.UpdateLayoutTree:
@@ -1243,8 +1256,9 @@ export default class TimelineModel {
                     ]
                 )
             this._lastRecalculateStylesEvent = event
-            if (this._currentScriptEvent)
+            if (this._currentScriptEvent) {
                 this._currentTaskLayoutAndRecalcEvents.push(event)
+            }
             break
 
         case recordTypes.ScheduleStyleInvalidationTracking:
@@ -1282,8 +1296,9 @@ export default class TimelineModel {
                 timelineData.backendNodeId =
                     event.args['endData']['rootNode']
             this._layoutInvalidate[frameId] = null
-            if (this._currentScriptEvent)
+            if (this._currentScriptEvent) {
                 this._currentTaskLayoutAndRecalcEvents.push(event)
+            }
             break
         }
 
@@ -1322,7 +1337,9 @@ export default class TimelineModel {
         case recordTypes.RunMicrotasks:
             // Microtasks technically are not necessarily scripts, but for purpose of
             // forced sync style recalc or layout detection they are.
-            if (!this._currentScriptEvent) this._currentScriptEvent = event
+            if (!this._currentScriptEvent) {
+                this._currentScriptEvent = event
+            }
             break
 
         case recordTypes.SetLayerTreeId:
@@ -1497,17 +1514,25 @@ export default class TimelineModel {
                 this._browserFrameTracking = true
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
-                frames.forEach((payload: any): void => {
-                    const parent =
+                frames.forEach((payload: object): void => {
+                    const parent = (
                         payload['parent'] &&
                         this._pageFrames.get(payload['parent'])
-                    if (payload['parent'] && !parent) return
+                    )
+
+                    if (payload['parent'] && !parent) {
+                        return
+                    }
+
                     let frame = this._pageFrames.get(payload['frame'])
                     if (!frame) {
                         frame = new PageFrame(payload)
                         this._pageFrames.set(frame.frameId, frame)
-                        if (parent) parent.addChild(frame)
-                        else this._mainFrame = frame
+                        if (parent) {
+                            parent.addChild(frame)
+                        } else {
+                            this._mainFrame = frame
+                        }
                     }
                     // TODO: this should use event.startTime, but due to races between tracing start
                     // in different processes we cannot do this yet.
@@ -1585,7 +1610,7 @@ export default class TimelineModel {
      * @param {!Object} payload
      * @return {boolean}
      */
-    private _addPageFrame(event: Event, payload: any): boolean {
+    private _addPageFrame(event: Event, payload: PageFramePayload): boolean {
         const parent =
             payload['parent'] && this._pageFrames.get(payload['parent'])
         if (payload['parent'] && !parent) return false
@@ -1680,27 +1705,33 @@ export default class TimelineModel {
      * @return {!Array<!TimelineModel.NetworkRequest>}
      */
     public networkRequests(): NetworkRequest[] {
-        if (this.isGenericTrace()) return []
+        if (this.isGenericTrace()) {
+            return []
+        }
+
         /** @type {!Map<string,!TimelineModel.NetworkRequest>} */
         const requests: Map<string, NetworkRequest> = new Map()
         /** @type {!Array<!TimelineModel.NetworkRequest>} */
         const requestsList: NetworkRequest[] = []
         /** @type {!Array<!TimelineModel.NetworkRequest>} */
         const zeroStartRequestsList: NetworkRequest[] = []
-        const types = RecordType
-        // todo fix any here
-        const resourceTypes: any = new Set([
-            types.ResourceSendRequest,
-            types.ResourceReceiveResponse,
-            types.ResourceReceivedData,
-            types.ResourceFinish,
+        const resourceTypes: Set<RecordType> = new Set([
+            RecordType.ResourceSendRequest,
+            RecordType.ResourceReceiveResponse,
+            RecordType.ResourceReceivedData,
+            RecordType.ResourceFinish,
         ])
+
         const events = this.inspectedTargetEvents()
         for (let i = 0; i < events.length; ++i) {
             const e = events[i]
-            if (!resourceTypes.has(e.name)) continue
+            if (!resourceTypes.has(e.name)) {
+                continue
+            }
+
             const id = TimelineModel.globalEventId(e, 'requestId')
             let request = requests.get(id)
+
             if (request) {
                 request.addEvent(e)
             } else {
