@@ -139,7 +139,7 @@ export default class InvalidationTracker {
     * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
     */
     // todo: fix styleInvalidatorInvalidation type
-    private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: number, styleInvalidatorInvalidation: any): void {
+    private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: number, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
         if (!styleInvalidatorInvalidation.invalidationList) {
             this._addSyntheticStyleRecalcInvalidation(
                 styleInvalidatorInvalidation._tracingEvent,

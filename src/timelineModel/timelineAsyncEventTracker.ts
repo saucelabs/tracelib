@@ -6,8 +6,9 @@ export default class TimelineAsyncEventTracker {
     private static _asyncEvents: any // todo
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
     private static _typeToInitiator: Map<any, any> // todo
+    private _typeToInitiator: Map<RecordType, RecordType>
 
-    constructor() {
+    public constructor () {
         TimelineAsyncEventTracker._initialize()
         /** @type {!Map<!TimelineModel.TimelineModel.RecordType, !Map<string, !SDK.TracingModel.Event>>} */
         this._initiatorByType = new Map()
@@ -58,7 +59,7 @@ export default class TimelineAsyncEventTracker {
 
         this._asyncEvents = events
         /** @type {!Map<!TimelineModel.TimelineModel.RecordType, !TimelineModel.TimelineModel.RecordType>} */
-        this._typeToInitiator: Map<RecordType, RecordType> = new Map()
+        this._typeToInitiator = new Map()
         for (const entry of events) {
             const types = entry[1].causes
             for (type of types) {

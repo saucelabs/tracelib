@@ -3,7 +3,7 @@ import Thread from '../tracingModel/thread'
 import TimelineModel, { RecordType } from './index'
 import Event from '../tracingModel/event'
 import TracingModel, { DevToolsTimelineEventCategory, Phase, MetadataEvent } from '../tracingModel/index'
-import Runtime from '../runTime'
+import Runtime from './runtime'
 import { TraceEvent } from '../types'
 import Common from '../common/index'
 
