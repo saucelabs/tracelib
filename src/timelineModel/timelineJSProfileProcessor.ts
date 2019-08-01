@@ -1,4 +1,4 @@
-import CPUProfileDataModel from './cpuProfileDataModel';
+import CPUProfileDataModel from '../cpuProfileDataModel/index';
 import Thread from '../tracingModel/thread'
 import TimelineModel, { RecordType } from './index'
 import Event from '../tracingModel/event'

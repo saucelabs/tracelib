@@ -1,5 +1,5 @@
 import TracingModel, { Phase, DevToolsMetadataEventCategory } from '../tracingModel'
-import CPUProfileDataModel from './cpuProfileDataModel'
+import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import PageFrame from './pageFrame'
 import Track, { TrackType } from './track'
 import TimelineAsyncEventTracker from './timelineAsyncEventTracker'
