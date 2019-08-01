@@ -34,7 +34,6 @@ export interface EventData {
     stackTrace?: string[];
     url?: string;
     frame?: string;
-    frames?: string[];
     nodeId?: number;
     name?: string;
     nodeName?: string;
@@ -73,7 +72,6 @@ export interface EventData {
     page?: boolean;
     INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
     INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: string;
-    page?: any;
     frames?: PageFramePayload[]
 }
 
