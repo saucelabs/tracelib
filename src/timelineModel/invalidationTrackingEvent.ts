@@ -1,11 +1,11 @@
 import Event from '../tracingModel/event'
-import invalidationCause from './invalidationCause';
-import { RecordType } from './index';
+import { RecordType } from './index'
+import { invalidationCause } from '../types'
 
 export default class InvalidationTrackingEvent {
   public type: string;
   public startTime: number
-  private _tracingEvent: Event
+  public tracingEvent: Event
 
   /** @type {number} */
   public frame: number

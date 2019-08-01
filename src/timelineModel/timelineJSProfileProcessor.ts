@@ -4,7 +4,7 @@ import TimelineModel, { RecordType } from './index'
 import Event from '../tracingModel/event'
 import TracingModel, { DevToolsTimelineEventCategory, Phase, MetadataEvent } from '../tracingModel/index'
 import Runtime from '../runTime'
-import { EventPayload } from '../tracingManager/index'
+import { TraceEvent } from '../types'
 import Common from '../common/index'
 
 export enum NativeGroups {
@@ -242,12 +242,12 @@ export default class TimelineJSProfileProcessor {
    * @param {number} tid
    * @param {boolean} injectPageEvent
    * @param {?string=} name
-   * @return {!Array<!SDK.TracingManager.EventPayload>}
+   * @return {!Array<!SDK.TracingManager.TraceEvent>}
    */
   public static buildTraceProfileFromCpuProfile(
     profile: any, tid: number, injectPageEvent: boolean, name: string
-  ): Array<EventPayload> {
-    const events: Array<EventPayload> = [];
+  ): Array<TraceEvent> {
+    const events: Array<TraceEvent> = [];
     if (injectPageEvent)
       appendEvent('TracingStartedInPage', {data: {'sessionId': '1'}}, 0, 0, 'M');
     if (!name)
@@ -307,10 +307,10 @@ export default class TimelineJSProfileProcessor {
      * @param {number=} dur
      * @param {string=} ph
      * @param {string=} cat
-     * @return {!SDK.TracingManager.EventPayload}
+     * @return {!SDK.TracingManager.TraceEvent}
      */
-    function appendEvent(name: string, args: any, ts: number, dur?: number, ph?: string, cat?: string): EventPayload {
-      const event: EventPayload = /** @type {!SDK.TracingManager.EventPayload} */ (
+    function appendEvent(name: string, args: any, ts: number, dur?: number, ph?: string, cat?: string): TraceEvent {
+      const event: TraceEvent = /** @type {!SDK.TracingManager.TraceEvent} */ (
           {cat: cat || 'disabled-by-default-devtools.timeline', name, ph: ph || 'X', pid: 1, tid, ts, args});
       if (dur)
         event.dur = dur;
