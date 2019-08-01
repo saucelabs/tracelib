@@ -1,6 +1,7 @@
 import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 import PageFrame, { PageFrameProcess } from './timelineModel/pageFrame'
 import ProfileNode from './profileTreeModel/profileNode'
+import Event from './tracingModel/event'
 
 export interface TracelogArgs {
     name?: string;

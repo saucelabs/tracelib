@@ -497,10 +497,7 @@ export default class TimelineModel {
      * @param {!TracingModel} tracingModel
      * @return {?TimelineModel.MetadataEvents}
      */
-    private _processMetadataEvents(tracingModel: TracingModel): {
-        page: Event[];
-        workers: Event[];
-    } | null {
+    private _processMetadataEvents(tracingModel: TracingModel): MetadataEvents | null {
         const metadataEvents = tracingModel.devToolsMetadataEvents()
 
         const pageDevToolsMetadataEvents = []
