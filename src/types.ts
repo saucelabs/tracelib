@@ -47,7 +47,31 @@ export interface PageFramePayload {
     processPseudoId: string;
 }
 
-export interface invalidationCause {
+export interface InvalidationCause {
     reason: string
     stackTrace: any
+}
+
+export interface InvalidationMap {
+    [key: string]: InvalidationTrackingEvent[]
+}
+
+export interface Timing {
+    blocked: number;
+    dns: number;
+    ssl: number;
+    connect: number;
+    send: number;
+    wait: number;
+    receive: number;
+    // eslint-disable-next-line
+    _blocked_queueing: number;
+    // eslint-disable-next-line
+    _blocked_proxy: (number|undefined);
+    pushStart: number;
+    requestTime: number;
+}
+
+export enum ResourcePriority {
+    VeryLow, Low, Medium, High, VeryHigh
 }
