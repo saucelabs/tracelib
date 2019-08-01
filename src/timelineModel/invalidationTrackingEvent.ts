@@ -1,6 +1,5 @@
 import Event from '../tracingModel/event'
-import { RecordType } from './index'
-import { InvalidationCause, InvalidationMap } from '../types'
+import { InvalidationCause, InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTrackingEvent {
     public type: string

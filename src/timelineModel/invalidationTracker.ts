@@ -1,7 +1,6 @@
 import Event from '../tracingModel/event'
 import InvalidationTrackingEvent from './InvalidationTrackingEvent'
-import { RecordType } from './index'
-import { InvalidationMap } from '../types'
+import { InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTracker {
     private static readonly _invalidationTrackingEventsSymbol: unique symbol = Symbol('invalidationTrackingEvents')

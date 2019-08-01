@@ -1,5 +1,5 @@
-import { Phase } from './tracingModel/index'
 import ProfileNode from './profileTreeModel/profileNode'
+import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 
 export interface TracelogArgs {
     name?: string;
@@ -12,9 +12,19 @@ export interface TracelogArgs {
             sessionId: string,
             workerThreadId: string,
             page: object,
-            workerId: string
+            workerId: string,
         }
     };
+    mimeType?: string;
+    priority?: any //todo
+    finishTime?: any // todo
+    encodedDataLength?: any // todo
+    fromCache?: boolean
+    fromServiceWorker?: boolean
+    decodedBodyLength?: any //todo
+    url?: string
+    requestMethod?: string
+    timing?: any //todo
 }
 
 export interface Profile {

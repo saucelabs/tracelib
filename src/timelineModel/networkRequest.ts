@@ -1,6 +1,5 @@
-import { RecordType } from './index'
 import Event from '../tracingModel/event'
-import { Timing, ResourcePriority } from '../types'
+import { Timing, ResourcePriority, RecordType } from '../types'
 
 export default class NetworkRequest {
     public startTime: number

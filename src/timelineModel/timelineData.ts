@@ -55,7 +55,7 @@ export default class TimelineData {
     /**
      * @return {?Array<!Protocol.Runtime.CallFrame>}
      */
-    public stackTraceForSelfOrInitiator(): CallFrame | null {
+    public stackTraceForSelfOrInitiator(): CallFrame[] | null {
         return (
             this.stackTrace ||
             (
