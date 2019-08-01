@@ -29,16 +29,16 @@ export interface TraceEvent {
     ph: Phase;
     name: string;
     args: TracelogArgs;
-    dur: number;
-    id: string;
-    id2: {
+    dur?: number;
+    id?: string;
+    id2?: {
         global?: string;
         local?: string;
     } | void;
-    scope: string;
+    scope?: string;
     // eslint-disable-next-line
-    bind_id: string;
-    s: string;
+    bind_id?: string;
+    s?: string;
 }
 
 export interface PageFramePayload {
