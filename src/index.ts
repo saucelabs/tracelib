@@ -7,6 +7,6 @@ export default class Tracelib {
         this.tracelog = tracelog
     }
 
-    public getSummary (): Summary {
+    public getSummary (): void {
     }
 }

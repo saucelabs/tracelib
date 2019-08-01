@@ -74,11 +74,12 @@ export default class TimelineData {
      * @return {!TimelineModel.TimelineData}
      */
     public static forEvent(event: Event & EventWithSymbol): TimelineData {
-        let data: Event | TimelineData = event
-        if (!data) {
-            data = new TimelineData()
-            event[TimelineData._symbol] = data
-        }
-        return new TimelineData()
+        throw new Error('NYI')
+        // let data: Event | TimelineData = event
+        // if (!data) {
+        //     data = new TimelineData()
+        //     event[TimelineData._symbol] = data
+        // }
+        // return new TimelineData()
     }
 }
