@@ -1,6 +1,6 @@
 import { EventData } from '../types'
 
-interface PageFrameProcess {
+export interface PageFrameProcess {
     time: number;
     processId: number;
     processPseudoId?: string;

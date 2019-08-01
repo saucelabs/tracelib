@@ -1,5 +1,6 @@
 import ProfileNode from './profileTreeModel/profileNode'
 import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
+import PageFrame, { PageFrameProcess } from './timelineModel/pageFrame'
 
 export interface TracelogArgs {
     name?: string;
@@ -10,6 +11,16 @@ export interface TracelogArgs {
     data?: {
         args: EventData
     };
+}
+
+export interface PageFramePayload {
+    frameId: string;
+    url: string;
+    name: string;
+    children: PageFrame[];
+    parent: string;
+    processes: PageFrameProcess[];
+    deletedTime: number;
 }
 
 export interface EventData {
