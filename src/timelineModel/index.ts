@@ -16,7 +16,7 @@ import Thread from '../tracingModel/thread'
 import {
     PageFramePayload, BrowserFrames, LayoutInvalidationMap, Range,
     MetadataEvents, Thresholds, DevToolsMetadataEvent, RecordType,
-    Category, WarningType, EventData
+    Category, WarningType, EventData, Profile
 } from '../types'
 
 import {
@@ -638,6 +638,7 @@ export default class TimelineModel {
         thread: Thread
     ): CPUProfileDataModel | null {
         const events = thread.events()
+        /** @type {?Protocol.Profiler.Profile} */
         let cpuProfile: Profile
         let target = null
 
@@ -645,7 +646,6 @@ export default class TimelineModel {
         let cpuProfileEvent = events[events.length - 1]
         if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
             const eventData = cpuProfileEvent.args['data']
-            /** @type {?Protocol.Profiler.Profile} */
             cpuProfile = eventData && eventData['cpuProfile']
             target = this.targetByEvent()
         }
@@ -683,8 +683,11 @@ export default class TimelineModel {
                 if ('endTime' in eventData) {
                     cpuProfile.endTime = eventData.endTime
                 }
-
-                const nodesAndSamples = eventData.cpuProfile || {}
+                const defaultProfile: Profile = {
+                    samples: [],
+                    nodes: []
+                }
+                const nodesAndSamples = eventData.cpuProfile || defaultProfile
                 const samples = nodesAndSamples.samples || []
                 const lines = eventData.lines || Array(samples.length).fill(0)
                 cpuProfile.nodes = pushAll(

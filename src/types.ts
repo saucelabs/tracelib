@@ -28,7 +28,7 @@ export interface EventData {
     startTime?: number;
     endTime?: number;
     finishTime?: number;
-    cpuProfile?: object;
+    cpuProfile?: Profile;
     lines?: number[];
     timeDeltas?: number[];
     stackTrace?: string[];
@@ -71,19 +71,19 @@ export interface EventData {
     sessionId?: string;
     page?: boolean;
     INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
-    INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: string;
+    INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: { time: number };
     frames?: PageFramePayload[]
 }
 
 export interface Profile {
-    startTime: number;
-    endTime: number;
-    timestamps: number[];
-    samples: number[];
-    lines: number[];
-    nodes: ProfileNode[];
-    head: ProfileNode;
-    timeDeltas: number[];
+    startTime?: number;
+    endTime?: number;
+    timestamps?: number[];
+    samples?: number[];
+    lines?: number[];
+    nodes?: ProfileNode[];
+    head?: ProfileNode;
+    timeDeltas?: number[];
 }
 
 export interface TraceEvent {
