@@ -6,6 +6,8 @@ export interface TracelogArgs {
     // eslint-disable-next-line
     sort_index?: number;
     snapshot?: string;
+    stackTrace?: any;
+    data?: any;
 }
 
 export interface Profile {
