@@ -34,6 +34,7 @@ module.exports = {
     'object-curly-spacing': ['error', 'always'],
     'require-atomic-updates': 0,
     '@typescript-eslint/explicit-function-return-type': 2,
-    '@typescript-eslint/indent': 0
+    '@typescript-eslint/indent': 0,
+    '@typescript-eslint/no-use-before-define': 0
   }
 }

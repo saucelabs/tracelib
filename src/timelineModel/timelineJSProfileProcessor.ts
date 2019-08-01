@@ -66,37 +66,7 @@ export default class TimelineJSProfileProcessor {
      * @return {!Array<!SDK.TracingModel.Event>}
      */
     public static generateJSFrameEvents(events: Event[]): Event[] {
-        /**
-         * @param {!Protocol.Runtime.CallFrame} frame1
-         * @param {!Protocol.Runtime.CallFrame} frame2
-         * @return {boolean}
-         */
-        function equalFrames(frame1: any, frame2: any) {
-            return (
-                frame1.scriptId === frame2.scriptId &&
-                frame1.functionName === frame2.functionName &&
-                frame1.lineNumber === frame2.lineNumber
-            )
-        }
-
-        /**
-         * @param {!SDK.TracingModel.Event} e
-         * @return {boolean}
-         */
-        function isJSInvocationEvent(e: Event): boolean {
-            switch (e.name) {
-            case RecordType.RunMicrotasks:
-            case RecordType.FunctionCall:
-            case RecordType.EvaluateScript:
-            case RecordType.EvaluateModule:
-            case RecordType.EventDispatch:
-            case RecordType.V8Execute:
-                return true
-            }
-            return false
-        }
-
-        const jsFrameEvents: any[] = []
+        const jsFrameEvents: Event[] = []
         const jsFramesStack: any[] = []
         const lockedJsStackDepth: any[] = []
         let ordinal = 0
@@ -105,31 +75,16 @@ export default class TimelineJSProfileProcessor {
         const showNativeFunctions = Common.moduleSetting('showNativeFunctionsInJSProfile').get()
 
         /**
-         * @param {!SDK.TracingModel.Event} e
+         * @param {!Protocol.Runtime.CallFrame} frame1
+         * @param {!Protocol.Runtime.CallFrame} frame2
+         * @return {boolean}
          */
-        function onStartEvent(e: Event): void {
-            e.ordinal = ++ordinal
-            extractStackTrace(e)
-            // For the duration of the event we cannot go beyond the stack associated with it.
-            lockedJsStackDepth.push(jsFramesStack.length)
-        }
-
-        /**
-         * @param {!SDK.TracingModel.Event} e
-         * @param {?SDK.TracingModel.Event} parent
-         */
-        function onInstantEvent(e: Event, parent: Event): void {
-            e.ordinal = ++ordinal
-            if (parent && isJSInvocationEvent(parent))
-                extractStackTrace(e)
-
-        }
-
-        /**
-         * @param {!SDK.TracingModel.Event} e
-         */
-        function onEndEvent(e: Event): void {
-            truncateJSStack(lockedJsStackDepth.pop(), e.endTime)
+        function equalFrames(frame1: any, frame2: any): boolean {
+            return (
+                frame1.scriptId === frame2.scriptId &&
+                frame1.functionName === frame2.functionName &&
+                frame1.lineNumber === frame2.lineNumber
+            )
         }
 
         /**
@@ -207,13 +162,14 @@ export default class TimelineJSProfileProcessor {
         function extractStackTrace(e: Event): void {
             const recordTypes = RecordType
             /** @type {!Array<!Protocol.Runtime.CallFrame>} */
-            const callFrames =
-                e.name === recordTypes.JSSample
-                    ? e.args['data']['stackTrace'].slice().reverse()
-                    : jsFramesStack.map(frameEvent => frameEvent.args['data'])
+            const callFrames = e.name === recordTypes.JSSample
+                ? e.args['data']['stackTrace'].slice().reverse()
+                : jsFramesStack.map((frameEvent): any => frameEvent.args['data'])
+
             filterStackFrames(callFrames)
             const endTime = e.endTime || e.startTime
             const minFrames = Math.min(callFrames.length, jsFramesStack.length)
+
             let i
             for (i = lockedJsStackDepth[lockedJsStackDepth.length - 1] || 0; i < minFrames; ++i) {
                 const newFrame = callFrames[i]
@@ -239,6 +195,52 @@ export default class TimelineJSProfileProcessor {
                 jsFramesStack.push(jsFrameEvent)
                 jsFrameEvents.push(jsFrameEvent)
             }
+        }
+
+        /**
+         * @param {!SDK.TracingModel.Event} e
+         * @return {boolean}
+         */
+        function isJSInvocationEvent(e: Event): boolean {
+            switch (e.name) {
+            case RecordType.RunMicrotasks:
+            case RecordType.FunctionCall:
+            case RecordType.EvaluateScript:
+            case RecordType.EvaluateModule:
+            case RecordType.EventDispatch:
+            case RecordType.V8Execute:
+                return true
+            }
+            return false
+        }
+
+        /**
+         * @param {!SDK.TracingModel.Event} e
+         */
+        function onStartEvent(e: Event): void {
+            e.ordinal = ++ordinal
+            extractStackTrace(e)
+            // For the duration of the event we cannot go beyond the stack associated with it.
+            lockedJsStackDepth.push(jsFramesStack.length)
+        }
+
+        /**
+         * @param {!SDK.TracingModel.Event} e
+         * @param {?SDK.TracingModel.Event} parent
+         */
+        function onInstantEvent(e: Event, parent: Event): void {
+            e.ordinal = ++ordinal
+            if (parent && isJSInvocationEvent(parent)) {
+                extractStackTrace(e)
+            }
+
+        }
+
+        /**
+         * @param {!SDK.TracingModel.Event} e
+         */
+        function onEndEvent(e: Event): void {
+            truncateJSStack(lockedJsStackDepth.pop(), e.endTime)
         }
 
         const firstTopLevelEvent = events.find(TracingModel.isTopLevelEvent)
@@ -321,16 +323,15 @@ export default class TimelineJSProfileProcessor {
                     functionEvent.dur = currentTime - functionEvent.ts
                     functionEvent = null
                 }
-            } else {
-                // A JS function.
-                if (!functionEvent) functionEvent = appendEvent('FunctionCall', { data: { sessionId: '1' } }, currentTime)
+            } else if (!functionEvent) {
+                functionEvent = appendEvent('FunctionCall', { data: { sessionId: '1' } }, currentTime)
             }
         }
         closeEvents()
         appendEvent('CpuProfile', { data: { cpuProfile: profile } }, profile.endTime, 0, 'I')
         return events
 
-        function closeEvents() {
+        function closeEvents (): void {
             if (programEvent) {
                 programEvent.dur = currentTime - programEvent.ts
             }

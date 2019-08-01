@@ -3,9 +3,8 @@ import TimelineData from './timelineData'
 import Event from '../tracingModel/event'
 
 export default class TimelineAsyncEventTracker {
-    private static _asyncEvents: any // todo
+    private static _asyncEvents: Event
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
-    private static _typeToInitiator: Map<any, any> // todo
     private _typeToInitiator: Map<RecordType, RecordType>
 
     public constructor () {

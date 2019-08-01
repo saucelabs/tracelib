@@ -77,3 +77,11 @@ export interface Timing {
 export enum ResourcePriority {
     VeryLow, Low, Medium, High, VeryHigh
 }
+
+export interface CallFrame {
+    functionName: string;
+    scriptId: string;
+    url: string;
+    lineNumber: number;
+    columnNumber: number;
+}
