@@ -4,7 +4,7 @@ import TimelineModel from './index'
 import Event from '../tracingModel/event'
 import TracingModel, { DevToolsTimelineEventCategory, Phase, MetadataEvent } from '../tracingModel/index'
 import Runtime from '../runtime'
-import { TraceEvent, RecordType } from '../types'
+import { TraceEvent, RecordType, EventData } from '../types'
 import Common from '../common/index'
 
 export enum NativeGroups {
@@ -190,7 +190,7 @@ export default class TimelineJSProfileProcessor {
                     e.thread
                 )
                 jsFrameEvent.ordinal = e.ordinal
-                jsFrameEvent.addArgs({ data: frame })
+                jsFrameEvent.addArgs({ data: frame } as any as EventData)
                 jsFrameEvent.setEndTime(endTime)
                 jsFramesStack.push(jsFrameEvent)
                 jsFrameEvents.push(jsFrameEvent)

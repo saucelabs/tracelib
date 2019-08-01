@@ -10,7 +10,7 @@ export interface TracelogArgs {
     snapshot?: string;
     stackTrace?: any;
     data?: {
-        args: EventData
+        args: Record<string, EventData>
     };
 }
 
@@ -53,7 +53,7 @@ export interface EventData {
     changedPseudo?: string;
     selectorPart?: string;
     extraData?: string;
-    invalidationList?: InvalidationMap;
+    invalidationList?: InvalidationMap[];
     reason?: string;
     mimeType?: string;
     scriptLine?: number;
@@ -72,7 +72,10 @@ export interface EventData {
     page?: boolean;
     INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
     INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: { time: number };
-    frames?: PageFramePayload[]
+    frames?: PageFramePayload[];
+    // eslint-disable-next-line
+    sort_index?: number;
+    snapshot?: string;
 }
 
 export interface Profile {
@@ -93,7 +96,7 @@ export interface TraceEvent {
     ts: number;
     ph: string;
     name: string;
-    args: TracelogArgs;
+    args: EventData;
     dur?: number;
     id?: string;
     id2?: {
@@ -112,7 +115,7 @@ export interface InvalidationCause {
 }
 
 export interface InvalidationMap {
-    [key: string]: InvalidationTrackingEvent[]
+    [key: string]: InvalidationTrackingEvent | string | number
 }
 
 export interface Timing {

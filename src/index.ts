@@ -6,7 +6,4 @@ export default class Tracelib {
     public constructor (tracelog: object, range?: Range) {
         this.tracelog = tracelog
     }
-
-    public getSummary (): void {
-    }
 }

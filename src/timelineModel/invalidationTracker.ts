@@ -7,8 +7,8 @@ export default class InvalidationTracker {
     private _lastRecalcStyle: Event
     private _lastPaintWithLayer: Event
     private _didPaint: boolean
-    private _invalidations: InvalidationMap
-    private _invalidationsByNodeId: InvalidationMap
+    private _invalidations: Record<number, InvalidationTrackingEvent[]>
+    private _invalidationsByNodeId: Record<number, InvalidationMap[]>
 
     public constructor () {
         this._lastRecalcStyle = null
@@ -74,17 +74,22 @@ export default class InvalidationTracker {
         /**
          * Record the invalidation so later events can look it up.
          */
-        if (this._invalidations[invalidation.type]) {
-            this._invalidations[invalidation.type].push(invalidation)
+        // TODO(Christian) fix typings
+        if (this._invalidations[invalidation.type as any]) {
+            // TODO(Christian) fix typings
+            this._invalidations[invalidation.type as any].push(invalidation)
         } else {
-            this._invalidations[invalidation.type] = [invalidation]
+            // TODO(Christian) fix typings
+            this._invalidations[invalidation.type as any] = [invalidation]
         }
 
         if (invalidation.nodeId) {
             if (this._invalidationsByNodeId[invalidation.nodeId]) {
-                this._invalidationsByNodeId[invalidation.nodeId].push(invalidation)
+                // TODO(Christian) fix typings
+                this._invalidationsByNodeId[invalidation.nodeId].push(invalidation as any)
             } else {
-                this._invalidationsByNodeId[invalidation.nodeId] = [invalidation]
+                // TODO(Christian) fix typings
+                this._invalidationsByNodeId[invalidation.nodeId] = [invalidation as any]
             }
         }
     }
@@ -137,8 +142,8 @@ export default class InvalidationTracker {
     * @param {number} frameId
     * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
     */
-    // todo: fix styleInvalidatorInvalidation type
-    private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: number, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
+    // TODO(Christian) fix typings
+    private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: string, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
         if (!styleInvalidatorInvalidation.invalidationList) {
             this._addSyntheticStyleRecalcInvalidation(
                 styleInvalidatorInvalidation.tracingEvent,
@@ -156,7 +161,8 @@ export default class InvalidationTracker {
         for (let i = 0; i < styleInvalidatorInvalidation.invalidationList.length; i++) {
             const setId = styleInvalidatorInvalidation.invalidationList[i]['id']
             let lastScheduleStyleRecalculation
-            const nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || []
+            const emptyList: InvalidationMap[] = []
+            const nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || emptyList
             for (let j = 0; j < nodeInvalidations.length; j++) {
                 const invalidation = nodeInvalidations[j]
                 if (
@@ -174,7 +180,7 @@ export default class InvalidationTracker {
             }
 
             this._addSyntheticStyleRecalcInvalidation(
-                lastScheduleStyleRecalculation.tracingEvent,
+                lastScheduleStyleRecalculation.tracingEvent as any,
                 styleInvalidatorInvalidation
             )
         }
@@ -227,7 +233,7 @@ export default class InvalidationTracker {
      * @param {number} eventFrameId
      * @param {!TimelineModel.InvalidationTrackingEvent} invalidation
      */
-    private _addInvalidationToEvent (event: Event, eventFrameId: number, invalidation: InvalidationTrackingEvent): void {
+    private _addInvalidationToEvent (event: Event, eventFrameId: number | string, invalidation: InvalidationTrackingEvent): void {
         if (eventFrameId !== invalidation.frame) {
             return
         }
@@ -253,7 +259,8 @@ export default class InvalidationTracker {
         // eslint-disable-next-line
         function* generator () {
             for (let i = 0; i < types.length; ++i) {
-                const invalidationList = invalidations[types[i]] || []
+                // TODO(Christian) fix typings
+                const invalidationList = invalidations[(types as any)[i]] || []
                 for (let j = 0; j < invalidationList.length; ++j) {
                     yield invalidationList[j]
                 }

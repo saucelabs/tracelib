@@ -204,7 +204,8 @@ export default class TimelineModel {
      */
     public static globalEventId(event: Event, field: string): string {
         const data = event.args.data || event.args.beginData
-        const id = data && data[field]
+        // TODO(Christian) fix typings
+        const id = data && (data as any)[field]
         if (!id) {
             return ''
         }
@@ -525,7 +526,8 @@ export default class TimelineModel {
                     !this._mainFrameNodeId,
                     'Multiple sessions in trace'
                 )
-                this._mainFrameNodeId = event.args.frameTreeNodeId
+                // TODO(Christian) fix typings
+                this._mainFrameNodeId = event.args.frameTreeNodeId as any
             }
         }
         if (!pageDevToolsMetadataEvents.length) {
@@ -536,9 +538,9 @@ export default class TimelineModel {
             pageDevToolsMetadataEvents[0].args.sessionId ||
             pageDevToolsMetadataEvents[0].args.data.sessionId
         )
-        this._sessionId = sessionId
+        // this._sessionId = sessionId
 
-        const mismatchingIds: Set<string> = new Set()
+        const mismatchingIds: Set<EventData> = new Set()
         /**
          * @param {!TracingModel.Event} event
          * @return {boolean}
@@ -546,9 +548,10 @@ export default class TimelineModel {
         function checkSessionId(event: Event): boolean {
             let args = event.args
             // FIXME: put sessionId into args["data"] for TracingStartedInPage event.
-            if (args.data) {
-                args = args.data
-            }
+            // TODO(Christian) fix typings
+            // if (args.data) {
+            //     args = args.data
+            // }
 
             const id = args.sessionId
             if (id === sessionId) {
@@ -716,7 +719,7 @@ export default class TimelineModel {
         }
 
         try {
-            const jsProfileModel = new CPUProfileDataModel(cpuProfile, target)
+            const jsProfileModel = new CPUProfileDataModel(cpuProfile)
             this._cpuProfiles.push(jsProfileModel)
             return jsProfileModel
         } catch (e) {
@@ -1092,9 +1095,10 @@ export default class TimelineModel {
             const frameId = event.args['beginData']['frame']
             timelineData.setInitiator(this._layoutInvalidate[frameId])
             // In case we have no closing Layout event, endData is not available.
-            if (event.args['endData'])
-                timelineData.backendNodeId =
-                    event.args['endData']['rootNode']
+            if (event.args['endData']) {
+                timelineData.backendNodeId = (event.args.endData as any).rootNode
+            }
+
             this._layoutInvalidate[frameId] = null
             if (this._currentScriptEvent) {
                 this._currentTaskLayoutAndRecalcEvents.push(event)
@@ -1120,18 +1124,22 @@ export default class TimelineModel {
 
         case recordTypes.FunctionCall:
             // Compatibility with old format.
-            if (typeof eventData['scriptName'] === 'string')
-                eventData['url'] = eventData['scriptName']
-            if (typeof eventData['scriptLine'] === 'number')
-                eventData['lineNumber'] = eventData['scriptLine']
+            if (typeof eventData.scriptName === 'string')
+                eventData.url = eventData.scriptName
+            if (typeof eventData.scriptLine === 'number')
+                eventData.lineNumber = eventData.scriptLine
 
         // Fallthrough.
         case recordTypes.EvaluateScript:
         case recordTypes.CompileScript:
-            if (typeof eventData['lineNumber'] === 'number')
-                --eventData['lineNumber']
-            if (typeof eventData['columnNumber'] === 'number')
-                --eventData['columnNumber']
+            if (typeof eventData.lineNumber === 'number') {
+                --eventData.lineNumber
+            }
+
+            // TODO(Christian) fix typings
+            if (typeof (eventData as any).columnNumber === 'number') {
+                --(eventData as any).columnNumber
+            }
 
         // Fallthrough intended.
         case recordTypes.RunMicrotasks:
@@ -1146,10 +1154,10 @@ export default class TimelineModel {
             // This is to support old traces.
             if (
                 this._sessionId &&
-                eventData['sessionId'] &&
-                this._sessionId === eventData['sessionId']
+                eventData.sessionId &&
+                this._sessionId === eventData.sessionId
             ) {
-                this._mainFrameLayerTreeId = eventData['layerTreeId']
+                this._mainFrameLayerTreeId = eventData.layerTreeId
                 break
             }
 
@@ -1161,7 +1169,7 @@ export default class TimelineModel {
             break
 
         case recordTypes.Paint: {
-            this._invalidationTracker.didPaint(event)
+            this._invalidationTracker.didPaint()
             timelineData.backendNodeId = eventData['nodeId']
             // Only keep layer paint events, skip paints for subframes that get painted to the same layer as parent.
             if (!eventData['layerId']) break
@@ -1181,9 +1189,8 @@ export default class TimelineModel {
                 break
             }
 
-            const paintEvent = this._lastPaintForLayer[
-                layerUpdateEvent.args['layerId']
-            ]
+            // TODO(Christian) fix typings
+            const paintEvent = this._lastPaintForLayer[layerUpdateEvent.args['layerId'] as any]
             if (paintEvent) {
                 /** @type {!TracingModel.ObjectSnapshot} */
                 TimelineData.forEvent(paintEvent).picture =  event
@@ -1192,30 +1199,32 @@ export default class TimelineModel {
         }
 
         case recordTypes.ScrollLayer:
-            timelineData.backendNodeId = eventData['nodeId']
+            timelineData.backendNodeId = eventData.nodeId
             break
 
         case recordTypes.PaintImage:
-            timelineData.backendNodeId = eventData['nodeId']
-            timelineData.url = eventData['url']
+            timelineData.backendNodeId = eventData.nodeId
+            timelineData.url = eventData.url
             break
 
         case recordTypes.DecodeImage:
         case recordTypes.ResizeImage: {
-            let paintImageEvent = this._findAncestorEvent(
-                recordTypes.PaintImage
-            )
+            let paintImageEvent = this._findAncestorEvent(recordTypes.PaintImage)
+
             if (!paintImageEvent) {
                 const decodeLazyPixelRefEvent = this._findAncestorEvent(
                     recordTypes.DecodeLazyPixelRef
                 )
                 paintImageEvent =
                     decodeLazyPixelRefEvent &&
-                    this._paintImageEventByPixelRefId[
-                        decodeLazyPixelRefEvent.args['LazyPixelRef']
-                    ]
+                    // TODO(Christian) fix typings
+                    this._paintImageEventByPixelRefId[(decodeLazyPixelRefEvent.args as any).LazyPixelRef]
             }
-            if (!paintImageEvent) break
+
+            if (!paintImageEvent) {
+                break
+            }
+
             const paintImageData = TimelineData.forEvent(paintImageEvent)
             timelineData.backendNodeId = paintImageData.backendNodeId
             timelineData.url = paintImageData.url
@@ -1223,13 +1232,13 @@ export default class TimelineModel {
         }
 
         case recordTypes.DrawLazyPixelRef: {
-            const paintImageEvent = this._findAncestorEvent(
-                recordTypes.PaintImage
-            )
-            if (!paintImageEvent) break
-            this._paintImageEventByPixelRefId[
-                event.args['LazyPixelRef']
-            ] = paintImageEvent
+            const paintImageEvent = this._findAncestorEvent(recordTypes.PaintImage)
+            if (!paintImageEvent) {
+                break
+            }
+
+            // TODO(Christian) fix typings
+            this._paintImageEventByPixelRefId[(event.args as any).LazyPixelRef] = paintImageEvent
             const paintImageData = TimelineData.forEvent(paintImageEvent)
             timelineData.backendNodeId = paintImageData.backendNodeId
             timelineData.url = paintImageData.url
@@ -1253,21 +1262,22 @@ export default class TimelineModel {
             }
 
             const frameId = TimelineModel.eventFrameId(event)
-            const isMainFrame = !!eventData['isMainFrame']
+            const isMainFrame = !!eventData.isMainFrame
             const pageFrame = this._pageFrames.get(frameId)
             if (pageFrame) {
                 pageFrame.update(event.startTime, eventData)
             } else if (!this._persistentIds) {
                 if (
-                    eventData['page'] &&
-                    eventData['page'] !== this._legacyCurrentPage
+                    eventData.page &&
+                    eventData.page !== this._legacyCurrentPage
                 ) {
                     return false
                 }
 
             } else if (isMainFrame) {
                 return false
-            } else if (!this._addPageFrame(event, eventData)) {
+                // TODO(Christian) fix typings
+            } else if (!this._addPageFrame(event, eventData as any)) {
                 return false
             }
 
@@ -1314,16 +1324,18 @@ export default class TimelineModel {
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
                 frames.forEach((payload: EventData): void => {
+                    // TODO(Christian) fix typings
                     const parent = (
-                        payload['parent'] &&
-                        this._pageFrames.get(payload['parent'])
+                        (payload as any).parent &&
+                        this._pageFrames.get((payload as any).parent)
                     )
 
-                    if (payload['parent'] && !parent) {
+                    // TODO(Christian) fix typings
+                    if ((payload as any).parent && !parent) {
                         return
                     }
 
-                    let frame = this._pageFrames.get(payload['frame'])
+                    let frame = this._pageFrames.get(payload.frame)
                     if (!frame) {
                         frame = new PageFrame(payload)
                         this._pageFrames.set(frame.frameId, frame)
@@ -1345,9 +1357,10 @@ export default class TimelineModel {
             ) {
                 let frame = this._pageFrames.get(data['frame'])
                 if (!frame) {
+                    // TODO(Christian) fix typings
                     const parent = (
-                        data['parent'] &&
-                        this._pageFrames.get(data['parent'])
+                        (data as any).parent &&
+                        this._pageFrames.get((data as any).parent)
                     )
 
                     if (!parent) {
@@ -1534,7 +1547,8 @@ export default class TimelineModel {
         const events = this.inspectedTargetEvents()
         for (let i = 0; i < events.length; ++i) {
             const e = events[i]
-            if (!resourceTypes.has(e.name)) {
+            // TODO(Christian) fix typings
+            if (!resourceTypes.has(e.name as any)) {
                 continue
             }
 

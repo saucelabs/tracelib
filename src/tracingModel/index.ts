@@ -267,11 +267,14 @@ export default class TracingModel {
             this._devToolsMetadataEvents.push(event)
         }
 
-        if (payload.ph !== Phase.Metadata) return
+        if (payload.ph !== Phase.Metadata) {
+            return
+        }
 
         switch (payload.name) {
         case MetadataEvent.ProcessSortIndex:
-            process.setSortIndex(payload.args['sort_index'])
+            // TODO(Christian) fix typings
+            process.setSortIndex(payload.args['sort_index'] as number)
             break
         case MetadataEvent.ProcessName:
             const processName = payload.args['name']

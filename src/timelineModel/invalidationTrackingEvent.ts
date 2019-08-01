@@ -7,7 +7,7 @@ export default class InvalidationTrackingEvent {
     public tracingEvent: Event
 
     /** @type {number} */
-    public frame: number
+    public frame: number & string
     /** @type {?number} */
     public nodeId?: number
     /** @type {?string} */
@@ -29,7 +29,7 @@ export default class InvalidationTrackingEvent {
     /** @type {?string} */
     public extraData?: string
     /** @type {?Array.<!Object.<string, number>>} */
-    public invalidationList?: InvalidationMap
+    public invalidationList?: InvalidationMap[]
     /** @type {!TimelineModel.InvalidationCause} */
     public cause: InvalidationCause
     public linkedRecalcStyleEvent: boolean
@@ -41,7 +41,7 @@ export default class InvalidationTrackingEvent {
         this.tracingEvent = event
 
         const eventData: EventData = event.args['data']
-        this.frame = eventData['frame']
+        // this.frame = eventData['frame']
         this.nodeId = eventData['nodeId']
         this.nodeName = eventData['nodeName']
         this.invalidationSet = eventData['invalidationSet']

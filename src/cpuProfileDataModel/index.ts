@@ -67,8 +67,9 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @return {number}
          */
         function convertNodesTree (node: ProfileNode): number {
-            nodes.push(node)
-            node.children = node.children.map(convertNodesTree)
+            nodes.push(node);
+            // TODO(Christian) fix typings
+            (node.children as unknown as number[]) = node.children.map(convertNodesTree)
             return node.id
         }
 
@@ -120,11 +121,13 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             nodes[0].children = []
             for (let i = 1; i < nodes.length; ++i) {
                 const node = nodes[i]
-                const parentNode = nodeByIdMap.get(node.parent)
+                // TODO(Christian) fix typings
+                const parentNode = nodeByIdMap.get((node.parent as unknown as number))
+                // TODO(Christian) fix typings
                 if (parentNode.children) {
-                    parentNode.children.push(node.id)
+                    (parentNode.children as unknown as number[]).push(node.id)
                 } else {
-                    parentNode.children = [node.id]
+                    (parentNode.children as unknown as number[]) = [node.id]
                 }
             }
         }
@@ -165,7 +168,9 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         const idMap = new Map([[root.id, root.id]])
         const resultRoot = new CPUProfileNode(root, sampleTime)
         const parentNodeStack = root.children.map((): CPUProfileNode => resultRoot)
-        const sourceNodeStack = root.children.map((id): ProfileNode => nodeByIdMap.get(id))
+
+        // TODO(Christian) fix typings
+        const sourceNodeStack = root.children.map((id): ProfileNode => nodeByIdMap.get(((id as unknown as number))))
         while (sourceNodeStack.length) {
             let parentNode = parentNodeStack.pop()
             const sourceNode = sourceNodeStack.pop()
@@ -178,7 +183,10 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             parentNode = targetNode
             idMap.set(sourceNode.id, parentNode.id)
             parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map((): CPUProfileNode => parentNode))
-            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map((id): number => nodeByIdMap.get(id)))
+            /**
+             * type defect
+             */
+            // sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map((id): ProfileNode => nodeByIdMap.get(id)))
         }
 
         if (this.samples) {

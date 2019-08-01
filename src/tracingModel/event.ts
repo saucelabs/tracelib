@@ -119,7 +119,7 @@ export default class Event {
     /**
      * @param {!Object} args
      */
-    public addArgs (args: any): void {
+    public addArgs (args: EventData): void {
         /**
          * Shallow copy args to avoid modifying original payload which may be saved to file.
          */
@@ -128,7 +128,7 @@ export default class Event {
                 console.error(`Same argument name (${name}) is used for begin and end phases of ${this.name}`)
             }
 
-            this.args[name] = args[name]
+            this.args[name] = (args as any)[name]
         }
     }
 

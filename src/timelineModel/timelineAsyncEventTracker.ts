@@ -66,7 +66,8 @@ export default class TimelineAsyncEventTracker {
         for (const entry of events) {
             const types = entry[1].causes
             for (let causeType of types) {
-                this._typeToInitiator.set(causeType, entry[0])
+                // TODO(Christian) fix typings
+                this._typeToInitiator.set(causeType, entry[0] as any)
             }
         }
     }
