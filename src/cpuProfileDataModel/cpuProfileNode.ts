@@ -1,5 +1,12 @@
 import ProfileNode from '../profileTreeModel/profileNode'
-import CallFrame from '../debuggerModel/callFrame'
+
+export interface CallFrame {
+    functionName: string;
+    scriptId: string;
+    url: string;
+    lineNumber: number;
+    columnNumber: number;
+}
 
 export default class CPUProfileNode extends ProfileNode {
     /**

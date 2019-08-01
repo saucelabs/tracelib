@@ -2,7 +2,7 @@ import Event from './event'
 import Thread from './thread'
 import TracingModel from './index'
 import NamedObject from './namedObject'
-import { EventPayload } from '../tracingManager'
+import { TraceEvent } from '../types'
 
 export default class Process extends NamedObject {
     private _threads: Map<number, Thread>
@@ -70,7 +70,7 @@ export default class Process extends NamedObject {
      * @param {!TracingManager.EventPayload} payload
      * @return {?TracingModel.Event} event
      */
-    public addEvent (payload: EventPayload): Event | null {
+    public addEvent (payload: TraceEvent): Event | null {
         return this.threadById(payload.tid).addEvent(payload)
     }
 

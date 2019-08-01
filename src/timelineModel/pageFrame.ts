@@ -1,4 +1,4 @@
-import { EventPayload } from '../tracingManager'
+import { TraceEvent, PageFramePayload } from '../types'
 
 interface PageFrameProcess {
     time: number;
@@ -20,10 +20,10 @@ export default class PageFrame {
     /**
      * @param {!Object} payload
      */
-    public constructor (payload: EventPayload) {
-        this.frameId = payload['frame']
-        this.url = payload['url'] || ''
-        this.name = payload['name']
+    public constructor (payload: PageFramePayload) {
+        this.frameId = payload.frame
+        this.url = payload.url || ''
+        this.name = payload.name
         this.children = []
         this.parent = null
         this.processes = []
@@ -37,14 +37,14 @@ export default class PageFrame {
      * @param {number} time
      * @param {!Object} payload
      */
-    public update (time: number, payload: EventPayload): void {
+    public update (time: number, payload: PageFramePayload): void {
         this.url = payload['url'] || ''
         this.name = payload['name']
         this.processes.push({
             time,
-            processId: payload['processId'] ? payload['processId'] : -1,
-            processPseudoId: payload['processId'] ? '' : payload['processPseudoId'],
-            url: payload['url'] || ''
+            processId: payload.processId ? payload.processId : -1,
+            processPseudoId: payload.processId ? '' : payload.processPseudoId,
+            url: payload.url || ''
         })
     }
 

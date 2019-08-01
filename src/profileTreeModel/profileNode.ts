@@ -1,4 +1,4 @@
-import CallFrame from '../debuggerModel/callFrame'
+import { CallFrame } from '../cpuProfileDataModel/cpuProfileNode'
 
 export default class ProfileNode {
     public callFrame: CallFrame
@@ -8,6 +8,10 @@ export default class ProfileNode {
     public id: number
     public parent?: ProfileNode
     public children: ProfileNode[]
+    public hitCount: number
+    public positionTicks: number[]
+    public deoptReason: string
+    public depth?: number
 
     /**
      * @param {!Protocol.Runtime.CallFrame} callFrame
