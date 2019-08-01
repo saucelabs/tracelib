@@ -26,7 +26,7 @@ export interface TraceEvent {
     pid: number;
     tid: number;
     ts: number;
-    ph: Phase;
+    ph: string;
     name: string;
     args: TracelogArgs;
     dur?: number;

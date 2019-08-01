@@ -9,7 +9,7 @@ export default class Event {
     public id?: string
     public categoriesString: string
     public name: string
-    public phase: Phase
+    public phase: string
     public startTime: number
     public endTime?: number
     public duration?: number
@@ -26,7 +26,7 @@ export default class Event {
      * @param {!Phase} phase
      * @param {!Thread} thread
      */
-    public constructor (categories: string|undefined, name: string, phase: Phase, startTime: number, thread: Thread) {
+    public constructor (categories: string|undefined, name: string, phase: string, startTime: number, thread: Thread) {
         this.categoriesString = categories || ''
         this._parsedCategories = thread.model.parsedCategoriesForString(this.categoriesString)
         this.name = name
@@ -117,7 +117,7 @@ export default class Event {
     /**
      * @param {!Object} args
      */
-    public addArgs (args: TracelogArgs): void {
+    public addArgs (args: any): void {
         /**
          * Shallow copy args to avoid modifying original payload which may be saved to file.
          */
