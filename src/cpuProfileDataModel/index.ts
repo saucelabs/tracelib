@@ -1,7 +1,7 @@
 import CPUProfileNode from './cpuProfileNode'
 import ProfileNode from '../profileTreeModel/profileNode'
 import ProfileTreeModel from '../profileTreeModel'
-import { lowerBound } from '../utils'
+import { lowerBound, stableSort } from '../utils'
 import { Profile } from '../types'
 
 export default class CPUProfileDataModel extends ProfileTreeModel {
@@ -13,13 +13,18 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
     public totalHitCount: number
     public profileHead: ProfileNode
     public gcNode: ProfileNode
+    public programNode?: ProfileNode
+    public idleNode?: ProfileNode
 
+    private _stackStartTimes?: Float64Array
+    private _stackChildrenDuration?: Float64Array
     private _idToNode: Map<number, CPUProfileNode>
 
     /**
      * @param {!Protocol.Profiler.Profile} profile
      */
     public constructor (profile: Profile) {
+        super()
         const isLegacyFormat = !!profile['head']
 
         if (isLegacyFormat) {
@@ -136,7 +141,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
                 return
             }
 
-            console.assert(samples, 'Error: Neither hitCount nor samples are present in profile.')
+            console.assert(Boolean(samples), 'Error: Neither hitCount nor samples are present in profile.')
             for (let i = 0; i < nodes.length; ++i) {
                 nodes[i].hitCount = 0
             }
@@ -173,7 +178,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             parentNode = targetNode
             idMap.set(sourceNode.id, parentNode.id)
             parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map((): CPUProfileNode => parentNode))
-            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map((id): ProfileNode => nodeByIdMap.get(id)))
+            sourceNodeStack.push.apply(sourceNodeStack, sourceNode.children.map((id): number => nodeByIdMap.get(id)))
         }
 
         if (this.samples) {
@@ -339,7 +344,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         }
 
         if (count) {
-            console.warn(ls`DevTools: CPU profile parser is fixing ${count} missing samples.`)
+            console.warn(`DevTools: CPU profile parser is fixing ${count} missing samples.`)
         }
     }
 
@@ -377,11 +382,15 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         // Extra slots for gc being put on top,
         // and one at the bottom to allow safe stackTop-1 access.
         const stackDepth = this.maxDepth + 3
-        if (!this._stackStartTimes)
+        if (!this._stackStartTimes) {
             this._stackStartTimes = new Float64Array(stackDepth)
+        }
+
         const stackStartTimes = this._stackStartTimes
-        if (!this._stackChildrenDuration)
+        if (!this._stackChildrenDuration) {
             this._stackChildrenDuration = new Float64Array(stackDepth)
+        }
+
         const stackChildrenDuration = this._stackChildrenDuration
 
         let node: CPUProfileNode

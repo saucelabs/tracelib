@@ -1,7 +1,7 @@
 import Event from './event'
 import Thread from './thread'
 import TracingModel, { Phase } from './'
-import { EventPayload } from '../tracingManager'
+import { TraceEvent } from '../types'
 
 export default class ObjectSnapshot extends Event {
     /**
@@ -19,7 +19,7 @@ export default class ObjectSnapshot extends Event {
      * @param {!SDK.TracingModel.Thread} thread
      * @return {!SDK.TracingModel.ObjectSnapshot}
      */
-    public static fromPayload (payload: EventPayload, thread: Thread): ObjectSnapshot {
+    public static fromPayload (payload: TraceEvent, thread: Thread): ObjectSnapshot {
         const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread)
         const id = TracingModel.extractId(payload)
         if (typeof id !== 'undefined') {
