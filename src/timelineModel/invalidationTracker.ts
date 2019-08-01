@@ -7,7 +7,7 @@ export default class InvalidationTracker {
     private _lastRecalcStyle: Event
     private _lastPaintWithLayer: Event
     private _didPaint: boolean
-    private _invalidations: InvalidationTrackingEvent[]
+    private _invalidations: InvalidationMap
     private _invalidationsByNodeId: InvalidationMap
 
     public constructor () {
@@ -23,7 +23,7 @@ export default class InvalidationTracker {
      */
     public static invalidationEventsFor (
         event: Event
-    ): InvalidationTrackingEvent[] {
+    ): InvalidationTrackingEvent[] | null {
         return event[InvalidationTracker._invalidationTrackingEventsSymbol] || null
     }
 
@@ -141,7 +141,7 @@ export default class InvalidationTracker {
     private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: number, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
         if (!styleInvalidatorInvalidation.invalidationList) {
             this._addSyntheticStyleRecalcInvalidation(
-                styleInvalidatorInvalidation._tracingEvent,
+                styleInvalidatorInvalidation.tracingEvent,
                 styleInvalidatorInvalidation
             )
             return

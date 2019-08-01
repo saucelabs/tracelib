@@ -157,7 +157,7 @@ export default class TimelineModel {
     private static _topLevelEventEndingAfter(
         events: Event[],
         time: number
-    ): void {
+    ): number {
         let index =
             upperBound(
                 events,
