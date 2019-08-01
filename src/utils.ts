@@ -1,22 +1,92 @@
-export function upperBound<T extends number, S extends number>(self: Array<any>, object: T, comparator: (object: any, arg1: any) => number, left?: number, right?: number) {
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+/**
+ * Return index of the leftmost element that is greater
+ * than the specimen object. If there's no such element (i.e. all
+ * elements are smaller or equal to the specimen) returns right bound.
+ * The function works for sorted array.
+ * When specified, |left| (inclusive) and |right| (exclusive) indices
+ * define the search window.
+ *
+ * @param {!T} object
+ * @param {function(!T,!S):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
+ * @return {number}
+ * @this {Array.<!S>}
+ * @template T,S
+ */
+export function upperBound<T extends number, S extends number> (
+    self: any[],
+    object: T,
+    comparator?: (object: any, arg1: any) => number,
+    left?: number,
+    right?: number
+): any {
     function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
-        return a < b ? -1 : (a > b ? 1 : 0);
+        return a < b ? -1 : (a > b ? 1 : 0)
     }
-    comparator = comparator || defaultComparator;
-    let l = left || 0;
-    let r = right !== undefined ? right : self.length;
+    comparator = comparator || defaultComparator
+    let l = left || 0
+    let r = right !== undefined ? right : self.length
     while (l < r) {
-        const m = (l + r) >> 1;
+        const m = (l + r) >> 1
         if (comparator(object, self[m]) >= 0)
-            l = m + 1;
+            l = m + 1
         else
-            r = m;
+            r = m
     }
-    return r;
+    return r
 }
 
-export function stableSort<L extends number, R extends number>(that: any, comparator: (r: any, l: any) => number) {
-    function defaultComparator<L extends number, R extends number>(a: number, b: number) {
+/**
+ * Return index of the leftmost element that is equal or greater
+ * than the specimen object. If there's no such element (i.e. all
+ * elements are smaller than the specimen) returns right bound.
+ * The function works for sorted array.
+ * When specified, |left| (inclusive) and |right| (exclusive) indices
+ * define the search window.
+ *
+ * @param {!T} object
+ * @param {function(!T,!S):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
+ * @return {number}
+ * @this {Array.<!S>}
+ * @template T,S
+ */
+export function lowerBound<T extends number, S extends number> (
+    self: any[],
+    object: T,
+    comparator?: (object: any, arg1: any) => number,
+    left?: number,
+    right?: number
+): any {
+    function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
+        return a < b ? -1 : (a > b ? 1 : 0)
+    }
+    comparator = comparator || defaultComparator
+    let l = left || 0
+    let r = right !== undefined ? right : self.length
+    while (l < r) {
+        const m = (l + r) >> 1
+        if (comparator(object, self[m]) > 0) {
+            l = m + 1
+        } else {
+            r = m
+        }
+    }
+    return r
+}
+
+/**
+ * @param {function(?T, ?T): number=} comparator
+ * @return {!Array.<?T>}
+ * @this {Array.<?T>}
+ * @template T
+ */
+export function stableSort<L extends number, R extends number> (that: any[], comparator: (r: any, l: any) => number): any {
+    function defaultComparator<L extends number, R extends number>(a: number, b: number): number {
         return a < b ? -1 : (a > b ? 1 : 0)
     }
     comparator = comparator || defaultComparator
@@ -33,7 +103,7 @@ export function stableSort<L extends number, R extends number>(that: any, compar
      * @param {number} b
      * @return {number}
      */
-    function indexComparator<L extends number, R extends number>(a: number, b: number) {
+    function indexComparator<L extends number, R extends number>(a: number, b: number): number {
         const result = comparator(self[a], self[b])
         return result ? result : a - b
     }
@@ -59,6 +129,7 @@ export function stableSort<L extends number, R extends number>(that: any, compar
             }
         }
     }
+
     return that
 }
 
@@ -70,13 +141,13 @@ export function pushAll (original: Array<any>, newData: Array<any>): Array<any> 
 }
 
 /**
-   * @param {!Array.<T>} array1
-   * @param {!Array.<T>} array2
-   * @param {function(T,T):number} comparator
-   * @param {boolean} mergeNotIntersect
-   * @return {!Array.<T>}
-   * @template T
-   */
+ * @param {!Array.<T>} array1
+ * @param {!Array.<T>} array2
+ * @param {function(T,T):number} comparator
+ * @param {boolean} mergeNotIntersect
+ * @return {!Array.<T>}
+ * @template T
+ */
 export function mergeOrIntersect(array1: Array<any>, array2: Array<any>, comparator: any, mergeNotIntersect: boolean) {
     const result = [];
     let i = 0;
@@ -97,38 +168,4 @@ export function mergeOrIntersect(array1: Array<any>, array2: Array<any>, compara
         result.push(array2[j++]);
     }
     return result;
-}
-
-/**
- * Return index of the leftmost element that is equal or greater
- * than the specimen object. If there's no such element (i.e. all
- * elements are smaller than the specimen) returns right bound.
- * The function works for sorted array.
- * When specified, |left| (inclusive) and |right| (exclusive) indices
- * define the search window.
- *
- * @param {!T} object
- * @param {function(!T,!S):number=} comparator
- * @param {number=} left
- * @param {number=} right
- * @return {number}
- * @this {Array.<!S>}
- * @template T,S
- */
-
-export function lowerBound(array1: any, object: any, comparator: any, left?: number, right?: number) {
-    function defaultComparator(a: number, b: number) {
-        return a < b ? -1 : (a > b ? 1 : 0);
-    }
-    comparator = comparator || defaultComparator;
-    let l = left || 0;
-    let r = right !== undefined ? right : array1.length;
-    while (l < r) {
-    const m = (l + r) >> 1;
-    if (comparator(object, array1[m]) > 0)
-        l = m + 1;
-    else
-        r = m;
-    }
-    return r;
 }

@@ -2,10 +2,9 @@ import Event from './event'
 import Thread from './thread'
 import Process from './process'
 import AsyncEvent from './asyncEvent'
-import NamedObject from './namedObject'
 import TracingEvent from './event'
 import ProfileEventsGroup from './profileEventsGroup'
-import { EventPayload } from '../tracingManager'
+import { TraceEvent } from '../types'
 
 export enum Phase {
     Begin = 'B',
@@ -125,7 +124,7 @@ export default class TracingModel {
      * @param {!TracingManager.EventPayload} payload
      * @return {string|undefined}
      */
-    public static extractId (payload: EventPayload): string | undefined {
+    public static extractId (payload: TraceEvent): string | undefined {
         const scope = payload.scope || ''
         if (typeof payload.id2 === 'undefined') {
             return scope && payload.id ? `${scope}@${payload.id}` : payload.id
@@ -194,7 +193,7 @@ export default class TracingModel {
     /**
      * @param {!Array.<!TracingManager.EventPayload>} events
      */
-    public addEvents (events: EventPayload[]): void {
+    public addEvents (events: TraceEvent[]): void {
         for (let i = 0; i < events.length; ++i) {
             this._addEvent(events[i])
         }
@@ -225,9 +224,9 @@ export default class TracingModel {
     }
 
     /**
-     * @param {!EventPayload} payload
+     * @param {!TraceEvent} payload
      */
-    private _addEvent (payload: EventPayload): void {
+    private _addEvent (payload: TraceEvent): void {
         let process = this._processById.get(payload.pid)
         if (!process) {
             process = new Process(this, payload.pid)

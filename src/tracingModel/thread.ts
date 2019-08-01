@@ -4,7 +4,7 @@ import Process from './process'
 import NamedObject from './namedObject'
 import ObjectSnapshot from './objectSnapshot'
 import TracingModel, { Phase } from './'
-import { EventPayload } from '../tracingManager'
+import { TraceEvent } from '../types'
 
 export default class Thread extends NamedObject {
     public ordinal: number
@@ -30,7 +30,7 @@ export default class Thread extends NamedObject {
      * @param {!TracingManager.EventPayload} payload
      * @return {?Event} event
      */
-    public addEvent (payload: EventPayload): Event | null {
+    public addEvent (payload: TraceEvent): Event | null {
         const event = payload.ph === Phase.SnapshotObject
             ? ObjectSnapshot.fromPayload(payload, this)
             : Event.fromPayload(payload, this)
