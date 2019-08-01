@@ -61,3 +61,74 @@ export function stableSort<L extends number, R extends number>(that: any, compar
     }
     return that
 }
+
+export function pushAll (original: Array<any>, newData: Array<any>): Array<any> {
+    for (let i = 0; i < newData.length; ++i) {
+      original.push(newData[i]);
+    }
+    return newData
+}
+
+/**
+   * @param {!Array.<T>} array1
+   * @param {!Array.<T>} array2
+   * @param {function(T,T):number} comparator
+   * @param {boolean} mergeNotIntersect
+   * @return {!Array.<T>}
+   * @template T
+   */
+export function mergeOrIntersect(array1: Array<any>, array2: Array<any>, comparator: any, mergeNotIntersect: boolean) {
+    const result = [];
+    let i = 0;
+    let j = 0;
+    while (i < array1.length && j < array2.length) {
+        const compareValue = comparator(array1[i], array2[j]);
+        if (mergeNotIntersect || !compareValue)
+        result.push(compareValue <= 0 ? array1[i] : array2[j]);
+        if (compareValue <= 0)
+        i++;
+        if (compareValue >= 0)
+        j++;
+    }
+    if (mergeNotIntersect) {
+        while (i < array1.length)
+        result.push(array1[i++]);
+        while (j < array2.length)
+        result.push(array2[j++]);
+    }
+    return result;
+}
+
+/**
+ * Return index of the leftmost element that is equal or greater
+ * than the specimen object. If there's no such element (i.e. all
+ * elements are smaller than the specimen) returns right bound.
+ * The function works for sorted array.
+ * When specified, |left| (inclusive) and |right| (exclusive) indices
+ * define the search window.
+ *
+ * @param {!T} object
+ * @param {function(!T,!S):number=} comparator
+ * @param {number=} left
+ * @param {number=} right
+ * @return {number}
+ * @this {Array.<!S>}
+ * @template T,S
+ */
+
+export function lowerBound(array1: any, object: any, comparator: any, left?: number, right?: number) {
+    function defaultComparator(a: number, b: number) {
+        return a < b ? -1 : (a > b ? 1 : 0);
+    }
+    comparator = comparator || defaultComparator;
+    let l = left || 0;
+    let r = right !== undefined ? right : array1.length;
+    while (l < r) {
+    const m = (l + r) >> 1;
+    if (comparator(object, array1[m]) > 0)
+        l = m + 1;
+    else
+        r = m;
+    }
+    return r;
+}

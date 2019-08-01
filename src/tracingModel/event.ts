@@ -16,6 +16,7 @@ export default class Event {
     public args: Record<string, any>
     public selfTime: number
     public bind_id?: string
+    public ordinal: number
 
     /**
      * @param {number} startTime     * @param {string|undefined} categories

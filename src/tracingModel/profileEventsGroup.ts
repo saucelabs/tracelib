@@ -1,7 +1,7 @@
 import Event from './event'
 
 export default class ProfileEventsGroup {
-    protected children: Event[]
+    public children: Event[]
 
     /**
      * @param {!TracingModel.Event} event
