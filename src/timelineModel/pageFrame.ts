@@ -1,4 +1,4 @@
-import { TraceEvent, PageFramePayload } from '../types'
+import { PageFramePayload } from '../types'
 
 interface PageFrameProcess {
     time: number;
