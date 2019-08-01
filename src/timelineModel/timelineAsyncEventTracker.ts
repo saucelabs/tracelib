@@ -3,6 +3,11 @@ import TimelineData from './timelineData'
 import Event from '../tracingModel/event'
 import { RecordType } from '../types'
 
+type Initiatior = Map<string, {
+    causes: string[],
+    joinBy: string
+}>
+
 export default class TimelineAsyncEventTracker {
     private static _asyncEvents: Map<string, { causes: [], joinBy: string }>
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
@@ -25,34 +30,32 @@ export default class TimelineAsyncEventTracker {
         /**
          * ToDo: type events
          */
-        const events = new Map()
-        let type = RecordType
-
-        events.set(type.TimerInstall, {
-            causes: [type.TimerFire],
+        const events:Initiatior = new Map()
+        events.set(RecordType.TimerInstall, {
+            causes: [RecordType.TimerFire],
             joinBy: 'timerId',
         })
-        events.set(type.ResourceSendRequest, {
+        events.set(RecordType.ResourceSendRequest, {
             causes: [
-                type.ResourceReceiveResponse,
-                type.ResourceReceivedData,
-                type.ResourceFinish,
+                RecordType.ResourceReceiveResponse,
+                RecordType.ResourceReceivedData,
+                RecordType.ResourceFinish,
             ],
             joinBy: 'requestId',
         })
-        events.set(type.RequestAnimationFrame, {
-            causes: [type.FireAnimationFrame],
+        events.set(RecordType.RequestAnimationFrame, {
+            causes: [RecordType.FireAnimationFrame],
             joinBy: 'id',
         })
-        events.set(type.RequestIdleCallback, {
-            causes: [type.FireIdleCallback],
+        events.set(RecordType.RequestIdleCallback, {
+            causes: [RecordType.FireIdleCallback],
             joinBy: 'id',
         })
-        events.set(type.WebSocketCreate, {
+        events.set(RecordType.WebSocketCreate, {
             causes: [
-                type.WebSocketSendHandshakeRequest,
-                type.WebSocketReceiveHandshakeResponse,
-                type.WebSocketDestroy,
+                RecordType.WebSocketSendHandshakeRequest,
+                RecordType.WebSocketReceiveHandshakeResponse,
+                RecordType.WebSocketDestroy,
             ],
             joinBy: 'identifier',
         })

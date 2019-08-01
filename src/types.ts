@@ -1,3 +1,4 @@
+import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 import ProfileNode from './profileTreeModel/profileNode'
 import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 
@@ -8,12 +9,7 @@ export interface TracelogArgs {
     snapshot?: string;
     stackTrace?: any;
     data?: {
-        args: {
-            sessionId: string,
-            workerThreadId: string,
-            page: object,
-            workerId: string,
-        }
+        args: EventData
     };
     mimeType?: string;
     priority?: any //todo
@@ -39,6 +35,51 @@ export interface TracelogArgs {
     invalidationList?: any
     reason?: any
     isMainFrame?: boolean 
+}
+
+export interface EventData {
+    startTime?: number;
+    endTime?: number;
+    finishTime?: number;
+    cpuProfile?: object;
+    lines?: number[];
+    timeDeltas?: number[];
+    stackTrace?: string[];
+    url?: string;
+    frame?: number;
+    nodeId?: number;
+    name: string;
+    nodeName?: string;
+    invalidationSet?: InvalidationMap;
+    invalidatedSelectorId?: string;
+    layerId?: string;
+    layerTreeId?: string;
+    changedId?: string;
+    workerThreadId: string;
+    processId: number;
+    processPseudoId?: string;
+    frameTreeNodeId?: string;
+    changedClass?: string;
+    changedAttribute?: string;
+    changedPseudo?: string;
+    selectorPart?: string;
+    extraData?: string;
+    invalidationList?: InvalidationMap[];
+    reason?: string;
+    mimeType?: string;
+    scriptLine?: number;
+    scriptName?: string;
+    lineNumber?: number;
+    decodeBodyLength?: number;
+    encodedDataLength?: number;
+    requestMethod?: string;
+    timing?: Timing;
+    fromServiceWorker?: boolean;
+    fromCache?: boolean;
+    priority?: ResourcePriority;
+    isMainFrame?: boolean;
+    allottedMilliseconds: number;
+    sessionId: string;
 }
 
 export interface Profile {
@@ -70,14 +111,6 @@ export interface TraceEvent {
     // eslint-disable-next-line
     bind_id?: string;
     s?: string;
-}
-
-export interface PageFramePayload {
-    frame: string;
-    url: string;
-    name: string;
-    processId: number;
-    processPseudoId: string;
 }
 
 export interface InvalidationCause {

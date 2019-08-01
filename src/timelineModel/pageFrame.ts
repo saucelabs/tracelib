@@ -1,4 +1,4 @@
-import { PageFramePayload } from '../types'
+import { EventData } from '../types'
 
 interface PageFrameProcess {
     time: number;
@@ -20,7 +20,7 @@ export default class PageFrame {
     /**
      * @param {!Object} payload
      */
-    public constructor (payload: PageFramePayload) {
+    public constructor (payload: EventData) {
         this.frameId = payload.frame
         this.url = payload.url || ''
         this.name = payload.name
@@ -37,7 +37,7 @@ export default class PageFrame {
      * @param {number} time
      * @param {!Object} payload
      */
-    public update (time: number, payload: PageFramePayload): void {
+    public update (time: number, payload: EventData): void {
         this.url = payload['url'] || ''
         this.name = payload['name']
         this.processes.push({

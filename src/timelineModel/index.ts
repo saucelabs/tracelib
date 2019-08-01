@@ -16,7 +16,7 @@ import Thread from '../tracingModel/thread'
 import {
     PageFramePayload, BrowserFrames, LayoutInvalidationMap, Range,
     MetadataEvents, Thresholds, DevToolsMetadataEvent, RecordType,
-    Category, WarningType
+    Category, WarningType, EventData
 } from '../types'
 
 import {
@@ -260,9 +260,9 @@ export default class TimelineModel {
             this._isGenericTrace = !metadataEvents
             if (metadataEvents) {
                 this._processMetadataAndThreads(tracingModel, metadataEvents)
+            } else {
+                this._processGenericTrace(tracingModel)
             }
-
-            else this._processGenericTrace(tracingModel)
         }
         stableSort(this._inspectedTargetEvents, Event.compareStartTime)
         this._processAsyncBrowserEvents(tracingModel)
@@ -647,10 +647,9 @@ export default class TimelineModel {
         let cpuProfileEvent = events[events.length - 1]
         if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
             const eventData = cpuProfileEvent.args['data']
-            cpuProfile =
-                /** @type {?Protocol.Profiler.Profile} */ eventData &&
-                eventData['cpuProfile']
-            target = this.targetByEvent(cpuProfileEvent)
+            /** @type {?Protocol.Profiler.Profile} */
+            cpuProfile = eventData && eventData['cpuProfile']
+            target = this.targetByEvent()
         }
 
         if (!cpuProfile) {
@@ -661,7 +660,7 @@ export default class TimelineModel {
                 return null
             }
 
-            target = this.targetByEvent(cpuProfileEvent)
+            target = this.targetByEvent()
             const profileGroup = tracingModel.profileGroup(cpuProfileEvent)
             if (!profileGroup) {
                 console.error('Invalid CPU profile format.')
@@ -709,7 +708,7 @@ export default class TimelineModel {
             }
             if (!cpuProfile.endTime) {
                 cpuProfile.endTime = cpuProfile.timeDeltas.reduce(
-                    (x, y): number => x + y,
+                    (x: number, y: number): number => x + y,
                     cpuProfile.startTime
                 )
             }
@@ -1010,7 +1009,7 @@ export default class TimelineModel {
             this._currentScriptEvent = null
         }
 
-        const eventData = event.args.data || event.args.beginData || {}
+        const eventData:EventData = event.args.data || event.args.beginData || {}
         const timelineData = TimelineData.forEvent(event)
         if (eventData.stackTrace)
             timelineData.stackTrace = eventData.stackTrace
@@ -1172,22 +1171,21 @@ export default class TimelineModel {
 
         case recordTypes.DisplayItemListSnapshot:
         case recordTypes.PictureSnapshot: {
-            const layerUpdateEvent = this._findAncestorEvent(
-                recordTypes.UpdateLayer
-            )
+            const layerUpdateEvent = this._findAncestorEvent(recordTypes.UpdateLayer)
+
             if (
                 !layerUpdateEvent ||
-                layerUpdateEvent.args['layerTreeId'] !==
-                    this._mainFrameLayerTreeId
-            )
+                layerUpdateEvent.args['layerTreeId'] !== this._mainFrameLayerTreeId
+            ) {
                 break
+            }
+
             const paintEvent = this._lastPaintForLayer[
                 layerUpdateEvent.args['layerId']
             ]
             if (paintEvent) {
-                TimelineData.forEvent(
-                    paintEvent
-                ).picture = /** @type {!TracingModel.ObjectSnapshot} */ event
+                /** @type {!TracingModel.ObjectSnapshot} */
+                TimelineData.forEvent(paintEvent).picture =  event
             }
             break
         }
@@ -1314,7 +1312,7 @@ export default class TimelineModel {
                 this._browserFrameTracking = true
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
-                frames.forEach((payload: object): void => {
+                frames.forEach((payload: PageFrame): void => {
                     const parent = (
                         payload['parent'] &&
                         this._pageFrames.get(payload['parent'])
@@ -1346,9 +1344,15 @@ export default class TimelineModel {
             ) {
                 let frame = this._pageFrames.get(data['frame'])
                 if (!frame) {
-                    const parent =
-                        data['parent'] && this._pageFrames.get(data['parent'])
-                    if (!parent) return
+                    const parent = (
+                        data['parent'] &&
+                        this._pageFrames.get(data['parent'])
+                    )
+
+                    if (!parent) {
+                        return
+                    }
+
                     frame = new PageFrame(data)
                     this._pageFrames.set(frame.frameId, frame)
                     parent.addChild(frame)
@@ -1356,6 +1360,7 @@ export default class TimelineModel {
                 frame.update(event.startTime, data)
                 return
             }
+
             if (
                 event.name === DevToolsMetadataEvent.ProcessReadyInBrowser &&
                 this._browserFrameTracking
@@ -1368,12 +1373,15 @@ export default class TimelineModel {
                     )
                 return
             }
+
             if (
                 event.name === DevToolsMetadataEvent.FrameDeletedInBrowser &&
                 this._browserFrameTracking
             ) {
                 const frame = this._pageFrames.get(data['frame'])
-                if (frame) frame.deletedTime = event.startTime
+                if (frame) {
+                    frame.deletedTime = event.startTime
+                }
                 return
             }
         }
