@@ -35,7 +35,7 @@ export interface EventData {
     workerId?: string;
     processPseudoId?: string;
     frameTreeNodeId?: number;
-    persistentIds: number[];
+    persistentIds?: number[];
     changedClass?: string;
     changedAttribute?: string;
     changedPseudo?: string;
