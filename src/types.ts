@@ -42,7 +42,7 @@ export interface EventData {
     layerId?: string;
     layerTreeId?: string;
     changedId?: string;
-    workerThreadId?: string;
+    workerThreadId?: number;
     processId?: number;
     workerId?: string;
     processPseudoId?: string;
@@ -71,6 +71,8 @@ export interface EventData {
     sessionId?: string;
     INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
     INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: string;
+    page?: any;
+    frames?: PageFramePayload[]
 }
 
 export interface Profile {
@@ -334,7 +336,7 @@ export interface LayoutInvalidationMap {
 export interface BrowserFrames {
     from: number
     to: number
-    main: object
+    main: boolean
     url: string
 }
 

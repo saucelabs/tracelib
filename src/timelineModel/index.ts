@@ -58,7 +58,7 @@ export default class TimelineModel {
     private _eventStack: Event[]
     private _knownInputEvents: Set<string>
     private _browserFrameTracking: boolean
-    private _legacyCurrentPage: boolean
+    private _legacyCurrentPage: any
     private _tracingModel: TracingModel
     private _currentTaskLayoutAndRecalcEvents: Event[]
     private _mainFrameLayerTreeId: string | number
@@ -336,7 +336,7 @@ export default class TimelineModel {
                         }
 
                         return Boolean(
-                            this._pageFrames.get(TimelineModel.eventFrameId())
+                            this._pageFrames.get(TimelineModel.eventFrameId(event))
                         )
                     })
 
@@ -510,7 +510,7 @@ export default class TimelineModel {
                 }
 
                 const frames = (event.args.data && event.args.data.frames) || []
-                frames.forEach((payload: object): void =>
+                frames.forEach((payload: PageFramePayload): boolean =>
                     this._addPageFrame(event, payload)
                 )
                 this._mainFrame = this.rootFrames()[0]
