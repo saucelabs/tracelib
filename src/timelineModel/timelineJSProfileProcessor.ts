@@ -55,7 +55,7 @@ export default class TimelineJSProfileProcessor {
                 timestamps[i],
                 thread
             )
-            jsSampleEvent.args['data'] = { stackTrace: callFrames }
+            jsSampleEvent.args.data = { stackTrace: callFrames }
             jsEvents.push(jsSampleEvent)
         }
         return jsEvents

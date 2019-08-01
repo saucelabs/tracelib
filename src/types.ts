@@ -1,4 +1,4 @@
-import { Phase } from './tracingModel/index'
+import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 import ProfileNode from './profileTreeModel/profileNode'
 
 export interface TracelogArgs {
@@ -15,6 +15,17 @@ export interface TracelogArgs {
             workerId: string
         }
     };
+}
+
+export interface EventData {
+    startTime?: number;
+    endTime?: number;
+    cpuProfile?: object;
+    lines?: number[];
+    timeDeltas?: number[];
+    stackTrace?: object;
+    url?: string;
+    frame?: string;
 }
 
 export interface Profile {

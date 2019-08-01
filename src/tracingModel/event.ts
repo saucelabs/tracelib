@@ -1,7 +1,6 @@
 import TracingModel, { Phase } from './index'
 import Thread from './thread'
-import { TraceEvent } from '../types'
-import { TracelogArgs } from '../types'
+import { TraceEvent, TracelogArgs, EventData } from '../types'
 
 export default class Event {
     private _parsedCategories: Set<string>
@@ -14,7 +13,7 @@ export default class Event {
     public endTime?: number
     public duration?: number
     public thread: Thread
-    public args: Record<string, TracelogArgs>
+    public args: Record<string, EventData>
     public selfTime: number
     // eslint-disable-next-line
     public bind_id?: string

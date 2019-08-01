@@ -260,9 +260,9 @@ export default class TimelineModel {
             this._isGenericTrace = !metadataEvents
             if (metadataEvents) {
                 this._processMetadataAndThreads(tracingModel, metadataEvents)
+            } else {
+                this._processGenericTrace(tracingModel)
             }
-
-            else this._processGenericTrace(tracingModel)
         }
         stableSort(this._inspectedTargetEvents, Event.compareStartTime)
         this._processAsyncBrowserEvents(tracingModel)
@@ -647,9 +647,8 @@ export default class TimelineModel {
         let cpuProfileEvent = events[events.length - 1]
         if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
             const eventData = cpuProfileEvent.args['data']
-            cpuProfile =
-                /** @type {?Protocol.Profiler.Profile} */ eventData &&
-                eventData['cpuProfile']
+            /** @type {?Protocol.Profiler.Profile} */
+            cpuProfile = eventData && eventData['cpuProfile']
             target = this.targetByEvent(cpuProfileEvent)
         }
 
@@ -709,7 +708,7 @@ export default class TimelineModel {
             }
             if (!cpuProfile.endTime) {
                 cpuProfile.endTime = cpuProfile.timeDeltas.reduce(
-                    (x, y): number => x + y,
+                    (x: number, y: number): number => x + y,
                     cpuProfile.startTime
                 )
             }
@@ -1346,9 +1345,15 @@ export default class TimelineModel {
             ) {
                 let frame = this._pageFrames.get(data['frame'])
                 if (!frame) {
-                    const parent =
-                        data['parent'] && this._pageFrames.get(data['parent'])
-                    if (!parent) return
+                    const parent = (
+                        data['parent'] &&
+                        this._pageFrames.get(data['parent'])
+                    )
+
+                    if (!parent) {
+                        return
+                    }
+
                     frame = new PageFrame(data)
                     this._pageFrames.set(frame.frameId, frame)
                     parent.addChild(frame)
@@ -1356,6 +1361,7 @@ export default class TimelineModel {
                 frame.update(event.startTime, data)
                 return
             }
+
             if (
                 event.name === DevToolsMetadataEvent.ProcessReadyInBrowser &&
                 this._browserFrameTracking
@@ -1368,12 +1374,15 @@ export default class TimelineModel {
                     )
                 return
             }
+
             if (
                 event.name === DevToolsMetadataEvent.FrameDeletedInBrowser &&
                 this._browserFrameTracking
             ) {
                 const frame = this._pageFrames.get(data['frame'])
-                if (frame) frame.deletedTime = event.startTime
+                if (frame) {
+                    frame.deletedTime = event.startTime
+                }
                 return
             }
         }
