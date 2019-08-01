@@ -70,6 +70,7 @@ export interface EventData {
     isMainFrame?: boolean;
     allottedMilliseconds?: number;
     sessionId?: string;
+    page?: boolean;
     INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
     INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: string;
     page?: any;

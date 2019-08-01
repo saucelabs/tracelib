@@ -2,10 +2,6 @@ import ObjectSnapshot from '../tracingModel/objectSnapshot'
 import Event from '../tracingModel/event'
 import { CallFrame } from '../types'
 
-interface EventWithSymbol {
-    [key: symbol]: Event
-}
-
 export default class TimelineData {
     public warning: string
     public previewElement: Element
@@ -73,7 +69,7 @@ export default class TimelineData {
      * @param {!SDK.TracingModel.Event} event
      * @return {!TimelineModel.TimelineData}
      */
-    public static forEvent(event: Event & EventWithSymbol): TimelineData {
+    public static forEvent(event: Event): TimelineData {
         throw new Error('NYI')
         // let data: Event | TimelineData = event
         // if (!data) {
