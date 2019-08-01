@@ -23,6 +23,7 @@ export interface EventData {
     url?: string;
     frame?: number;
     nodeId?: number;
+    name: string;
     nodeName?: string;
     invalidationSet?: InvalidationMap;
     invalidatedSelectorId?: string;
@@ -30,6 +31,7 @@ export interface EventData {
     layerTreeId?: string;
     changedId?: string;
     workerThreadId: string;
+    processId: number;
     processPseudoId?: string;
     frameTreeNodeId?: string;
     changedClass?: string;
@@ -84,14 +86,6 @@ export interface TraceEvent {
     // eslint-disable-next-line
     bind_id?: string;
     s?: string;
-}
-
-export interface PageFramePayload {
-    frame: string;
-    url: string;
-    name: string;
-    processId: number;
-    processPseudoId: string;
 }
 
 export interface InvalidationCause {

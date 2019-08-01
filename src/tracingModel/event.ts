@@ -25,7 +25,7 @@ export default class Event {
      * @param {!Phase} phase
      * @param {!Thread} thread
      */
-    public constructor (categories: string|undefined, name: string, phase: string, startTime: number, thread: Thread) {
+    public constructor (categories: string | undefined, name: string, phase: string, startTime: number, thread: Thread) {
         this.categoriesString = categories || ''
         this._parsedCategories = thread.model.parsedCategoriesForString(this.categoriesString)
         this.name = name
