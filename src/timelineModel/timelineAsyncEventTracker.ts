@@ -9,7 +9,7 @@ type Initiatior = Map<string, {
 }>
 
 export default class TimelineAsyncEventTracker {
-    private static _asyncEvents: Map<string, { causes: [], joinBy: string }>
+    private static _asyncEvents: Initiatior
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
     private static _typeToInitiator: Map<RecordType | string, RecordType>
 
