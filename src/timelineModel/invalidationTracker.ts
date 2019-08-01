@@ -1,7 +1,6 @@
 import Event from '../tracingModel/event'
 import InvalidationTrackingEvent from './InvalidationTrackingEvent'
-import { RecordType } from './index'
-import { InvalidationMap } from '../types'
+import { InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTracker {
     private static readonly _invalidationTrackingEventsSymbol: unique symbol = Symbol('invalidationTrackingEvents')
@@ -142,7 +141,7 @@ export default class InvalidationTracker {
     private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: number, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
         if (!styleInvalidatorInvalidation.invalidationList) {
             this._addSyntheticStyleRecalcInvalidation(
-                styleInvalidatorInvalidation._tracingEvent,
+                styleInvalidatorInvalidation.tracingEvent,
                 styleInvalidatorInvalidation
             )
             return

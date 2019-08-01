@@ -1,4 +1,4 @@
-import { CallFrame } from '../cpuProfileDataModel/cpuProfileNode'
+import { CallFrame } from '../types'
 
 export default class ProfileNode {
     public callFrame: CallFrame

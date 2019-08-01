@@ -1,6 +1,5 @@
 import Event from '../tracingModel/event'
-import { RecordType } from './index'
-import { InvalidationCause, InvalidationMap } from '../types'
+import { InvalidationCause, InvalidationMap, EventData, RecordType } from '../types'
 
 export default class InvalidationTrackingEvent {
     public type: string
@@ -41,7 +40,7 @@ export default class InvalidationTrackingEvent {
         this.startTime = event.startTime
         this.tracingEvent = event
 
-        const eventData = event.args['data']
+        const eventData: EventData = event.args['data']
         this.frame = eventData['frame']
         this.nodeId = eventData['nodeId']
         this.nodeName = eventData['nodeName']

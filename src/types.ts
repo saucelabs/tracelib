@@ -8,24 +8,51 @@ export interface TracelogArgs {
     snapshot?: string;
     stackTrace?: any;
     data?: {
-        args: {
-            sessionId: string,
-            workerThreadId: string,
-            page: object,
-            workerId: string
-        }
+        args: EventData
     };
 }
 
 export interface EventData {
     startTime?: number;
     endTime?: number;
+    finishTime?: number;
     cpuProfile?: object;
     lines?: number[];
     timeDeltas?: number[];
-    stackTrace?: object;
+    stackTrace?: string[];
     url?: string;
-    frame?: string;
+    frame?: number;
+    nodeId?: number;
+    nodeName?: string;
+    invalidationSet?: InvalidationMap;
+    invalidatedSelectorId?: string;
+    layerId?: string;
+    layerTreeId?: string;
+    changedId?: string;
+    workerThreadId: string;
+    processPseudoId?: string;
+    frameTreeNodeId?: string;
+    changedClass?: string;
+    changedAttribute?: string;
+    changedPseudo?: string;
+    selectorPart?: string;
+    extraData?: string;
+    invalidationList?: InvalidationMap[];
+    reason?: string;
+    mimeType?: string;
+    scriptLine?: number;
+    scriptName?: string;
+    lineNumber?: number;
+    decodeBodyLength?: number;
+    encodedDataLength?: number;
+    requestMethod?: string;
+    timing?: Timing;
+    fromServiceWorker?: boolean;
+    fromCache?: boolean;
+    priority?: ResourcePriority;
+    isMainFrame?: boolean;
+    allottedMilliseconds: number;
+    sessionId: string;
 }
 
 export interface Profile {

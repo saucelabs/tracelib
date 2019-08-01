@@ -1,6 +1,7 @@
-import TimelineModel, { RecordType } from './index'
+import TimelineModel from './index'
 import TimelineData from './timelineData'
 import Event from '../tracingModel/event'
+import { RecordType } from '../types'
 
 type Initiatior = Map<string, {
     causes: string[],
