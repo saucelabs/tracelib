@@ -1,4 +1,3 @@
-import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 import ProfileNode from './profileTreeModel/profileNode'
 import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent'
 
@@ -11,30 +10,6 @@ export interface TracelogArgs {
     data?: {
         args: EventData
     };
-    mimeType?: string;
-    priority?: any //todo
-    finishTime?: any // todo
-    encodedDataLength?: any // todo
-    fromCache?: boolean
-    fromServiceWorker?: boolean
-    decodedBodyLength?: any //todo
-    url?: string
-    requestMethod?: string
-    timing?: any //todo
-    frame?: any
-    nodeId?: any
-    nodeName?: any
-    invalidationSet?: any
-    invalidatedSelectorId?: any
-    changedId?: any
-    changedClass?: any
-    changedAttribute?: any
-    changedPseudo?: any
-    selectorPart?: any
-    extraData?: any
-    invalidationList?: any
-    reason?: any
-    isMainFrame?: boolean 
 }
 
 export interface EventData {
