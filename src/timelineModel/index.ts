@@ -1093,6 +1093,9 @@ export default class TimelineModel {
 
         case recordTypes.Layout: {
             this._invalidationTracker.didLayout(event)
+            if (!event.args.beginData) {
+                return
+            }
             const frameId = event.args['beginData']['frame']
             timelineData.setInitiator(this._layoutInvalidate[frameId])
             // In case we have no closing Layout event, endData is not available.

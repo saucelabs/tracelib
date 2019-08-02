@@ -34,7 +34,7 @@ export default class TimelineFrameModel {
   /**
    * @param {function(!SDK.TracingModel.Event):string} categoryMapper
    */
-  public constructor(categoryMapper: categoryMapperFunc) {
+  public constructor(categoryMapper?: categoryMapperFunc) {
     this._categoryMapper = categoryMapper;
     this._mainFrameMarkers = [
       RecordType.ScheduleStyleRecalculation,
@@ -249,8 +249,8 @@ export default class TimelineFrameModel {
       this._processCompositorEvents(event);
       if (event.thread === this._currentProcessMainThread)
         this._addMainThreadTraceEvent(event);
-      else if (this._lastFrame && event.selfTime && !TracingModel.isTopLevelEvent(event))
-        this._lastFrame.addTimeForCategory(this._categoryMapper(event), event.selfTime);
+      // else if (this._lastFrame && event.selfTime && !TracingModel.isTopLevelEvent(event))
+      //   this._lastFrame.addTimeForCategory(this._categoryMapper(event), event.selfTime);
     }
   }
 
@@ -312,7 +312,7 @@ export default class TimelineFrameModel {
   private _addTimeForCategory(timeByCategory: TimeByCategory, event: Event): void {
     if (!event.selfTime)
       return;
-    const categoryName = this._categoryMapper(event);
-    timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
+    // const categoryName = this._categoryMapper(event);
+    // timeByCategory[categoryName] = (timeByCategory[categoryName] || 0) + event.selfTime;
   }
 };

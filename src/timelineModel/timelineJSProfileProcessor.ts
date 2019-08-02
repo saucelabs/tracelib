@@ -284,7 +284,7 @@ export default class TimelineJSProfileProcessor {
         profile: any,
         tid: number,
         injectPageEvent: boolean,
-        name: string
+        name?: string
     ): TraceEvent[] {
         const events: TraceEvent[] = []
         if (injectPageEvent) appendEvent('TracingStartedInPage', { data: { sessionId: '1' } }, 0, 0, 'M')

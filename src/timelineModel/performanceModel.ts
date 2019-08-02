@@ -28,6 +28,7 @@ export default class PerformanceModel {
     this._extensionTracingModels = [];
     /** @type {number|undefined} */
     this._recordStartTime = undefined;
+    this._frameModel = new TimelineFrameModel();
   }
 
   /**
