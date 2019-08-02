@@ -9,6 +9,8 @@ import TracingModel, { Phase } from "../tracingModel";
 import LayerPaintEvent from "./timelineFrame/layerPaintEvent";
 import TimelineData from "./TimelineData";
 
+type categoryMapperFunc = (any: Event) => string
+
 export default class TimelineFrameModel {
   private _categoryMapper: any
   private _frames: TimelineFrame[]
@@ -32,7 +34,7 @@ export default class TimelineFrameModel {
   /**
    * @param {function(!SDK.TracingModel.Event):string} categoryMapper
    */
-  public constructor(categoryMapper: any) {
+  public constructor(categoryMapper: categoryMapperFunc) {
     this._categoryMapper = categoryMapper;
     this._mainFrameMarkers = [
       RecordType.ScheduleStyleRecalculation,
@@ -48,7 +50,7 @@ export default class TimelineFrameModel {
    * @param {number=} endTime
    * @return {!Array<!TimelineModel.TimelineFrame>}
    */
-  public frames(startTime: number, endTime: number): TimelineFrame[] {
+  public frames(startTime?: number, endTime?: number): TimelineFrame[] {
     if (!startTime && !endTime)
       return this._frames;
     const firstFrame = lowerBound(this._frames, startTime || 0, (time, frame) => time - frame.endTime);
