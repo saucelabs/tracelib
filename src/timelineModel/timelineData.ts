@@ -69,13 +69,13 @@ export default class TimelineData {
      * @param {!SDK.TracingModel.Event} event
      * @return {!TimelineModel.TimelineData}
      */
-    public static forEvent(event: Event): TimelineData {
-        throw new Error('NYI')
-        // let data: Event | TimelineData = event
-        // if (!data) {
-        //     data = new TimelineData()
-        //     event[TimelineData._symbol] = data
-        // }
-        // return new TimelineData()
+    // todo fix type
+    public static forEvent(event: any): TimelineData {
+        let data: Event | TimelineData = event
+        if (!data) {
+            data = new TimelineData()
+            event[TimelineData._symbol] = data
+        }
+        return new TimelineData()
     }
 }

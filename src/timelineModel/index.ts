@@ -511,7 +511,8 @@ export default class TimelineModel {
                 }
 
                 const frames = (event.args.data && event.args.data.frames) || []
-                frames.forEach((payload: PageFramePayload): boolean =>
+                // todo fix type
+                frames.forEach((payload: any): boolean =>
                     this._addPageFrame(event, payload)
                 )
                 this._mainFrame = this.rootFrames()[0]
@@ -1323,7 +1324,7 @@ export default class TimelineModel {
                 this._browserFrameTracking = true
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
-                frames.forEach((payload: EventData): void => {
+                frames.forEach((payload: any): void => {
                     // TODO(Christian) fix typings
                     const parent = (
                         (payload as any).parent &&
@@ -1432,7 +1433,7 @@ export default class TimelineModel {
      * @param {!Object} payload
      * @return {boolean}
      */
-    private _addPageFrame(event: Event, payload: PageFramePayload): boolean {
+    private _addPageFrame(event: Event, payload: EventData): boolean {
         const parent =
             payload['parent'] && this._pageFrames.get(payload['parent'])
         if (payload['parent'] && !parent) return false
