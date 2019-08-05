@@ -13,6 +13,6 @@ export default class Tracelib {
     public getFPS(): number[] {
         this._timelineLoader.init()
         return this._timelineLoader.performanceModel.frames()
-            .map(( frame ) => (1000 / frame.duration))
+            .map(( frame ): number => (1000 / frame.duration))
     }
 }

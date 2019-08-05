@@ -2,8 +2,8 @@ import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent
 import PageFrame, { PageFrameProcess } from './timelineModel/pageFrame'
 import ProfileNode from './profileTreeModel/profileNode'
 import Event from './tracingModel/event'
-import TimelineFrame from './timelineModel/timelineFrame/timelineFrame';
-import Thread from './tracingModel/thread';
+import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
+import Thread from './tracingModel/thread'
 
 export interface TracelogArgs {
     name?: string;

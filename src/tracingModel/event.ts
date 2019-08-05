@@ -1,8 +1,8 @@
-import TracingModel, { Phase } from './index'
+import TracingModel from './index'
 import Thread from './thread'
 import InvalidationTracker from '../timelineModel/invalidationTracker'
 import InvalidationTrackingEvent from '../timelineModel/invalidationTrackingEvent'
-import { TraceEvent, TracelogArgs, EventData } from '../types'
+import { TraceEvent, EventData } from '../types'
 
 export default class Event {
     private _parsedCategories: Set<string>

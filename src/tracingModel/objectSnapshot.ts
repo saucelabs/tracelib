@@ -19,11 +19,11 @@ export default class ObjectSnapshot extends Event {
     public constructor(category?: string, name?: string, startTime?: number, thread?: Thread) {
         super(category, name, Phase.SnapshotObject, startTime, thread)
         /** @type {?function():!Promise<?string>} */
-        this._backingStorage = null;
+        this._backingStorage = null
         /** @type {string} */
-        this.id;
+        this.id
         /** @type {?Promise<?>} */
-        this._objectPromise = null;
+        this._objectPromise = null
     }
 
     /**
@@ -49,52 +49,52 @@ export default class ObjectSnapshot extends Event {
         return snapshot
     }
 
-  /**
+    /**
    * @param {function(?)} callback
    */
-  // todo fix callback type
-  public requestObject?(callback: any): void {
-    const snapshot = this.args['snapshot'];
-    if (snapshot) {
-      callback(snapshot);
-      return;
-    }
-    this._backingStorage().then(onRead, callback.bind(null, null));
-    /**
+    // todo fix callback type
+    public requestObject?(callback: any): void {
+        const snapshot = this.args['snapshot']
+        if (snapshot) {
+            callback(snapshot)
+            return
+        }
+        this._backingStorage().then(onRead, callback.bind(null, null))
+        /**
      * @param {?string} result
      */
-    function onRead(result: string): void {
-      if (!result) {
-        callback(null);
-        return;
-      }
-      try {
-        const payload = JSON.parse(result);
-        callback(payload['args']['snapshot']);
-      } catch (e) {
-        console.error('Malformed event data in backing storage');
-        callback(null);
-      }
+        function onRead(result: string): void {
+            if (!result) {
+                callback(null)
+                return
+            }
+            try {
+                const payload = JSON.parse(result)
+                callback(payload['args']['snapshot'])
+            } catch (e) {
+                console.error('Malformed event data in backing storage')
+                callback(null)
+            }
+        }
     }
-  }
 
-  /**
+    /**
    * @return {!Promise<?>}
    */
-  public objectPromise?(): Promise<any> {
-    if (!this._objectPromise)
-      this._objectPromise = new Promise(this.requestObject.bind(this));
-    return this._objectPromise;
-  }
+    public objectPromise?(): Promise<any> {
+        if (!this._objectPromise)
+            this._objectPromise = new Promise(this.requestObject.bind(this))
+        return this._objectPromise
+    }
 
-  /**
+    /**
    * @override
    * @param {?function():!Promise.<?>} backingStorage
    */
-  private _setBackingStorage?(backingStorage: backingStorageFunc): void {
-    if (!backingStorage)
-      return;
-    this._backingStorage = backingStorage;
-    this.args = {};
-  }
+    private _setBackingStorage?(backingStorage: backingStorageFunc): void {
+        if (!backingStorage)
+            return
+        this._backingStorage = backingStorage
+        this.args = {}
+    }
 }
