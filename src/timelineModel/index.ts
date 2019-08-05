@@ -1,6 +1,6 @@
 import PageFrame from './pageFrame'
 import Track, { TrackType } from './track'
-import TimelineData from './TimelineData'
+import TimelineData from './timelineData'
 import NetworkRequest from './networkRequest'
 import InvalidationTracker from './invalidationTracker'
 import InvalidationTrackingEvent from './invalidationTrackingEvent'
@@ -10,7 +10,7 @@ import TimelineJSProfileProcessor from './timelineJSProfileProcessor'
 import TracingModel, { Phase, DevToolsMetadataEventCategory } from '../tracingModel'
 import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import Event from '../tracingModel/event'
-import AsyncEvent from '../tracingModel/AsyncEvent'
+import AsyncEvent from '../tracingModel/asyncEvent'
 import Thread from '../tracingModel/thread'
 
 import {

@@ -7,7 +7,7 @@ import PendingFrame from './timelineFrame/pendingFrame'
 import Thread from '../tracingModel/thread'
 import TracingModel, { Phase } from '../tracingModel'
 import LayerPaintEvent from './timelineFrame/layerPaintEvent'
-import TimelineData from './TimelineData'
+import TimelineData from './timelineData'
 
 type categoryMapperFunc = (any: Event) => string
 
