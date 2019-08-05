@@ -7,11 +7,12 @@ export default class Tracelib {
 
     public constructor (tracelog: object, range?: Range) {
         this.tracelog = tracelog
+        this._timelineLoader = new TimelineLoader(this.tracelog)
     }
 
     public getFPS(): number[] {
-        this._timelineLoader = new TimelineLoader(this.tracelog)
         this._timelineLoader.init()
-        return this._timelineLoader.performanceModel.frames().map(( frame ) => (1000 / frame.duration))
+        return this._timelineLoader.performanceModel.frames()
+            .map(( frame ) => (1000 / frame.duration))
     }
 }
