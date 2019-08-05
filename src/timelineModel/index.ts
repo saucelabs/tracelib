@@ -1,6 +1,6 @@
 import PageFrame from './pageFrame'
 import Track, { TrackType } from './track'
-import TimelineData from './TimelineData'
+import TimelineData from './timelineData'
 import NetworkRequest from './networkRequest'
 import InvalidationTracker from './invalidationTracker'
 import InvalidationTrackingEvent from './invalidationTrackingEvent'
@@ -10,7 +10,7 @@ import TimelineJSProfileProcessor from './timelineJSProfileProcessor'
 import TracingModel, { Phase, DevToolsMetadataEventCategory } from '../tracingModel'
 import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import Event from '../tracingModel/event'
-import AsyncEvent from '../tracingModel/AsyncEvent'
+import AsyncEvent from '../tracingModel/asyncEvent'
 import Thread from '../tracingModel/thread'
 
 import {
@@ -511,7 +511,8 @@ export default class TimelineModel {
                 }
 
                 const frames = (event.args.data && event.args.data.frames) || []
-                frames.forEach((payload: PageFramePayload): boolean =>
+                // todo fix type
+                frames.forEach((payload: any): boolean =>
                     this._addPageFrame(event, payload)
                 )
                 this._mainFrame = this.rootFrames()[0]
@@ -1092,6 +1093,9 @@ export default class TimelineModel {
 
         case recordTypes.Layout: {
             this._invalidationTracker.didLayout(event)
+            if (!event.args.beginData) {
+                return
+            }
             const frameId = event.args['beginData']['frame']
             timelineData.setInitiator(this._layoutInvalidate[frameId])
             // In case we have no closing Layout event, endData is not available.
@@ -1323,7 +1327,7 @@ export default class TimelineModel {
                 this._browserFrameTracking = true
                 this._mainFrameNodeId = data['frameTreeNodeId']
                 const frames = data['frames'] || []
-                frames.forEach((payload: EventData): void => {
+                frames.forEach((payload: any): void => {
                     // TODO(Christian) fix typings
                     const parent = (
                         (payload as any).parent &&
@@ -1432,7 +1436,7 @@ export default class TimelineModel {
      * @param {!Object} payload
      * @return {boolean}
      */
-    private _addPageFrame(event: Event, payload: PageFramePayload): boolean {
+    private _addPageFrame(event: Event, payload: EventData): boolean {
         const parent =
             payload['parent'] && this._pageFrames.get(payload['parent'])
         if (payload['parent'] && !parent) return false

@@ -189,3 +189,12 @@ export function mergeOrIntersect<T> (
     }
     return result
 }
+
+/**
+ * @param {!number} frameDuration
+ * @return {!number}
+ */
+
+export function calcFPS(frameDuration: number): number {
+    return 1000 / frameDuration
+}

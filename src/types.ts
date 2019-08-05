@@ -2,6 +2,8 @@ import InvalidationTrackingEvent from './timelineModel/invalidationTrackingEvent
 import PageFrame, { PageFrameProcess } from './timelineModel/pageFrame'
 import ProfileNode from './profileTreeModel/profileNode'
 import Event from './tracingModel/event'
+import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
+import Thread from './tracingModel/thread'
 
 export interface TracelogArgs {
     name?: string;
@@ -40,7 +42,7 @@ export interface EventData {
     invalidationSet?: number;
     invalidatedSelectorId?: string;
     layerId?: string;
-    layerTreeId?: string;
+    layerTreeId?: number;
     changedId?: string;
     workerThreadId?: number;
     processId?: number;
@@ -76,6 +78,10 @@ export interface EventData {
     // eslint-disable-next-line
     sort_index?: number;
     snapshot?: string;
+    sourceFrameNumber?: number;
+    needsBeginFrame?: any; // todo fix type here
+    frameId?: number | undefined;
+    parent?: string;
 }
 
 export interface Profile {
@@ -336,6 +342,10 @@ export interface LayoutInvalidationMap {
     [key: string]: Event
 }
 
+export interface TimeByCategory {
+    [key: string]: number
+}
+
 export interface BrowserFrames {
     from: number
     to: number
@@ -349,4 +359,21 @@ export interface Summary {
     painting: number
     system: number
     idle: number
+}
+
+export interface FPS {
+    fps: number
+}
+
+export interface PicturePromise {
+    rect: number[],
+    serializedPicture: string
+}
+
+export interface FrameById {
+    [key: number]: TimelineFrame
+}
+export interface ThreadData {
+    thread: Thread,
+    time: number
 }

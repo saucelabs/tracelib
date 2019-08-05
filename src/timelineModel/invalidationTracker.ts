@@ -1,5 +1,5 @@
 import Event from '../tracingModel/event'
-import InvalidationTrackingEvent from './InvalidationTrackingEvent'
+import InvalidationTrackingEvent from './invalidationTrackingEvent'
 import { InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTracker {
@@ -211,6 +211,9 @@ export default class InvalidationTracker {
     * @param {!SDK.TracingModel.Event} layoutEvent
     */
     public didLayout (layoutEvent: Event): void {
+        if (!layoutEvent.args.beginData) {
+            return
+        }
         const layoutFrameId = layoutEvent.args.beginData.frame
         for (const invalidation of this._invalidationsOfTypes([RecordType.LayoutInvalidationTracking])) {
             if (invalidation.linkedLayoutEvent) {
