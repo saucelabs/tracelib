@@ -1,5 +1,6 @@
 import { Range, Summary } from './types'
 import TimelineLoader from './loader'
+import { calcFPS } from './utils'
 
 export default class Tracelib {
     public tracelog: object
@@ -13,6 +14,6 @@ export default class Tracelib {
     public getFPS(): number[] {
         this._timelineLoader.init()
         return this._timelineLoader.performanceModel.frames()
-            .map(( frame ): number => (1000 / frame.duration))
+            .map(( { duration } ): number => calcFPS(duration))
     }
 }
