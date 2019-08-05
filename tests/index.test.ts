@@ -25,6 +25,5 @@ test('should get FPS', () => {
         10.897876006628481,
         10.839990888916617
     ]
-    expect(fps.length).toEqual(14)
     expect(fps).toEqual(expected)
 })
