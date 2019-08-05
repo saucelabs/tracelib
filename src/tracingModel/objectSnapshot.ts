@@ -3,10 +3,7 @@ import Thread from './thread'
 import TracingModel, { Phase } from './'
 import { TraceEvent } from '../types'
 
-type backingStorageFunc = () => Promise<string>
-
 export default class ObjectSnapshot extends Event {
-    private _backingStorage?: backingStorageFunc
     public id?: string
     private _objectPromise?: Promise<any>
 
@@ -19,7 +16,6 @@ export default class ObjectSnapshot extends Event {
     public constructor(category?: string, name?: string, startTime?: number, thread?: Thread) {
         super(category, name, Phase.SnapshotObject, startTime, thread)
         /** @type {?function():!Promise<?string>} */
-        this._backingStorage = null
         /** @type {string} */
         this.id
         /** @type {?Promise<?>} */
@@ -31,7 +27,7 @@ export default class ObjectSnapshot extends Event {
      * @param {!SDK.TracingModel.Thread} thread
      * @return {!SDK.TracingModel.ObjectSnapshot}
      */
-    public static fromPayload (payload: TraceEvent, thread: Thread): ObjectSnapshot {
+    public static fromPayload(payload: TraceEvent, thread: Thread): ObjectSnapshot {
         const snapshot = new ObjectSnapshot(payload.cat, payload.name, payload.ts / 1000, thread)
         const id = TracingModel.extractId(payload)
         if (typeof id !== 'undefined') {
@@ -50,8 +46,8 @@ export default class ObjectSnapshot extends Event {
     }
 
     /**
-   * @param {function(?)} callback
-   */
+     * @param {function(?)} callback
+     */
     // todo fix callback type
     public requestObject?(callback: any): void {
         const snapshot = this.args['snapshot']
@@ -59,10 +55,9 @@ export default class ObjectSnapshot extends Event {
             callback(snapshot)
             return
         }
-        this._backingStorage().then(onRead, callback.bind(null, null))
         /**
-     * @param {?string} result
-     */
+         * @param {?string} result
+         */
         function onRead(result: string): void {
             if (!result) {
                 callback(null)
@@ -79,22 +74,10 @@ export default class ObjectSnapshot extends Event {
     }
 
     /**
-   * @return {!Promise<?>}
-   */
+     * @return {!Promise<?>}
+     */
     public objectPromise?(): Promise<any> {
-        if (!this._objectPromise)
-            this._objectPromise = new Promise(this.requestObject.bind(this))
+        if (!this._objectPromise) this._objectPromise = new Promise(this.requestObject.bind(this))
         return this._objectPromise
-    }
-
-    /**
-   * @override
-   * @param {?function():!Promise.<?>} backingStorage
-   */
-    private _setBackingStorage?(backingStorage: backingStorageFunc): void {
-        if (!backingStorage)
-            return
-        this._backingStorage = backingStorage
-        this.args = {}
     }
 }
