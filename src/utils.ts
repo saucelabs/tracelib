@@ -1,3 +1,7 @@
+import Event from './tracingModel/event'
+import { statsObject } from './types'
+import TimelineModel from './timelineModel'
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
@@ -16,7 +20,7 @@
  * @this {Array.<!S>}
  * @template T,S
  */
-export function upperBound<T extends number, S extends number> (
+export function upperBound<T extends number, S extends number>(
     self: any[],
     object: T,
     comparator?: (object: any, arg1: any) => number,
@@ -24,17 +28,15 @@ export function upperBound<T extends number, S extends number> (
     right?: number
 ): any {
     function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
-        return a < b ? -1 : (a > b ? 1 : 0)
+        return a < b ? -1 : a > b ? 1 : 0
     }
     comparator = comparator || defaultComparator
     let l = left || 0
     let r = right !== undefined ? right : self.length
     while (l < r) {
         const m = (l + r) >> 1
-        if (comparator(object, self[m]) >= 0)
-            l = m + 1
-        else
-            r = m
+        if (comparator(object, self[m]) >= 0) l = m + 1
+        else r = m
     }
     return r
 }
@@ -55,7 +57,7 @@ export function upperBound<T extends number, S extends number> (
  * @this {Array.<!S>}
  * @template T,S
  */
-export function lowerBound<T extends number, S extends number> (
+export function lowerBound<T extends number, S extends number>(
     self: any[],
     object: T,
     comparator?: (object: any, arg1: any) => number,
@@ -63,7 +65,7 @@ export function lowerBound<T extends number, S extends number> (
     right?: number
 ): any {
     function defaultComparator<T extends number, S extends number>(a: T, b: S): number {
-        return a < b ? -1 : (a > b ? 1 : 0)
+        return a < b ? -1 : a > b ? 1 : 0
     }
     comparator = comparator || defaultComparator
     let l = left || 0
@@ -85,15 +87,12 @@ export function lowerBound<T extends number, S extends number> (
  * @this {Array.<?T>}
  * @template T
  */
-export function stableSort<L extends number, R extends number> (
+export function stableSort<L extends number, R extends number>(
     that: any[],
     comparator: (r: any, l: any) => number
 ): any {
-    function defaultComparator<L extends number, R extends number>(
-        a: L,
-        b: R
-    ): number {
-        return a < b ? -1 : (a > b ? 1 : 0)
+    function defaultComparator<L extends number, R extends number>(a: L, b: R): number {
+        return a < b ? -1 : a > b ? 1 : 0
     }
     comparator = comparator || defaultComparator
 
@@ -139,7 +138,7 @@ export function stableSort<L extends number, R extends number> (
     return that
 }
 
-export function pushAll<T> (self: T[], newData: T[]): T[] {
+export function pushAll<T>(self: T[], newData: T[]): T[] {
     for (let i = 0; i < newData.length; ++i) {
         self.push(newData[i])
     }
@@ -154,7 +153,7 @@ export function pushAll<T> (self: T[], newData: T[]): T[] {
  * @return {!Array.<T>}
  * @template T
  */
-export function mergeOrIntersect<T> (
+export function mergeOrIntersect<T>(
     array1: T[],
     array2: T[],
     comparator: (val1: T, val2: T) => number,
@@ -194,7 +193,39 @@ export function mergeOrIntersect<T> (
  * @param {!number} frameDuration
  * @return {!number}
  */
-
 export function calcFPS(frameDuration: number): number {
     return 1000 / frameDuration
+}
+
+/**
+ * @param {!T} value
+ * @param {function(!T,!S):number} comparator
+ * @return {number}
+ * @this {Array.<!S>}
+ * @template T,S
+ */
+export function binaryIndexOf<T>(array1: T[], value: number, comparator: (startTime: any, e: any) => number): number {
+    const index = lowerBound(array1, value, comparator)
+    return index < array1.length && comparator(value, array1[index]) === 0 ? index : -1
+}
+
+/**
+ * @param {!T} value
+ * @param {boolean=} firstOnly
+ * @return {boolean}
+ * @this {Array.<!T>}
+ * @template T
+ */
+export function remove<T>(array1: T[], value: any, firstOnly: boolean): boolean {
+    let index = array1.indexOf(value)
+    if (index === -1) return false
+    if (firstOnly) {
+        array1.splice(index, 1)
+        return true
+    }
+    for (let i = index + 1, n = array1.length; i < n; ++i) {
+        if (array1[i] !== value) array1[index++] = array1[i]
+    }
+    array1.length = index
+    return true
 }
