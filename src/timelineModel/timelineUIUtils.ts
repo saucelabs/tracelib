@@ -181,7 +181,9 @@ export default class TimelineUIUtils {
         const title = this.eventStyle(traceEvent).title
         const tokens: any[] = [title]
         const url = TimelineData.forEvent(traceEvent).url
-        if (url) tokens.push(url)
+        if (url) {
+            tokens.push(url)
+        }
         appendObjectProperties(traceEvent.args, 2)
         return regExp.test(tokens.join('|'))
 
@@ -196,9 +198,15 @@ export default class TimelineUIUtils {
             for (const key in object) {
                 const value = object[key]
                 const type = typeof value
-                if (type === 'string') tokens.push(value)
-                else if (type === 'number') tokens.push(String(value))
-                else if (type === 'object') appendObjectProperties(value, depth - 1)
+                if (type === 'string') {
+                    tokens.push(value)
+                }
+                else if (type === 'number') {
+                    tokens.push(String(value))
+                }
+                else if (type === 'object') {
+                    appendObjectProperties(value, depth - 1)
+                }
             }
         }
     }
@@ -254,14 +262,22 @@ export default class TimelineUIUtils {
     public eventTitle(event: Event): string {
         const recordType = RecordType
         const eventData: any = event.args['data']
-        if (event.name === recordType.JSFrame) return TimelineUIUtils.frameDisplayName(eventData)
+        if (event.name === recordType.JSFrame) {
+            return TimelineUIUtils.frameDisplayName(eventData)
+        }
         const title = this.eventStyle(event).title
-        if (event.hasCategory(Category.Console)) return title
-        if (event.name === recordType.TimeStamp) return `${title}: ${eventData['message']}`
-        if (event.name === recordType.Animation && eventData && eventData['name'])
+        if (event.hasCategory(Category.Console)) {
+            return title
+        }
+        if (event.name === recordType.TimeStamp) {
+            return `${title}: ${eventData['message']}`
+        }
+        if (event.name === recordType.Animation && eventData && eventData['name']) {
             return `${title}: ${eventData['name']}`
-        if (event.name === recordType.EventDispatch && eventData && eventData['type'])
+        }
+        if (event.name === recordType.EventDispatch && eventData && eventData['type']) {
             return `${title}: ${eventData['type']}`
+        }
         return title
     }
 
@@ -450,11 +466,15 @@ export default class TimelineUIUtils {
          */
         function linkifyTopCallFrameAsText(): string {
             const frame = TimelineData.forEvent(event).topFrame()
-            if (!frame) return null
+            if (!frame) {
+                return null
+            }
             let text = linkifyLocationAsText(frame.scriptId, frame.lineNumber, frame.columnNumber)
             if (!text) {
                 text = frame.url
-                if (typeof frame.lineNumber === 'number') text += ':' + (frame.lineNumber + 1)
+                if (typeof frame.lineNumber === 'number') {
+                    text += ':' + (frame.lineNumber + 1)
+                }
             }
             return text
         }
@@ -469,7 +489,9 @@ export default class TimelineUIUtils {
     public statsForTimeRange(events: Event[], startTime: number, endTime: number): statsObject {
         const eventStyle = this.eventStyle.bind(this)
         const visibleEventsFilterFunc = this.visibleEventsFilter.bind(this)
-        if (!events.length) return { idle: endTime - startTime }
+        if (!events.length) {
+            return { idle: endTime - startTime }
+        }
 
         buildRangeStatsCacheIfNeeded(events);
         const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime))
@@ -625,16 +647,26 @@ export default class TimelineUIUtils {
         }
         const index = binaryIndexOf(events, event.startTime, eventComparator)
         // Not a main thread event?
-        if (index < 0) return false
+        if (index < 0) {
+            return false
+        }
         let hasChildren = false
         const endTime = event.endTime
         if (endTime) {
             for (let i = index; i < events.length; i++) {
                 const nextEvent = events[i]
-                if (nextEvent.startTime >= endTime) break
-                if (!nextEvent.selfTime) continue
-                if (nextEvent.thread !== event.thread) continue
-                if (i > index) hasChildren = true
+                if (nextEvent.startTime >= endTime) {
+                    break
+                }
+                if (!nextEvent.selfTime) {
+                    continue
+                }
+                if (nextEvent.thread !== event.thread) {
+                    continue
+                }
+                if (i > index) {
+                    hasChildren = true
+                }
                 const categoryName = this.eventStyle(nextEvent).category.name
                 total[categoryName] = (total[categoryName] || 0) + nextEvent.selfTime
             }
@@ -642,7 +674,9 @@ export default class TimelineUIUtils {
         if (TracingModel.isAsyncPhase(event.phase)) {
             if (event.endTime) {
                 let aggregatedTotal = 0
-                for (const categoryName in total) aggregatedTotal += total[categoryName]
+                for (const categoryName in total) {
+                    aggregatedTotal += total[categoryName]
+                }
                 total['idle'] = Math.max(0, event.endTime - event.startTime - aggregatedTotal)
             }
             return false
@@ -657,7 +691,9 @@ export default class TimelineUIUtils {
         const eventStyles = this._initEventStyles()
         const result = []
         for (const name in eventStyles) {
-            if (!eventStyles[name].hidden) result.push(name)
+            if (!eventStyles[name].hidden) {
+                result.push(name)
+            }
         }
         return result
     }
@@ -673,7 +709,9 @@ export default class TimelineUIUtils {
      * @return {!Object.<string, !Timeline.TimelineCategory>}
      */
     public categories(): timelineCategoryObject {
-        if (this._categories) return this._categories
+        if (this._categories) {
+            return this._categories
+        }
         this._categories = {
             loading: new TimelineCategory('loading', `Loading`, true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
             scripting: new TimelineCategory(

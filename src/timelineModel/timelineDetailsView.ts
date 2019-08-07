@@ -14,7 +14,7 @@ export default class TimelineDetailsView {
      * @param {number} startTime
      * @param {number} endTime
      */
-    public getTimeDuration(startTime: number, endTime: number): any {
+    public getSummary(startTime: number, endTime: number): any {
         if (!this._track) {
             return
         }

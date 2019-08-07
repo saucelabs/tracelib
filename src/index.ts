@@ -19,10 +19,16 @@ export default class Tracelib {
             .map(( { duration } ): number => calcFPS(duration))
     }
 
-    public getTimeDuration(): statsObject {
+    public getSummary(from?: number, to?: number): statsObject {
         this._timelineLoader.init()
         const performanceModel = this._timelineLoader.performanceModel
         this._timelineDetailsView = new TimelineDetailsView(performanceModel.findMainTrack())
-        return this._timelineDetailsView.getTimeDuration(performanceModel.startTime, performanceModel.endTime)
+        const startTime = from || performanceModel.startTime
+        const endTime = to || performanceModel.endTime
+        return {
+            ...this._timelineDetailsView.getSummary(startTime, endTime),
+            startTime,
+            endTime,
+        }
     }
 }
