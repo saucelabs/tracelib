@@ -449,32 +449,32 @@ export default class TracingModel {
         let openEventsStack = this._openNestableAsyncEvents.get(key)
 
         switch (event.phase) {
-            case phase.NestableAsyncBegin:
-                if (!openEventsStack) {
-                    openEventsStack = []
-                    this._openNestableAsyncEvents.set(key, openEventsStack)
-                }
-                const asyncEvent = new AsyncEvent(event)
-                openEventsStack.push(asyncEvent)
-                event.thread.addAsyncEvent(asyncEvent)
-                break
+        case phase.NestableAsyncBegin:
+            if (!openEventsStack) {
+                openEventsStack = []
+                this._openNestableAsyncEvents.set(key, openEventsStack)
+            }
+            const asyncEvent = new AsyncEvent(event)
+            openEventsStack.push(asyncEvent)
+            event.thread.addAsyncEvent(asyncEvent)
+            break
 
-            case phase.NestableAsyncInstant:
-                if (openEventsStack && openEventsStack.length) {
-                    openEventsStack[openEventsStack.length - 1].addStep(event)
-                }
-                break
+        case phase.NestableAsyncInstant:
+            if (openEventsStack && openEventsStack.length) {
+                openEventsStack[openEventsStack.length - 1].addStep(event)
+            }
+            break
 
-            case phase.NestableAsyncEnd:
-                if (!openEventsStack || !openEventsStack.length) {
-                    break
-                }
-                const top = openEventsStack.pop()
-                if (top.name !== event.name) {
-                    console.error(`Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`)
-                    break
-                }
-                top.addStep(event)
+        case phase.NestableAsyncEnd:
+            if (!openEventsStack || !openEventsStack.length) {
+                break
+            }
+            const top = openEventsStack.pop()
+            if (top.name !== event.name) {
+                console.error(`Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`)
+                break
+            }
+            top.addStep(event)
         }
     }
 
