@@ -5,7 +5,7 @@ import AsyncEvent from './asyncEvent'
 import TracingEvent from './event'
 import ProfileEventsGroup from './profileEventsGroup'
 import { TraceEvent } from '../types'
-import { stableSort } from '../utils';
+import { stableSort } from '../utils'
 
 export enum Phase {
     Begin = 'B',
@@ -201,10 +201,10 @@ export default class TracingModel {
     }
 
     public tracingComplete(): void {
-        this._processPendingAsyncEvents();
+        this._processPendingAsyncEvents()
         for (const process of this._processById.values()) {
-        for (const thread of process.threads.values())
-            thread.tracingComplete();
+            for (const thread of process.threads.values())
+                thread.tracingComplete()
         }
     }
 
@@ -370,16 +370,16 @@ export default class TracingModel {
     }
 
     private _processPendingAsyncEvents(): void {
-        stableSort(this._asyncEvents, Event.compareStartTime);
+        stableSort(this._asyncEvents, Event.compareStartTime)
         for (let i = 0; i < this._asyncEvents.length; ++i) {
-            const event = this._asyncEvents[i];
+            const event = this._asyncEvents[i]
             if (TracingModel.isNestableAsyncPhase(event.phase))
-                this._addNestableAsyncEvent(event);
+                this._addNestableAsyncEvent(event)
             else
-                this._addAsyncEvent(event);
+                this._addAsyncEvent(event)
         }
-        this._asyncEvents = [];
-        this._closeOpenAsyncEvents();
+        this._asyncEvents = []
+        this._closeOpenAsyncEvents()
     }
 
     private _closeOpenAsyncEvents (): void {
@@ -397,48 +397,46 @@ export default class TracingModel {
         this._openNestableAsyncEvents.clear()
     }
 
-
-  /**
+    /**
    * @param {!SDK.TracingModel.Event} event
    */
-  private _addAsyncEvent(event: Event): void {
-    const phase = Phase;
-    const key = event.categoriesString + '.' + event.name + '.' + event.id;
-    let asyncEvent = this._openAsyncEvents.get(key);
+    private _addAsyncEvent(event: Event): void {
+        const phase = Phase
+        const key = event.categoriesString + '.' + event.name + '.' + event.id
+        let asyncEvent = this._openAsyncEvents.get(key)
 
-    if (event.phase === phase.AsyncBegin) {
-      if (asyncEvent) {
-        console.error(`Event ${event.name} has already been started`);
-        return;
-      }
-      asyncEvent = new AsyncEvent(event);
-      this._openAsyncEvents.set(key, asyncEvent);
-      event.thread.addAsyncEvent(asyncEvent);
-      return;
+        if (event.phase === phase.AsyncBegin) {
+            if (asyncEvent) {
+                console.error(`Event ${event.name} has already been started`)
+                return
+            }
+            asyncEvent = new AsyncEvent(event)
+            this._openAsyncEvents.set(key, asyncEvent)
+            event.thread.addAsyncEvent(asyncEvent)
+            return
+        }
+        if (!asyncEvent) {
+            // Quietly ignore stray async events, we're probably too late for the start.
+            return
+        }
+        if (event.phase === phase.AsyncEnd) {
+            asyncEvent.addStep(event)
+            this._openAsyncEvents.delete(key)
+            return
+        }
+        if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
+            const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1]
+            if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
+                console.assert(
+                    false, 'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' +
+                event.phase + ' at ' + event.startTime)
+                return
+            }
+            asyncEvent.addStep(event)
+            return
+        }
+        console.assert(false, 'Invalid async event phase')
     }
-    if (!asyncEvent) {
-      // Quietly ignore stray async events, we're probably too late for the start.
-      return;
-    }
-    if (event.phase === phase.AsyncEnd) {
-      asyncEvent.addStep(event);
-      this._openAsyncEvents.delete(key);
-      return;
-    }
-    if (event.phase === phase.AsyncStepInto || event.phase === phase.AsyncStepPast) {
-      const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1];
-      if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
-        console.assert(
-            false, 'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' +
-                event.phase + ' at ' + event.startTime);
-        return;
-      }
-      asyncEvent.addStep(event);
-      return;
-    }
-    console.assert(false, 'Invalid async event phase');
-  }
-
 
     /**
      * @param {!Event} event

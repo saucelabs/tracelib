@@ -4,7 +4,7 @@ import TimelineFrameModel from './timelineFrameModel'
 import Track, { TrackType } from './track'
 import TimelineFrame from './timelineFrame/timelineFrame'
 import { ThreadData } from '../types'
-import Event from '../tracingModel/event';
+import Event from '../tracingModel/event'
 
 interface ExtensionTracingModel {
     title: string
@@ -81,7 +81,7 @@ export default class PerformanceModel {
                 this._tracingModel.minimumRecordTime() + entry.timeOffset / 1000 - this._recordStartTime
             )
         }
-        this._autoWindowTimes();
+        this._autoWindowTimes()
     }
 
     public findMainTrack(): Track {
@@ -136,58 +136,58 @@ export default class PerformanceModel {
     }
 
     private _autoWindowTimes(): void {
-        const timelineModel = this._timelineModel;
-        let tasks: Event[] = [];
+        const timelineModel = this._timelineModel
+        let tasks: Event[] = []
         for (const track of timelineModel.tracks()) {
-          // Deliberately pick up last main frame's track.
-          if (track.type === TrackType.MainThread && track.forMainFrame)
-            tasks = track.tasks;
+            // Deliberately pick up last main frame's track.
+            if (track.type === TrackType.MainThread && track.forMainFrame)
+                tasks = track.tasks
         }
         if (!tasks.length) {
-          this.setWindow({left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime()});
-          return;
+            this.setWindow({ left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime() })
+            return
         }
-    
+
         /**
          * @param {number} startIndex
          * @param {number} stopIndex
          * @return {number}
          */
         function findLowUtilizationRegion(startIndex: number, stopIndex: number): number {
-          const /** @const */ threshold = 0.1;
-          let cutIndex = startIndex;
-          let cutTime = (tasks[cutIndex].startTime + tasks[cutIndex].endTime) / 2;
-          let usedTime = 0;
-          const step = Math.sign(stopIndex - startIndex);
-          for (let i = startIndex; i !== stopIndex; i += step) {
-            const task = tasks[i];
-            const taskTime = (task.startTime + task.endTime) / 2;
-            const interval = Math.abs(cutTime - taskTime);
-            if (usedTime < threshold * interval) {
-              cutIndex = i;
-              cutTime = taskTime;
-              usedTime = 0;
+            const /** @const */ threshold = 0.1
+            let cutIndex = startIndex
+            let cutTime = (tasks[cutIndex].startTime + tasks[cutIndex].endTime) / 2
+            let usedTime = 0
+            const step = Math.sign(stopIndex - startIndex)
+            for (let i = startIndex; i !== stopIndex; i += step) {
+                const task = tasks[i]
+                const taskTime = (task.startTime + task.endTime) / 2
+                const interval = Math.abs(cutTime - taskTime)
+                if (usedTime < threshold * interval) {
+                    cutIndex = i
+                    cutTime = taskTime
+                    usedTime = 0
+                }
+                usedTime += task.duration
             }
-            usedTime += task.duration;
-          }
-          return cutIndex;
+            return cutIndex
         }
 
-        const rightIndex = findLowUtilizationRegion(tasks.length - 1, 0);
-        const leftIndex = findLowUtilizationRegion(0, rightIndex);
-        let leftTime = tasks[leftIndex].startTime;
-        let rightTime = tasks[rightIndex].endTime;
-        const span = rightTime - leftTime;
-        const totalSpan = timelineModel.maximumRecordTime() - timelineModel.minimumRecordTime();
+        const rightIndex = findLowUtilizationRegion(tasks.length - 1, 0)
+        const leftIndex = findLowUtilizationRegion(0, rightIndex)
+        let leftTime = tasks[leftIndex].startTime
+        let rightTime = tasks[rightIndex].endTime
+        const span = rightTime - leftTime
+        const totalSpan = timelineModel.maximumRecordTime() - timelineModel.minimumRecordTime()
 
         if (span < totalSpan * 0.1) {
-          leftTime = timelineModel.minimumRecordTime();
-          rightTime = timelineModel.maximumRecordTime();
+            leftTime = timelineModel.minimumRecordTime()
+            rightTime = timelineModel.maximumRecordTime()
         } else {
-          leftTime = Math.max(leftTime - 0.05 * span, timelineModel.minimumRecordTime());
-          rightTime = Math.min(rightTime + 0.05 * span, timelineModel.maximumRecordTime());
+            leftTime = Math.max(leftTime - 0.05 * span, timelineModel.minimumRecordTime())
+            rightTime = Math.min(rightTime + 0.05 * span, timelineModel.maximumRecordTime())
         }
 
-        this.setWindow({left: leftTime, right: rightTime});
-      }
+        this.setWindow({ left: leftTime, right: rightTime })
+    }
 }

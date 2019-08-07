@@ -5,7 +5,7 @@ export default class TimelineModelFilter {
      * @param {!SDK.TracingModel.Event} event
      * @return {boolean}
      */
-    accept(event: Event): boolean {
+    public accept(event: Event): boolean {
         return true
     }
 }

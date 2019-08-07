@@ -1,7 +1,3 @@
-import Event from './tracingModel/event'
-import { statsObject } from './types'
-import TimelineModel from './timelineModel'
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**

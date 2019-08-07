@@ -5,7 +5,7 @@ import Event from './tracingModel/event'
 import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
 import Thread from './tracingModel/thread'
 import TimelineRecordStyle from './timelineModel/timelineModelFilter/timelineRecordStyle'
-import TimelineCategory from './timelineModel/timelineModelFilter/timelineCategory';
+import TimelineCategory from './timelineModel/timelineModelFilter/timelineCategory'
 
 export interface TracelogArgs {
     name?: string;
@@ -388,15 +388,15 @@ export enum TimelineSelectionType {
     Range
 };
 
-export interface statsObject {
+export interface StatsObject {
     [key: string]: number
 }
 
-export interface timelineRecordObject {
+export interface TimelineRecordObject {
     [key: string]: TimelineRecordStyle
 }
 
-export interface timelineCategoryObject {
+export interface TimelineCategoryObject {
     [key: string]: TimelineCategory
 }
 
@@ -408,7 +408,7 @@ export enum NetworkCategory {
     Other
 };
 
-export interface statsArray {
+export interface StatsArray {
     [key: string]: {
         time: number[],
         value: number[]

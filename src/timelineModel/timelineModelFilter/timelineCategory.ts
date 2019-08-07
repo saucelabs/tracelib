@@ -25,14 +25,14 @@ export default class TimelineCategory {
     /**
      * @return {boolean}
      */
-    get hidden(): boolean {
+    public get hidden(): boolean {
         return this._hidden
     }
 
     /**
      * @param {boolean} hidden
      */
-    set hidden(hidden) {
+    public set hidden(hidden) {
         this._hidden = hidden
     }
 }

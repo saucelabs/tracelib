@@ -1,7 +1,7 @@
-import { Range, statsObject } from './types'
+import { Range, StatsObject } from './types'
 import TimelineLoader from './loader'
 import { calcFPS } from './utils'
-import TimelineDetailsView from './timelineModel/timelineDetailsView';
+import TimelineDetailsView from './timelineModel/timelineDetailsView'
 
 export default class Tracelib {
     public tracelog: object
@@ -19,7 +19,7 @@ export default class Tracelib {
             .map(( { duration } ): number => calcFPS(duration))
     }
 
-    public getSummary(from?: number, to?: number): statsObject {
+    public getSummary(from?: number, to?: number): StatsObject {
         this._timelineLoader.init()
         const performanceModel = this._timelineLoader.performanceModel
         this._timelineDetailsView = new TimelineDetailsView(performanceModel.findMainTrack())

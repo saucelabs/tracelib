@@ -632,70 +632,70 @@ export default class TimelineModel {
         this._legacyCurrentPage = null
     }
 
-/**
+    /**
    * @param {!SDK.TracingModel} tracingModel
    * @param {!SDK.TracingModel.Thread} thread
    * @return {?SDK.CPUProfileDataModel}
    */
-  private _extractCpuProfile(tracingModel: TracingModel, thread: Thread): CPUProfileDataModel {
-    const events = thread.events();
-    let cpuProfile;
+    private _extractCpuProfile(tracingModel: TracingModel, thread: Thread): CPUProfileDataModel {
+        const events = thread.events()
+        let cpuProfile
 
-    // Check for legacy CpuProfile event format first.
-    let cpuProfileEvent = events[events.length - 1];
-    if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
-      const eventData = cpuProfileEvent.args['data'];
-      cpuProfile = /** @type {?Protocol.Profiler.Profile} */ (eventData && eventData['cpuProfile']);
-    }
-
-    if (!cpuProfile) {
-      cpuProfileEvent = events.find(e => e.name === RecordType.Profile);
-      if (!cpuProfileEvent)
-        return null;
-      const profileGroup = tracingModel.profileGroup(cpuProfileEvent);
-      if (!profileGroup) {
-        console.error('Invalid CPU profile format.');
-        return null;
-      }
-      cpuProfile = /** @type {!Protocol.Profiler.Profile} */ ({
-        startTime: cpuProfileEvent.args['data']['startTime'],
-        endTime: 0,
-        nodes: [],
-        samples: [],
-        timeDeltas: [],
-        lines: []
-      });
-      for (const profileEvent of profileGroup.children) {
-        const eventData = profileEvent.args['data'];
-        if ('startTime' in eventData)
-          cpuProfile.startTime = eventData['startTime'];
-        if ('endTime' in eventData)
-          cpuProfile.endTime = eventData['endTime'];
-        const nodesAndSamples = eventData['cpuProfile'] || {};
-        const samples = nodesAndSamples['samples'] || [];
-        const lines = eventData['lines'] || Array(samples.length).fill(0);
-        pushAll(cpuProfile.nodes, nodesAndSamples['nodes'] || []);
-        pushAll(cpuProfile.lines, lines);
-        pushAll(cpuProfile.samples, samples);
-        pushAll(cpuProfile.timeDeltas, eventData['timeDeltas'] || []);
-        if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
-          console.error('Failed to parse CPU profile.');
-          return null;
+        // Check for legacy CpuProfile event format first.
+        let cpuProfileEvent = events[events.length - 1]
+        if (cpuProfileEvent && cpuProfileEvent.name === RecordType.CpuProfile) {
+            const eventData = cpuProfileEvent.args['data']
+            cpuProfile = /** @type {?Protocol.Profiler.Profile} */ (eventData && eventData['cpuProfile'])
         }
-      }
-      if (!cpuProfile.endTime)
-        cpuProfile.endTime = cpuProfile.timeDeltas.reduce((x, y) => x + y, cpuProfile.startTime);
-    }
 
-    try {
-      const jsProfileModel = new CPUProfileDataModel(cpuProfile);
-      this._cpuProfiles.push(jsProfileModel);
-      return jsProfileModel;
-    } catch (e) {
-        console.error('Failed to parse CPU profile.');
+        if (!cpuProfile) {
+            cpuProfileEvent = events.find((e: Event): boolean => e.name === RecordType.Profile)
+            if (!cpuProfileEvent)
+                return null
+            const profileGroup = tracingModel.profileGroup(cpuProfileEvent)
+            if (!profileGroup) {
+                console.error('Invalid CPU profile format.')
+                return null
+            }
+            cpuProfile = /** @type {!Protocol.Profiler.Profile} */ ({
+                startTime: cpuProfileEvent.args['data']['startTime'],
+                endTime: 0,
+                nodes: [],
+                samples: [],
+                timeDeltas: [],
+                lines: []
+            })
+            for (const profileEvent of profileGroup.children) {
+                const eventData = profileEvent.args['data']
+                if ('startTime' in eventData)
+                    cpuProfile.startTime = eventData['startTime']
+                if ('endTime' in eventData)
+                    cpuProfile.endTime = eventData['endTime']
+                const nodesAndSamples = eventData['cpuProfile'] || {}
+                const samples = nodesAndSamples['samples'] || []
+                const lines = eventData['lines'] || Array(samples.length).fill(0)
+                pushAll(cpuProfile.nodes, nodesAndSamples['nodes'] || [])
+                pushAll(cpuProfile.lines, lines)
+                pushAll(cpuProfile.samples, samples)
+                pushAll(cpuProfile.timeDeltas, eventData['timeDeltas'] || [])
+                if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
+                    console.error('Failed to parse CPU profile.')
+                    return null
+                }
+            }
+            if (!cpuProfile.endTime)
+                cpuProfile.endTime = cpuProfile.timeDeltas.reduce((x, y): number => x + y, cpuProfile.startTime)
+        }
+
+        try {
+            const jsProfileModel = new CPUProfileDataModel(cpuProfile)
+            this._cpuProfiles.push(jsProfileModel)
+            return jsProfileModel
+        } catch (e) {
+            console.error('Failed to parse CPU profile.')
+        }
+        return null
     }
-    return null;
-  }
 
     /**
      * @param {!TracingModel} tracingModel

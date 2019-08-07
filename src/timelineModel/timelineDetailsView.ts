@@ -1,5 +1,5 @@
-import TimelineUIUtils from './timelineUIUtils';
-import Track from './track';
+import TimelineUIUtils from './timelineUIUtils'
+import Track from './track'
 
 export default class TimelineDetailsView {
     private _track: Track

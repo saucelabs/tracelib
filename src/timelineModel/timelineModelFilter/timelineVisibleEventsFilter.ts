@@ -25,7 +25,7 @@ export default class TimelineVisibleEventsFilter extends TimelineModelFilter {
     /**
      * @return {!TimelineModel.TimelineModel.RecordType}
      */
-    static _eventType(event: Event): RecordType | string {
+    public static _eventType(event: Event): RecordType | string {
         if (event.hasCategory(Category.Console)) {
             return RecordType.ConsoleTime
         }

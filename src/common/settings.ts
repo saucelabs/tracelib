@@ -9,7 +9,7 @@ export default class Settings {
         const setting = this._moduleSettings.get(settingName)
         if (!setting) {
             return {
-                get: () => null
+                get: (): null => null
             }
         }
         return setting

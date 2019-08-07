@@ -5,7 +5,7 @@ import NamedObject from './namedObject'
 import ObjectSnapshot from './objectSnapshot'
 import TracingModel, { Phase } from './'
 import { TraceEvent } from '../types'
-import { stableSort, remove } from '../utils';
+import { stableSort, remove } from '../utils'
 
 export default class Thread extends NamedObject {
     public ordinal: number
@@ -28,38 +28,38 @@ export default class Thread extends NamedObject {
     }
 
     public tracingComplete(): void {
-        stableSort(this._asyncEvents, Event.compareStartTime);
-        stableSort(this._events, Event.compareStartTime);
-        const phases = Phase;
-        const stack = [];
+        stableSort(this._asyncEvents, Event.compareStartTime)
+        stableSort(this._events, Event.compareStartTime)
+        const phases = Phase
+        const stack = []
         for (let i = 0; i < this._events.length; ++i) {
-          const e = this._events[i];
-          e.ordinal = i;
-          switch (e.phase) {
+            const e = this._events[i]
+            e.ordinal = i
+            switch (e.phase) {
             case phases.End:
-              this._events[i] = null;  // Mark for removal.
-              // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
-              if (!stack.length)
-                continue;
-              const top: any = stack.pop();
-              if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
-                console.error(
-                    'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
-                    ')');
-              } else {
-                top._complete(e);
-              }
-              break;
+                this._events[i] = null  // Mark for removal.
+                // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
+                if (!stack.length)
+                    continue
+                const top: any = stack.pop()
+                if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
+                    console.error(
+                        'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
+                    ')')
+                } else {
+                    top._complete(e)
+                }
+                break
             case phases.Begin:
-              stack.push(e);
-              break;
-          }
+                stack.push(e)
+                break
+            }
         }
         while (stack.length) {
-            stack.pop().setEndTime(this._model.maximumRecordTime());
+            stack.pop().setEndTime(this._model.maximumRecordTime())
         }
-        remove(this._events, null, false);
-      }
+        remove(this._events, null, false)
+    }
 
     /**
      * @param {!TracingManager.EventPayload} payload
