@@ -36,23 +36,24 @@ export default class Thread extends NamedObject {
             const e = this._events[i]
             e.ordinal = i
             switch (e.phase) {
-            case phases.End:
-                this._events[i] = null  // Mark for removal.
-                // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
-                if (!stack.length)
-                    continue
-                const top: any = stack.pop()
-                if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
-                    console.error(
-                        'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
-                    ')')
-                } else {
-                    top._complete(e)
-                }
-                break
-            case phases.Begin:
-                stack.push(e)
-                break
+                case phases.End:
+                    this._events[i] = null  // Mark for removal.
+                    // Quietly ignore unbalanced close events, they're legit (we could have missed start one).
+                    if (!stack.length) {
+                        continue
+                    }
+                    const top: any = stack.pop()
+                    if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
+                        console.error(
+                            'B/E events mismatch at ' + top.startTime + ' (' + top.name + ') vs. ' + e.startTime + ' (' + e.name +
+                        ')')
+                    } else {
+                        top._complete(e)
+                    }
+                    break
+                case phases.Begin:
+                    stack.push(e)
+                    break
             }
         }
         while (stack.length) {

@@ -97,7 +97,9 @@ export default class PerformanceModel {
      */
     public addExtensionEvents(title: string, model: TracingModel, timeOffset: number): void {
         this._extensionTracingModels.push({ model: model, title: title, timeOffset: timeOffset })
-        if (!this._tracingModel) return
+        if (!this._tracingModel) {
+            return
+        }
         model.adjustTime(this._tracingModel.minimumRecordTime() + timeOffset / 1000 - this._recordStartTime)
     }
 
@@ -105,7 +107,9 @@ export default class PerformanceModel {
      * @return {!SDK.TracingModel}
      */
     public tracingModel(): TracingModel {
-        if (!this._tracingModel) throw 'call setTracingModel before accessing PerformanceModel'
+        if (!this._tracingModel) {
+            throw 'call setTracingModel before accessing PerformanceModel'
+        }
         return this._tracingModel
     }
 
@@ -140,8 +144,9 @@ export default class PerformanceModel {
         let tasks: Event[] = []
         for (const track of timelineModel.tracks()) {
             // Deliberately pick up last main frame's track.
-            if (track.type === TrackType.MainThread && track.forMainFrame)
+            if (track.type === TrackType.MainThread && track.forMainFrame) {
                 tasks = track.tasks
+            }
         }
         if (!tasks.length) {
             this.setWindow({ left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime() })
