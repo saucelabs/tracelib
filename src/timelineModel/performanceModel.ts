@@ -3,8 +3,9 @@ import TimelineModel from '.'
 import TimelineFrameModel from './timelineFrameModel'
 import Track, { TrackType } from './track'
 import TimelineFrame from './timelineFrame/timelineFrame'
-import { ThreadData } from '../types'
+import { ThreadData, WarningType, StatsObject } from '../types'
 import Event from '../tracingModel/event'
+import TimelineData from './timelineData';
 
 interface ExtensionTracingModel {
     title: string
@@ -88,6 +89,17 @@ export default class PerformanceModel {
         return this._timelineModel
             .tracks()
             .find((track): any => track.type === TrackType.MainThread && track.forMainFrame && track.events.length)
+    }
+
+    public getWarningCounts(): StatsObject {
+        return this.findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
+            const timelineData = TimelineData.forEvent(event);
+            const warning = timelineData.warning;
+            if (warning) {
+                counter[warning] = counter[warning] ? counter[warning] + 1 : 1
+            }
+            return counter
+        }, {})
     }
 
     /**

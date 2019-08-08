@@ -57,3 +57,21 @@ test('should get summary data between passed range', () => {
     }
     expect(result).toEqual(expected)
 })
+
+test('should get warning counts', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getWarningCounts()
+    const expected = {
+        LongRecurringHandler: 13,
+        ForcedStyle: 4684,
+        ForcedLayout: 4683
+    }
+    expect(result).toEqual(expected)
+})
+
+test('should get number of events in mainThread', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getMainThreadEventsLength()
+    const expected = 56244
+    expect(result).toEqual(expected)
+})
