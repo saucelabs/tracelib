@@ -75,10 +75,10 @@ export default class TimelineData {
         let data = event[TimelineDataSymbol.timelineData]
 
         if (!data) {
-          data = new TimelineData();
-          event[TimelineDataSymbol.timelineData] = data;
+            data = new TimelineData()
+            event[TimelineDataSymbol.timelineData] = data
         }
 
-        return data;
+        return data
     }
 }
