@@ -243,10 +243,11 @@ export function remove<T>(array1: T[], value: any, firstOnly: boolean): boolean 
  * @param {number} max
  * @return {number}
  */
-export function constrain(num: number, min: number, max: number) {
-    if (num < min)
+export function constrain(num: number, min: number, max: number): number {
+    if (num < min) {
         num = min
-    else if (num > max)
+    } else if (num > max) {
         num = max
+    }
     return num
 };

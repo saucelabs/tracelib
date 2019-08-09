@@ -9,7 +9,7 @@ export default class Calculator {
     /**
      * @param {number} time
      */
-    setZeroTime(time: number): void {
+    public setZeroTime(time: number): void {
         this._zeroTime = time
     }
 

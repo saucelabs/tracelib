@@ -11,7 +11,7 @@ export default class Counter {
     private _maxTime: number
     public x: number[]
 
-    constructor() {
+    public constructor() {
         this.times = []
         this.values = []
     }
@@ -66,7 +66,7 @@ export default class Counter {
     /**
      * @param {!Timeline.CountersGraph.Calculator} calculator
      */
-    private _calculateVisibleIndexes(calculator: Calculator) {
+    private _calculateVisibleIndexes(calculator: Calculator): void {
         const start = calculator.minimumBoundary()
         const end = calculator.maximumBoundary()
 
