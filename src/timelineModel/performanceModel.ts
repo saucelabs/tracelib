@@ -92,6 +92,9 @@ export default class PerformanceModel {
     }
 
     public getWarningCounts(): StatsObject {
+        if (!this.findMainTrack()) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
         return this.findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
             const timelineData = TimelineData.forEvent(event)
             const warning = timelineData.warning

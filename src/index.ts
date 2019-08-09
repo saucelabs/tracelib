@@ -38,6 +38,9 @@ export default class Tracelib {
 
     public getMainThreadEventsLength(): number {
         const performanceModel = this._timelineLoader.performanceModel
+        if (!performanceModel.findMainTrack()) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
         return performanceModel.findMainTrack().events.length
     }
 }

@@ -69,9 +69,22 @@ test('should get warning counts', () => {
     expect(result).toEqual(expected)
 })
 
+test('getWarningCounts throws error if mainTrack is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getMainThreadEventsLength())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
+})
+
+
 test('should get number of events in mainThread', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
     const result = trace.getMainThreadEventsLength()
     const expected = 56244
     expect(result).toEqual(expected)
+})
+
+test('getMainThreadEventsLength throws error if mainTrack is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getMainThreadEventsLength())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
