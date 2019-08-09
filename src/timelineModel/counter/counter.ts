@@ -21,7 +21,7 @@ export default class Counter {
      * @param {number} value
      */
     public appendSample(time: number, value: number): void {
-        if (this.values.length && this.values[this.values.length - 1] === value) return
+        if (this.values.slice(-1) === value) return
         this.times.push(time)
         this.values.push(value)
     }
