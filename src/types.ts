@@ -6,6 +6,7 @@ import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
 import Thread from './tracingModel/thread'
 import TimelineRecordStyle from './timelineModel/timelineModelFilter/timelineRecordStyle'
 import TimelineCategory from './timelineModel/timelineModelFilter/timelineCategory'
+import Counter from './timelineModel/counter/counter'
 
 export interface TracelogArgs {
     name?: string;
@@ -412,5 +413,16 @@ export interface StatsArray {
     [key: string]: {
         time: number[],
         value: number[]
+    }
+}
+
+export interface CountersObject {
+    [key: string]: Counter
+}
+
+export interface CountersData {
+    [key: string]: {
+        times: number[],
+        values: number[]
     }
 }

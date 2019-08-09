@@ -236,3 +236,17 @@ export function remove<T>(array1: T[], value: any, firstOnly: boolean): boolean 
     array1.length = index
     return true
 }
+
+/**
+ * @param {number} num
+ * @param {number} min
+ * @param {number} max
+ * @return {number}
+ */
+export function constrain(num: number, min: number, max: number) {
+    if (num < min)
+        num = min
+    else if (num > max)
+        num = max
+    return num
+};
