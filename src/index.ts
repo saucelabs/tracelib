@@ -60,12 +60,4 @@ export default class Tracelib {
             return counter
         }, {})
     }
-
-    public getMainThreadEventsLength(): number {
-        const mainTrack = this._findMainTrack()
-        if (!mainTrack) {
-            throw new Error('MainTrack is missing in traceLog')
-        }
-        return this._findMainTrack().events.length
-    }
 }
