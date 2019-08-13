@@ -1,6 +1,9 @@
 import Calculator from './calculator'
 import { constrain, upperBound, lowerBound } from '../../utils'
 
+/**
+ * @unrestricted
+ */
 export default class Counter {
     public times: number[]
     public values: number[]

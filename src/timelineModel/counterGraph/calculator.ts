@@ -1,10 +1,12 @@
+/**
+ * @implements {PerfUI.TimelineGrid.Calculator}
+ * @unrestricted
+ */
 export default class Calculator {
     private _zeroTime: number
     private _minimumBoundary: number
     private _maximumBoundary: number
     private _workingArea: number
-
-    public constructor() {}
 
     /**
      * @param {number} time

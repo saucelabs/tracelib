@@ -7,7 +7,7 @@ import PerformanceModel from './timelineModel/performanceModel'
 import TimelineData from './timelineModel/timelineData'
 import Event from './tracingModel/event'
 import TimelineDetailsView from './timelineModel/timelineDetailsView'
-import CountersGraph from './timelineModel/counter/countersGraph'
+import CountersGraph from './timelineModel/counterGraph'
 import PerformanceModel from './timelineModel/performanceModel'
 
 export default class Tracelib {

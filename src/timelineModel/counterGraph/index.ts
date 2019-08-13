@@ -4,6 +4,12 @@ import { CountersObject, RecordType } from '../../types'
 import PerformanceModel from '../performanceModel'
 import Track from '../track'
 
+/**
+ * UI class, therefor only a portion of the original logic is ported
+ *
+ * @unrestricted
+ * @custom
+ */
 export default class CountersGraph {
     private _calculator: Calculator
     private _counters: Counter[]
