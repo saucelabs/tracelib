@@ -51,8 +51,12 @@ export default class Counter {
         let minValue
         for (let i = this._minimumIndex; i <= this._maximumIndex; i++) {
             const value = this.values[i]
-            if (minValue === undefined || value < minValue) minValue = value
-            if (maxValue === undefined || value > maxValue) maxValue = value
+            if (minValue === undefined || value < minValue) {
+                minValue = value
+            }
+            if (maxValue === undefined || value > maxValue) {
+                maxValue = value
+            }
         }
         minValue = minValue || 0
         maxValue = maxValue || 1
