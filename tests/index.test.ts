@@ -29,3 +29,9 @@ test('should get warning counts', () => {
     const result = trace.getWarningCounts()
     expect(result).toMatchSnapshot()
 })
+
+test('should get memory counters', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getMemoryCounters()
+    expect(result).toMatchSnapshot()
+})

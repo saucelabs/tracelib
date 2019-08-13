@@ -1,4 +1,4 @@
-import { Range, StatsObject } from './types'
+import { Range, StatsObject, CountersData } from './types'
 import TimelineLoader from './loader'
 import { calcFPS } from './utils'
 import Track, { TrackType } from './timelineModel/track'
@@ -6,6 +6,7 @@ import TimelineUIUtils from './timelineModel/timelineUIUtils'
 import PerformanceModel from './timelineModel/performanceModel'
 import TimelineData from './timelineModel/timelineData'
 import Event from './tracingModel/event'
+import CountersGraph from './timelineModel/counterGraph'
 
 export default class Tracelib {
     public tracelog: object
@@ -59,5 +60,17 @@ export default class Tracelib {
             }
             return counter
         }, {})
+    }
+
+    public getMemoryCounters(): CountersData {
+        const counterGraph = new CountersGraph()
+        const counters = counterGraph.setModel(this._performanceModel, this._findMainTrack())
+        return Object.keys(counters).reduce((acc, counter): CountersData => ({
+            ...acc,
+            [counter]: {
+                times: counters[counter].times,
+                values: counters[counter].values,
+            }
+        }), {})
     }
 }
