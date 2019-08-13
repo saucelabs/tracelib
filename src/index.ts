@@ -3,21 +3,29 @@ import TimelineLoader from './loader'
 import { calcFPS } from './utils'
 import Track, { TrackType } from './timelineModel/track'
 import TimelineUIUtils from './timelineModel/timelineUIUtils'
-import PerformanceModelUtils from '../custom/performanceModelUtils'
 import PerformanceModel from './timelineModel/performanceModel'
+import TimelineData from './timelineModel/timelineData';
+import Event from './tracingModel/event';
 
 export default class Tracelib {
     public tracelog: object
     private _timelineLoader: TimelineLoader
     private _performanceModel: PerformanceModel
-    private _performanceModelUtils: PerformanceModelUtils
 
     public constructor (tracelog: object, range?: Range) {
         this.tracelog = tracelog
         this._timelineLoader = new TimelineLoader(this.tracelog)
         this._timelineLoader.init()
         this._performanceModel = this._timelineLoader.performanceModel
-        this._performanceModelUtils = new PerformanceModelUtils(this._performanceModel)
+    }
+
+    public findMainTrack(): Track {
+        return this._performanceModel
+            .timelineModel()
+            .tracks()
+            .find((track: Track): boolean => Boolean(
+                track.type === TrackType.MainThread && track.forMainFrame && track.events.length
+            ))
     }
 
     public getFPS(): number[] {
@@ -26,14 +34,12 @@ export default class Tracelib {
     }
 
     public getSummary(from?: number, to?: number): StatsObject {
-        const performanceModel = this._timelineLoader.performanceModel
-
         const timelineUtils = new TimelineUIUtils()
-        const startTime = from || performanceModel.startTime
-        const endTime = to || performanceModel.endTime
+        const startTime = from || this._performanceModel.startTime
+        const endTime = to || this._performanceModel.endTime
         return {
             ...timelineUtils.statsForTimeRange(
-                this._performanceModelUtils.findMainTrack().syncEvents(), startTime, endTime
+                this.findMainTrack().syncEvents(), startTime, endTime
             ),
             startTime,
             endTime,
@@ -41,14 +47,23 @@ export default class Tracelib {
     }
 
     public getWarningCounts(): StatsObject {
-        return this._performanceModelUtils.getWarningCounts()
+        if (!this.findMainTrack()) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
+        return this.findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
+            const timelineData = TimelineData.forEvent(event)
+            const warning = timelineData.warning
+            if (warning) {
+                counter[warning] = counter[warning] ? counter[warning] + 1 : 1
+            }
+            return counter
+        }, {})
     }
 
     public getMainThreadEventsLength(): number {
-        const performanceModel = this._timelineLoader.performanceModel
-        if (!this._performanceModelUtils.findMainTrack()) {
+        if (!this.findMainTrack()) {
             throw new Error('MainTrack is missing in traceLog')
         }
-        return this._performanceModelUtils.findMainTrack().events.length
+        return this.findMainTrack().events.length
     }
 }
