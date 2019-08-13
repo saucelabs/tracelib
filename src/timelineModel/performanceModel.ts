@@ -3,8 +3,9 @@ import TimelineModel from '.'
 import TimelineFrameModel from './timelineFrameModel'
 import Track, { TrackType } from './track'
 import TimelineFrame from './timelineFrame/timelineFrame'
-import { ThreadData } from '../types'
+import { ThreadData, WarningType, StatsObject } from '../types'
 import Event from '../tracingModel/event'
+import TimelineData from './timelineData'
 
 interface ExtensionTracingModel {
     title: string

@@ -1,9 +1,10 @@
 import ObjectSnapshot from '../tracingModel/objectSnapshot'
 import Event from '../tracingModel/event'
-import { CallFrame } from '../types'
+import { CallFrame, WarningType } from '../types'
 
 export default class TimelineData {
-    public warning: string
+    public static readonly timelineDataSymbol: unique symbol = Symbol('timelineData')
+    public warning: WarningType | null
     public previewElement: Element
     public url: string
     public backendNodeId: number
@@ -12,8 +13,6 @@ export default class TimelineData {
     public frameId: string
     public timeWaitingForMainThread: number | undefined
     private _initiator: Event
-
-    private static _symbol: symbol = Symbol('timelineData')
 
     public constructor () {
         this.warning = null
@@ -73,13 +72,14 @@ export default class TimelineData {
      * @param {!SDK.TracingModel.Event} event
      * @return {!TimelineModel.TimelineData}
      */
-    // todo fix type
     public static forEvent(event: any): TimelineData {
-        let data: Event | TimelineData = event
+        let data = event[TimelineData.timelineDataSymbol]
+
         if (!data) {
             data = new TimelineData()
-            event[TimelineData._symbol] = data
+            event[TimelineData.timelineDataSymbol] = data
         }
-        return new TimelineData()
+
+        return data
     }
 }
