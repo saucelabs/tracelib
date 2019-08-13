@@ -51,7 +51,7 @@ export default class Tracelib {
         if (!mainTrack) {
             throw new Error('MainTrack is missing in traceLog')
         }
-        return this._findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
+        return mainTrack.events.reduce((counter: StatsObject, event: Event): StatsObject => {
             const timelineData = TimelineData.forEvent(event)
             const warning = timelineData.warning
             if (warning) {
@@ -66,6 +66,6 @@ export default class Tracelib {
         if (!mainTrack) {
             throw new Error('MainTrack is missing in traceLog')
         }
-        return this._findMainTrack().events.length
+        return mainTrack.events.length
     }
 }
