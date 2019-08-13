@@ -11,6 +11,7 @@ export default class Tracelib {
     public constructor (tracelog: object, range?: Range) {
         this.tracelog = tracelog
         this._timelineLoader = new TimelineLoader(this.tracelog)
+        this._timelineLoader.init()
     }
 
     public getFPS(): number[] {
@@ -20,7 +21,6 @@ export default class Tracelib {
     }
 
     public getSummary(from?: number, to?: number): StatsObject {
-        this._timelineLoader.init()
         const performanceModel = this._timelineLoader.performanceModel
         const mainTrack = performanceModel
             .timelineModel()

@@ -102,7 +102,7 @@ export default class PerformanceModel {
      */
     public tracingModel(): TracingModel {
         if (!this._tracingModel) {
-            throw 'call setTracingModel before accessing PerformanceModel'
+            throw new Error('call setTracingModel before accessing PerformanceModel')
         }
         return this._tracingModel
     }
@@ -132,7 +132,7 @@ export default class PerformanceModel {
      * @param {!Timeline.PerformanceModel.Window} window
      * @param {boolean=} animate
      */
-    public setWindow (option: {left: number, right: number}) : void {
+    public setWindow(option: {left: number, right: number}) : void {
         this.startTime = option.left
         this.endTime = option.right
     }
