@@ -153,7 +153,9 @@ export default class TracingModel {
     public static browserMainThread (tracingModel: TracingModel): Thread | null {
         const processes = tracingModel.sortedProcesses()
         // Avoid warning for an empty model.
-        if (!processes.length) return null
+        if (!processes.length) {
+            return null
+        }
         const browserMainThreadName = 'CrBrowserMain'
         const browserProcesses = []
         const browserMainThreads = []
@@ -170,8 +172,12 @@ export default class TracingModel {
             browserMainThreads.push(...process.sortedThreads().filter(
                 (t: Thread): boolean => t.name() === browserMainThreadName))
         }
-        if (browserMainThreads.length === 1) return browserMainThreads[0]
-        if (browserProcesses.length === 1) return browserProcesses[0].threadByName(browserMainThreadName)
+        if (browserMainThreads.length === 1) {
+            return browserMainThreads[0]
+        }
+        if (browserProcesses.length === 1) {
+            return browserProcesses[0].threadByName(browserMainThreadName)
+        }
         const tracingStartedInBrowser = tracingModel
             .devToolsMetadataEvents()
             .filter((e: Event): boolean => e.name === 'TracingStartedInBrowser')
@@ -394,7 +400,9 @@ export default class TracingModel {
         this._openAsyncEvents.clear()
 
         for (const eventStack of this._openNestableAsyncEvents.values()) {
-            while (eventStack.length) eventStack.pop().setEndTime(this._maximumRecordTime)
+            while (eventStack.length) {
+                eventStack.pop().setEndTime(this._maximumRecordTime)
+            }
         }
         this._openNestableAsyncEvents.clear()
     }

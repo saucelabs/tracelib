@@ -76,8 +76,12 @@ export default class NetworkRequest {
 
         const encodedDataLength = eventData['encodedDataLength'] || 0
         if (event.name === recordType.ResourceReceiveResponse) {
-            if (eventData['fromCache']) this.fromCache = true
-            if (eventData['fromServiceWorker']) this.fromServiceWorker = true
+            if (eventData['fromCache']) {
+                this.fromCache = true
+            }
+            if (eventData['fromServiceWorker']) {
+                this.fromServiceWorker = true
+            }
             this.encodedDataLength = encodedDataLength
         }
 

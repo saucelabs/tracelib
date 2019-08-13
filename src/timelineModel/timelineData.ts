@@ -32,9 +32,13 @@ export default class TimelineData {
      */
     public setInitiator(initiator: Event): void {
         this._initiator = initiator
-        if (!initiator || this.url) return
+        if (!initiator || this.url) {
+            return
+        }
         const initiatorURL = TimelineData.forEvent(initiator).url
-        if (initiatorURL) this.url = initiatorURL
+        if (initiatorURL) {
+            this.url = initiatorURL
+        }
     }
 
     /**

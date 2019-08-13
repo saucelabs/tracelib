@@ -35,7 +35,9 @@ export default class TimelineUIUtils {
      * @return {!Object.<string, !Timeline.TimelineRecordStyle>}
      */
     private _initEventStyles(): TimelineRecordObject {
-        if (this._eventStylesMap) return this._eventStylesMap
+        if (this._eventStylesMap) {
+            return this._eventStylesMap
+        }
 
         const type = RecordType
         const categories = this.categories()
@@ -230,11 +232,12 @@ export default class TimelineUIUtils {
      */
     public eventStyle(event: Event): { title: string; category: TimelineCategory } {
         const eventStyles = this._initEventStyles()
-        if (event.hasCategory(Category.Console) || event.hasCategory(Category.UserTiming))
+        if (event.hasCategory(Category.Console) || event.hasCategory(Category.UserTiming)) {
             return {
                 title: event.name,
                 category: this.categories()['scripting'],
             }
+        }
 
         if (event.hasCategory(Category.LatencyInfo)) {
             /** @const */
@@ -374,15 +377,20 @@ export default class TimelineUIUtils {
         case recordType.Paint: {
             const width = TimelineUIUtils.quadWidth(eventData.clip)
             const height = TimelineUIUtils.quadHeight(eventData.clip)
-            if (width && height) detailsText = `${width}\xa0\u00d7\xa0${height}`
+            if (width && height) {
+                detailsText = `${width}\xa0\u00d7\xa0${height}`
+            }
             break
         }
         case recordType.ParseHTML: {
             const startLine = eventArgs['beginData']['startLine']
             const endLine = eventArgs['endData'] && eventArgs['endData']['endLine']
             const url = eventArgs['beginData']['url']
-            if (endLine >= 0) detailsText = `${url}, ${startLine + 1}, ${endLine + 1}`
-            else detailsText = `${url} [${startLine + 1}\u2026]`
+            if (endLine >= 0) {
+                detailsText = `${url}, ${startLine + 1}, ${endLine + 1}`
+            } else {
+                detailsText = `${url} [${startLine + 1}\u2026]`
+            }
             break
         }
         case recordType.CompileModule:
@@ -391,13 +399,17 @@ export default class TimelineUIUtils {
         case recordType.CompileScript:
         case recordType.EvaluateScript: {
             const url = eventData && eventData['url']
-            if (url) detailsText = url + ':' + (eventData['lineNumber'] + 1)
+            if (url) {
+                detailsText = url + ':' + (eventData['lineNumber'] + 1)
+            }
             break
         }
         case recordType.WasmCompiledModule:
         case recordType.WasmModuleCacheHit: {
             const url = eventArgs['url']
-            if (url) detailsText = url
+            if (url) {
+                detailsText = url
+            }
             break
         }
 
@@ -405,7 +417,9 @@ export default class TimelineUIUtils {
         case recordType.XHRReadyStateChange:
         case recordType.XHRLoad: {
             const url = eventData['url']
-            if (url) detailsText = url
+            if (url) {
+                detailsText = url
+            }
             break
         }
         case recordType.TimeStamp:
@@ -425,7 +439,9 @@ export default class TimelineUIUtils {
         case recordType.ResizeImage:
         case recordType.DecodeLazyPixelRef: {
             const url = TimelineData.forEvent(event).url
-            if (url) detailsText = url
+            if (url) {
+                detailsText = url
+            }
             break
         }
 
@@ -442,8 +458,11 @@ export default class TimelineUIUtils {
             break
 
         default:
-            if (event.hasCategory(Category.Console)) detailsText = null
-            else detailsText = linkifyTopCallFrameAsText()
+            if (event.hasCategory(Category.Console)) {
+                detailsText = null
+            } else {
+                detailsText = linkifyTopCallFrameAsText()
+            }
             break
         }
 
@@ -535,7 +554,9 @@ export default class TimelineUIUtils {
          */
         function subtractStats(a: StatsObject, b: StatsObject): StatsObject {
             const result = Object.assign({}, a)
-            for (const key in b) result[key] -= b[key]
+            for (const key in b) {
+                result[key] -= b[key]
+            }
             return result
         }
 
@@ -578,7 +599,9 @@ export default class TimelineUIUtils {
                     statsArrays = { time: [], value: [] }
                     aggregatedStats[category] = statsArrays
                 }
-                if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time) return
+                if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time) {
+                    return
+                }
                 const lastValue = statsArrays.value.length ? statsArrays.value[statsArrays.value.length - 1] : 0
                 statsArrays.value.push(lastValue + time - lastTime)
                 statsArrays.time.push(time)
@@ -590,9 +613,15 @@ export default class TimelineUIUtils {
              * @param {number} time
              */
             function categoryChange(from?: string, to?: string, time?: number): void {
-                if (from) updateCategory(from, time)
+                if (from) {
+                    updateCategory(from, time)
+                }
+
                 lastTime = time
-                if (to) updateCategory(to, time)
+
+                if (to) {
+                    updateCategory(to, time)
+                }
             }
 
             /**
@@ -601,7 +630,9 @@ export default class TimelineUIUtils {
             function onStartEvent(e: Event): void {
                 const category = eventStyle(e).category.name
                 const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null
-                if (category !== parentCategory) categoryChange(parentCategory, category, e.startTime)
+                if (category !== parentCategory) {
+                    categoryChange(parentCategory, category, e.startTime)
+                }
                 categoryStack.push(category)
             }
 
@@ -611,7 +642,9 @@ export default class TimelineUIUtils {
             function onEndEvent(e: Event): void {
                 const category = categoryStack.pop()
                 const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null
-                if (category !== parentCategory) categoryChange(category, parentCategory, e.endTime)
+                if (category !== parentCategory) {
+                    categoryChange(category, parentCategory, e.endTime)
+                }
             }
 
             const obj: any = /** @type {!Object} */ events
