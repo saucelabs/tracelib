@@ -408,8 +408,8 @@ export default class TracingModel {
     }
 
     /**
-   * @param {!SDK.TracingModel.Event} event
-   */
+     * @param {!SDK.TracingModel.Event} event
+     */
     private _addAsyncEvent(event: Event): void {
         const phase = Phase
         const key = event.categoriesString + '.' + event.name + '.' + event.id

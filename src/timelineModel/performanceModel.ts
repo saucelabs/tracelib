@@ -22,7 +22,7 @@ export default class PerformanceModel {
     public startTime: number
     public endTime: number
 
-    public constructor() {
+    public constructor () {
         /** @type {?SDK.Target} */
         this._mainTarget = null
         /** @type {?SDK.TracingModel} */
@@ -84,12 +84,6 @@ export default class PerformanceModel {
         this._autoWindowTimes()
     }
 
-    public findMainTrack(): Track {
-        return this._timelineModel
-            .tracks()
-            .find((track): any => track.type === TrackType.MainThread && track.forMainFrame && track.events.length)
-    }
-
     /**
      * @param {string} title
      * @param {!SDK.TracingModel} model
@@ -134,6 +128,10 @@ export default class PerformanceModel {
         return this._frameModel
     }
 
+    /**
+     * @param {!Timeline.PerformanceModel.Window} window
+     * @param {boolean=} animate
+     */
     public setWindow (option: {left: number, right: number}) : void {
         this.startTime = option.left
         this.endTime = option.right

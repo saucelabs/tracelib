@@ -1,12 +1,12 @@
 import { Range, StatsObject } from './types'
 import TimelineLoader from './loader'
 import { calcFPS } from './utils'
-import TimelineDetailsView from './timelineModel/timelineDetailsView'
+import Track, { TrackType } from './timelineModel/track'
+import TimelineUIUtils from './timelineModel/timelineUIUtils'
 
 export default class Tracelib {
     public tracelog: object
     private _timelineLoader: TimelineLoader
-    private _timelineDetailsView: TimelineDetailsView
 
     public constructor (tracelog: object, range?: Range) {
         this.tracelog = tracelog
@@ -22,11 +22,18 @@ export default class Tracelib {
     public getSummary(from?: number, to?: number): StatsObject {
         this._timelineLoader.init()
         const performanceModel = this._timelineLoader.performanceModel
-        this._timelineDetailsView = new TimelineDetailsView(performanceModel.findMainTrack())
+        const mainTrack = performanceModel
+            .timelineModel()
+            .tracks()
+            .find((track: Track): boolean => Boolean(
+                track.type === TrackType.MainThread && track.forMainFrame && track.events.length
+            ))
+
+        const timelineUtils = new TimelineUIUtils()
         const startTime = from || performanceModel.startTime
         const endTime = to || performanceModel.endTime
         return {
-            ...this._timelineDetailsView.getSummary(startTime, endTime),
+            ...timelineUtils.statsForTimeRange(mainTrack.syncEvents(), startTime, endTime),
             startTime,
             endTime,
         }
