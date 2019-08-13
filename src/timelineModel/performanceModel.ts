@@ -91,20 +91,6 @@ export default class PerformanceModel {
             .find((track): any => track.type === TrackType.MainThread && track.forMainFrame && track.events.length)
     }
 
-    public getWarningCounts(): StatsObject {
-        if (!this.findMainTrack()) {
-            throw new Error('MainTrack is missing in traceLog')
-        }
-        return this.findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
-            const timelineData = TimelineData.forEvent(event)
-            const warning = timelineData.warning
-            if (warning) {
-                counter[warning] = counter[warning] ? counter[warning] + 1 : 1
-            }
-            return counter
-        }, {})
-    }
-
     /**
      * @param {string} title
      * @param {!SDK.TracingModel} model

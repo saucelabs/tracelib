@@ -2,6 +2,7 @@ import { Range, StatsObject } from './types'
 import TimelineLoader from './loader'
 import { calcFPS } from './utils'
 import TimelineDetailsView from './timelineModel/timelineDetailsView'
+import Warning from '../custom/warning'
 
 export default class Tracelib {
     public tracelog: object
@@ -31,9 +32,10 @@ export default class Tracelib {
         }
     }
 
-    public getWarningCounts(): StatsObject {
+    public getWarning(): StatsObject {
         const performanceModel = this._timelineLoader.performanceModel
-        return performanceModel.getWarningCounts()
+        const warning = new Warning(performanceModel)
+        return warning.getCounts()
     }
 
     public getMainThreadEventsLength(): number {
