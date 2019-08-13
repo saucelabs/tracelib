@@ -4,8 +4,8 @@ import { calcFPS } from './utils'
 import Track, { TrackType } from './timelineModel/track'
 import TimelineUIUtils from './timelineModel/timelineUIUtils'
 import PerformanceModel from './timelineModel/performanceModel'
-import TimelineData from './timelineModel/timelineData';
-import Event from './tracingModel/event';
+import TimelineData from './timelineModel/timelineData'
+import Event from './tracingModel/event'
 
 export default class Tracelib {
     public tracelog: object
