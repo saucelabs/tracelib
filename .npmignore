@@ -8,3 +8,4 @@ tests
 *.editorconfig
 *.gitignore
 *.eslintignore
+tsconfig.json
