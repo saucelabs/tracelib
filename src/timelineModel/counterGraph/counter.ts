@@ -24,7 +24,9 @@ export default class Counter {
      * @param {number} value
      */
     public appendSample(time: number, value: number): void {
-        if (this.values.slice(-1) === value) return
+        if (this.values[this.values.length - 1] === value) {
+            return
+        }
         this.times.push(time)
         this.values.push(value)
     }
@@ -88,12 +90,15 @@ export default class Counter {
      * @param {number} width
      */
     private _calculateXValues(width: number): void {
-        if (!this.values.length) return
+        if (!this.values.length) {
+            return
+        }
 
         const xFactor = width / (this._maxTime - this._minTime)
 
         this.x = new Array(this.values.length)
-        for (let i = this._minimumIndex + 1; i <= this._maximumIndex; i++)
+        for (let i = this._minimumIndex + 1; i <= this._maximumIndex; i++) {
             this.x[i] = xFactor * (this.times[i] - this._minTime)
+        }
     }
 }

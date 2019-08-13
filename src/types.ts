@@ -6,7 +6,7 @@ import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
 import Thread from './tracingModel/thread'
 import TimelineRecordStyle from './timelineModel/timelineModelFilter/timelineRecordStyle'
 import TimelineCategory from './timelineModel/timelineModelFilter/timelineCategory'
-import Counter from './timelineModel/counter/counter'
+import Counter from './timelineModel/counterGraph/counter'
 
 export interface TracelogArgs {
     name?: string;

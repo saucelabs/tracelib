@@ -1,4 +1,4 @@
-import { Range, StatsObject, CountersObject, CountersData } from './types'
+import { Range, StatsObject, CountersData } from './types'
 import TimelineLoader from './loader'
 import { calcFPS } from './utils'
 import Track, { TrackType } from './timelineModel/track'

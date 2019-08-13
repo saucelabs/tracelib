@@ -1,6 +1,6 @@
 import Calculator from './calculator'
 import Counter from './counter'
-import { CountersObject, RecordType } from '../../types'
+import { CountersObject, RecordType, EventData } from '../../types'
 import PerformanceModel from '../performanceModel'
 import Track from '../track'
 
@@ -50,20 +50,20 @@ export default class CountersGraph {
                 continue
             }
 
-            const counters: any = event.args.data
+            const counters: EventData = event.args.data
             if (!counters) {
                 return
             }
             for (const name in counters) {
                 const counter = this._countersByName[name]
                 if (counter) {
-                    counter.appendSample(event.startTime, counters[name])
+                    counter.appendSample(event.startTime, (counters as any)[name])
                 }
             }
 
             const gpuMemoryLimitCounterName = 'gpuMemoryLimitKB'
             if (gpuMemoryLimitCounterName in counters) {
-                this._gpuMemoryCounter.setLimit(counters[gpuMemoryLimitCounterName])
+                this._gpuMemoryCounter.setLimit((counters as any)[gpuMemoryLimitCounterName])
             }
         }
         return this._countersByName

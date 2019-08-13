@@ -1,6 +1,5 @@
 import Tracelib from '../src/index'
 import JANK_TRACE_LOG from './__fixtures__/jankTraceLog.json'
-import MEMORY_COUNTERS from './__fixtures__/memoryCounters.json'
 
 test('should contain traceLog', () => {
     const sampleTrace = new Tracelib({ foo: 'bar' })
@@ -34,5 +33,5 @@ test('should get warning counts', () => {
 test('should get memory counters', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
     const result = trace.getMemoryCounters()
-    expect(result).toEqual(MEMORY_COUNTERS)
+    expect(result).toMatchSnapshot()
 })
