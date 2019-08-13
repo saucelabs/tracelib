@@ -1,0 +1,10 @@
+.assets
+.github
+coverage
+src
+tests
+
+/*.js
+*.editorconfig
+*.gitignore
+*.eslintignore
