@@ -47,7 +47,8 @@ export default class Tracelib {
     }
 
     public getWarningCounts(): StatsObject {
-        if (!this._findMainTrack()) {
+        const mainTrack = this._findMainTrack()
+        if (!mainTrack) {
             throw new Error('MainTrack is missing in traceLog')
         }
         return this._findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
@@ -61,7 +62,8 @@ export default class Tracelib {
     }
 
     public getMainThreadEventsLength(): number {
-        if (!this._findMainTrack()) {
+        const mainTrack = this._findMainTrack()
+        if (!mainTrack) {
             throw new Error('MainTrack is missing in traceLog')
         }
         return this._findMainTrack().events.length
