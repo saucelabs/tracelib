@@ -2,11 +2,8 @@ import ObjectSnapshot from '../tracingModel/objectSnapshot'
 import Event from '../tracingModel/event'
 import { CallFrame, WarningType } from '../types'
 
-export enum TimelineDataSymbol {
-    timelineData
-}
-
 export default class TimelineData {
+    public static readonly timelineDataSymbol: unique symbol = Symbol('timelineData')
     public warning: WarningType | null
     public previewElement: Element
     public url: string
@@ -76,11 +73,11 @@ export default class TimelineData {
      * @return {!TimelineModel.TimelineData}
      */
     public static forEvent(event: any): TimelineData {
-        let data = event[TimelineDataSymbol.timelineData]
+        let data = event[TimelineData.timelineDataSymbol]
 
         if (!data) {
             data = new TimelineData()
-            event[TimelineDataSymbol.timelineData] = data
+            event[TimelineData.timelineDataSymbol] = data
         }
 
         return data

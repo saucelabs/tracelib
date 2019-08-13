@@ -19,7 +19,7 @@ export default class Tracelib {
         this._performanceModel = this._timelineLoader.performanceModel
     }
 
-    public findMainTrack(): Track {
+    private _findMainTrack(): Track {
         return this._performanceModel
             .timelineModel()
             .tracks()
@@ -30,7 +30,7 @@ export default class Tracelib {
 
     public getFPS(): number[] {
         return this._timelineLoader.performanceModel.frames()
-            .map(( { duration } ): number => calcFPS(duration))
+            .map(({ duration }): number => calcFPS(duration))
     }
 
     public getSummary(from?: number, to?: number): StatsObject {
@@ -39,7 +39,7 @@ export default class Tracelib {
         const endTime = to || this._performanceModel.endTime
         return {
             ...timelineUtils.statsForTimeRange(
-                this.findMainTrack().syncEvents(), startTime, endTime
+                this._findMainTrack().syncEvents(), startTime, endTime
             ),
             startTime,
             endTime,
@@ -47,10 +47,10 @@ export default class Tracelib {
     }
 
     public getWarningCounts(): StatsObject {
-        if (!this.findMainTrack()) {
+        if (!this._findMainTrack()) {
             throw new Error('MainTrack is missing in traceLog')
         }
-        return this.findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
+        return this._findMainTrack().events.reduce((counter: StatsObject, event: Event): StatsObject => {
             const timelineData = TimelineData.forEvent(event)
             const warning = timelineData.warning
             if (warning) {
@@ -61,9 +61,9 @@ export default class Tracelib {
     }
 
     public getMainThreadEventsLength(): number {
-        if (!this.findMainTrack()) {
+        if (!this._findMainTrack()) {
             throw new Error('MainTrack is missing in traceLog')
         }
-        return this.findMainTrack().events.length
+        return this._findMainTrack().events.length
     }
 }
