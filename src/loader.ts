@@ -21,6 +21,7 @@ export default class TimelineLoader {
             console.error('Malformed timeline data: %s', e.toString())
             return
         }
+        this._tracingModel.tracingComplete()
         this.performanceModel = new PerformanceModel()
         this.performanceModel.setTracingModel(this._tracingModel)
     }

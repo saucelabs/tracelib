@@ -4,6 +4,8 @@ import ProfileNode from './profileTreeModel/profileNode'
 import Event from './tracingModel/event'
 import TimelineFrame from './timelineModel/timelineFrame/timelineFrame'
 import Thread from './tracingModel/thread'
+import TimelineRecordStyle from './timelineModel/timelineModelFilter/timelineRecordStyle'
+import TimelineCategory from './timelineModel/timelineModelFilter/timelineCategory'
 
 export interface TracelogArgs {
     name?: string;
@@ -373,7 +375,42 @@ export interface PicturePromise {
 export interface FrameById {
     [key: number]: TimelineFrame
 }
+
 export interface ThreadData {
     thread: Thread,
     time: number
+}
+
+export enum TimelineSelectionType {
+    Frame,
+    NetworkRequest,
+    TraceEvent,
+    Range
+};
+
+export interface StatsObject {
+    [key: string]: number
+}
+
+export interface TimelineRecordObject {
+    [key: string]: TimelineRecordStyle
+}
+
+export interface TimelineCategoryObject {
+    [key: string]: TimelineCategory
+}
+
+export enum NetworkCategory {
+    HTML,
+    Script,
+    Style,
+    Media,
+    Other
+};
+
+export interface StatsArray {
+    [key: string]: {
+        time: number[],
+        value: number[]
+    }
 }

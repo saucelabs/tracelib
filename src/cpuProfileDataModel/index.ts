@@ -316,7 +316,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @return {!SDK.ProfileNode}
          */
         function bottomNode (node: ProfileNode): ProfileNode {
-            while (node.parent && node.parent.parent) {
+            while (node && node.parent && node.parent.parent) {
                 node = node.parent
             }
 

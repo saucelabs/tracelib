@@ -8,7 +8,9 @@ export default class Settings {
     public static moduleSetting(settingName: string): Settings {
         const setting = this._moduleSettings.get(settingName)
         if (!setting) {
-            throw new Error('No setting registered: ' + settingName)
+            return {
+                get: (): null => null
+            }
         }
         return setting
     }

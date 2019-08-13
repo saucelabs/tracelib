@@ -1,14 +1,14 @@
 import Tracelib from '../src/index'
 import JANK_TRACE_LOG from './__fixtures__/jankTraceLog.json'
 
-test('do a unit test', () => {
-    const trace = new Tracelib({ foo: 'bar' })
-    expect(trace.tracelog).toEqual({ foo: 'bar' })
+test('should contain traceLog', () => {
+    const sampleTrace = new Tracelib({ foo: 'bar' })
+    expect(sampleTrace.tracelog).toEqual({ foo: 'bar' })
 })
 
 test('should get FPS', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
-    const fps = trace.getFPS()
+    const result = trace.getFPS()
     const expected = [
         182.2821727559685,
         10.307790628308753,
@@ -25,5 +25,35 @@ test('should get FPS', () => {
         10.897876006628481,
         10.839990888916617
     ]
-    expect(fps).toEqual(expected)
+    expect(result).toEqual(expected)
+})
+
+test('should get summary data', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getSummary()
+    const expected = {
+        rendering: 847.373997092247,
+        painting: 69.94999980926514,
+        other: 9.896000564098358,
+        scripting: 394.4800021648407,
+        idle: 52.38300037384033,
+        startTime: 289959855.634,
+        endTime: 289961229.717
+    }
+    expect(result).toEqual(expected)
+})
+
+test('should get summary data between passed range', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getSummary(289960055.634, 289960729.717)
+    const expected = {
+        rendering: 425.89399832487106,
+        painting: 34.8999999165535,
+        other: 4.653000295162201,
+        scripting: 208.0020015835762,
+        idle: 0.6339998841285706,
+        startTime: 289960055.634,
+        endTime: 289960729.717
+    }
+    expect(result).toEqual(expected)
 })
