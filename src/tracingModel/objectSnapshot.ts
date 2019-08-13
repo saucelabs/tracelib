@@ -77,7 +77,9 @@ export default class ObjectSnapshot extends Event {
      * @return {!Promise<?>}
      */
     public objectPromise?(): Promise<any> {
-        if (!this._objectPromise) this._objectPromise = new Promise(this.requestObject.bind(this))
+        if (!this._objectPromise) {
+            this._objectPromise = new Promise(this.requestObject.bind(this))
+        }
         return this._objectPromise
     }
 }

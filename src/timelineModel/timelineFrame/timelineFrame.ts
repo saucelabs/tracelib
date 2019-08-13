@@ -63,8 +63,9 @@ export default class TimelineFrame {
     * @param {!Object} timeByCategory
     */
     public addTimeForCategories(timeByCategory: TimeByCategory): void {
-        for (const category in timeByCategory)
+        for (const category in timeByCategory) {
             this.addTimeForCategory(category, timeByCategory[category])
+        }
     }
 
     /**

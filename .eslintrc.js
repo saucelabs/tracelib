@@ -17,6 +17,7 @@ module.exports = {
     semi: ['error', 'never'],
     quotes: ['error', 'single'],
     indent: [2, 4],
+    curly: 2,
 
     'no-multiple-empty-lines': [2, {'max': 1, 'maxEOF': 1}],
     'array-bracket-spacing': ['error', 'never'],

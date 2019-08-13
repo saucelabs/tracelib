@@ -31,8 +31,11 @@ export function upperBound<T extends number, S extends number>(
     let r = right !== undefined ? right : self.length
     while (l < r) {
         const m = (l + r) >> 1
-        if (comparator(object, self[m]) >= 0) l = m + 1
-        else r = m
+        if (comparator(object, self[m]) >= 0) {
+            l = m + 1
+        } else {
+            r = m
+        }
     }
     return r
 }
@@ -214,14 +217,22 @@ export function binaryIndexOf<T>(array1: T[], value: number, comparator: (startT
  */
 export function remove<T>(array1: T[], value: any, firstOnly: boolean): boolean {
     let index = array1.indexOf(value)
-    if (index === -1) return false
+
+    if (index === -1) {
+        return false
+    }
+
     if (firstOnly) {
         array1.splice(index, 1)
         return true
     }
+
     for (let i = index + 1, n = array1.length; i < n; ++i) {
-        if (array1[i] !== value) array1[index++] = array1[i]
+        if (array1[i] !== value) {
+            array1[index++] = array1[i]
+        }
     }
+
     array1.length = index
     return true
 }

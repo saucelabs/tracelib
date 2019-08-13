@@ -32,8 +32,10 @@ export default class LayerPaintEvent {
     public picturePromise(): Promise<PicturePromise> {
         const picture = TimelineData.forEvent(this._event).picture
         return picture.objectPromise().then((result): PicturePromise | null => {
-            if (!result)
+            if (!result) {
                 return null
+            }
+
             const rect = result['params'] && result['params']['layer_rect']
             const picture = result['skp64']
             return rect && picture ? { rect: rect, serializedPicture: picture } : null

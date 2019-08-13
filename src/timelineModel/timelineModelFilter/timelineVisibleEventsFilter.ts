@@ -1,4 +1,4 @@
-import TimelineModelFilter from './timelineModelFilter'
+import TimelineModelFilter from './'
 import Event from '../../tracingModel/event'
 import { RecordType, Category } from '../../types'
 

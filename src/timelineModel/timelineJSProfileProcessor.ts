@@ -287,8 +287,14 @@ export default class TimelineJSProfileProcessor {
         name?: string
     ): TraceEvent[] {
         const events: TraceEvent[] = []
-        if (injectPageEvent) appendEvent('TracingStartedInPage', { data: { sessionId: '1' } }, 0, 0, 'M')
-        if (!name) name = `Thread ${tid}` // todo: original: name = ls`Thread ${tid}`
+        if (injectPageEvent) {
+            appendEvent('TracingStartedInPage', { data: { sessionId: '1' } }, 0, 0, 'M')
+        }
+
+        if (!name) {
+            name = `Thread ${tid}` // todo: original: name = ls`Thread ${tid}`
+        }
+
         appendEvent(MetadataEvent.ThreadName, { name }, 0, 0, 'M', '__metadata')
         if (!profile) {
             return events
@@ -311,12 +317,15 @@ export default class TimelineJSProfileProcessor {
             nextTime += timeDeltas[i]
             const node = idToNode.get(samples[i])
             const name = node.callFrame.functionName
+
             if (name === '(idle)') {
                 closeEvents()
                 continue
             }
-            if (!programEvent)
+
+            if (!programEvent) {
                 programEvent = appendEvent('MessageLoop::RunTask', {}, currentTime, 0, 'X', 'toplevel')
+            }
 
             if (name === '(program)') {
                 if (functionEvent) {
