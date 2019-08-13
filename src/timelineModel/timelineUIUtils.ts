@@ -16,7 +16,7 @@ import TracingModel, { Phase } from '../tracingModel'
 import NetworkRequest from './networkRequest'
 import TimelineModel from '.'
 import { binaryIndexOf, upperBound } from '../utils'
-import TimelineModelFilter from './timelineModelFilter/timelineModelFilter'
+import TimelineModelFilter from './timelineModelFilter'
 import TimelineVisibleEventsFilter from './timelineModelFilter/timelineVisibleEventsFilter'
 import TimelineCategory from './timelineModelFilter/timelineCategory'
 
