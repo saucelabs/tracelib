@@ -51,9 +51,12 @@ export default class Tracelib {
             throw new Error('MainTrack is missing in traceLog')
         }
 
+        // We are facing data mutaion issue in devtools, to avoid it cloning syncEvents
+        const syncEvents = mainTrack.syncEvents().slice()
+
         return {
             ...timelineUtils.statsForTimeRange(
-                mainTrack.syncEvents(), startTime, endTime
+                syncEvents, startTime, endTime
             ),
             startTime,
             endTime,
