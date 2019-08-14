@@ -1,7 +1,8 @@
 .assets
 .github
 coverage
-src
+/src
+/devtools
 tests
 
 /*.js
