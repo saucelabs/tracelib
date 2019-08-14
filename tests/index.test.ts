@@ -12,10 +12,16 @@ test('should get FPS', () => {
     expect(result).toMatchSnapshot()
 })
 
-test('should get summary data', () => {
+test('getSummary: should get summary data', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
     const result = trace.getSummary()
     expect(result).toMatchSnapshot()
+})
+
+test('getSummary: should throw error if main track is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getSummary())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
 
 test('should get summary data between passed range', () => {
@@ -24,14 +30,32 @@ test('should get summary data between passed range', () => {
     expect(result).toMatchSnapshot()
 })
 
-test('should get warning counts', () => {
+test('getWarningCounts: should get warning counts', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
     const result = trace.getWarningCounts()
     expect(result).toMatchSnapshot()
+})
+
+test('getWarningCounts: should throw error if main track is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getWarningCounts())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
 
 test('should get memory counters', () => {
     const trace = new Tracelib(JANK_TRACE_LOG)
     const result = trace.getMemoryCounters()
     expect(result).toMatchSnapshot()
+})
+
+test('mainTrackEvents: should get events', () => {
+    const trace = new Tracelib(JANK_TRACE_LOG)
+    const result = trace.getMainTrackEvents()
+    expect(result.length).toEqual(56244)
+})
+
+test('mainTrackEvents: should throws error if main track is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getMainTrackEvents())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
