@@ -19,9 +19,9 @@ test('getSummary: should get summary data', () => {
 })
 
 test('getSummary: should throw error if main track is missing', () => {
-    const trace = new Tracelib([])	
-    expect(() => trace.getSummary())	
-        .toThrow(new Error('MainTrack is missing in traceLog'))	
+    const trace = new Tracelib([])
+    expect(() => trace.getSummary())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
 
 test('should get summary data between passed range', () => {
@@ -37,9 +37,9 @@ test('getWarningCounts: should get warning counts', () => {
 })
 
 test('getWarningCounts: should throw error if main track is missing', () => {
-    const trace = new Tracelib([])	
-    expect(() => trace.getWarningCounts())	
-        .toThrow(new Error('MainTrack is missing in traceLog'))	
+    const trace = new Tracelib([])
+    expect(() => trace.getWarningCounts())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
 
 test('should get memory counters', () => {
@@ -54,8 +54,8 @@ test('mainTrackEvents: should get events', () => {
     expect(result.length).toEqual(56244)
 })
 
-test('mainTrackEvents: should throws error if main track is missing', () => {	
-    const trace = new Tracelib([])	
-    expect(() => trace.getMainTrackEvents())	
-        .toThrow(new Error('MainTrack is missing in traceLog'))	
+test('mainTrackEvents: should throws error if main track is missing', () => {
+    const trace = new Tracelib([])
+    expect(() => trace.getMainTrackEvents())
+        .toThrow(new Error('MainTrack is missing in traceLog'))
 })
