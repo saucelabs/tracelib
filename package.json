@@ -14,7 +14,7 @@
     "release:major": "np major",
     "test": "run-s test:*",
     "test:lint": "run-p test:lint:*",
-    "test:lint:eslint": "eslint --ext ts src tests",
+    "test:lint:eslint": "eslint --ext ts src devtools tests",
     "test:lint:tsc": "tsc",
     "test:unit": "jest --coverage",
     "watch": "tsc --watch"

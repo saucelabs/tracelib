@@ -1,12 +1,12 @@
-import { Range, StatsObject, CountersData } from './types'
-import TimelineLoader from './loader'
-import { calcFPS } from './utils'
-import Track, { TrackType } from './timelineModel/track'
-import TimelineUIUtils from './timelineModel/timelineUIUtils'
-import PerformanceModel from './timelineModel/performanceModel'
-import TimelineData from './timelineModel/timelineData'
-import Event from './tracingModel/event'
-import CountersGraph from './timelineModel/counterGraph'
+import { Range, StatsObject, CountersData } from '../devtools/types'
+import TimelineLoader from '../devtools/loader'
+import { calcFPS } from '../devtools/utils'
+import Track, { TrackType } from '../devtools/timelineModel/track'
+import TimelineUIUtils from '../devtools/timelineModel/timelineUIUtils'
+import PerformanceModel from '../devtools/timelineModel/performanceModel'
+import TimelineData from '../devtools/timelineModel/timelineData'
+import Event from '../devtools/tracingModel/event'
+import CountersGraph from '../devtools/timelineModel/counterGraph'
 
 export default class Tracelib {
     public tracelog: object
