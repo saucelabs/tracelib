@@ -29,6 +29,14 @@ export default class Tracelib {
             ))
     }
 
+    public getMainTrackEvents(): Event[] {
+        const mainTrack = this._findMainTrack()
+        if (!mainTrack) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
+        return mainTrack.events
+    }
+
     public getFPS(): number[] {
         return this._timelineLoader.performanceModel.frames()
             .map(({ duration }): number => calcFPS(duration))
@@ -38,9 +46,14 @@ export default class Tracelib {
         const timelineUtils = new TimelineUIUtils()
         const startTime = from || this._performanceModel.startTime
         const endTime = to || this._performanceModel.endTime
+        const mainTrack = this._findMainTrack()
+        if (!mainTrack) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
+
         return {
             ...timelineUtils.statsForTimeRange(
-                this._findMainTrack().syncEvents(), startTime, endTime
+                mainTrack.syncEvents(), startTime, endTime
             ),
             startTime,
             endTime,
