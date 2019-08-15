@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`getSummary: should get summary data 1`] = `
+exports[`getSummary should get summary data 1`] = `
 Object {
   "endTime": 289961229.717,
   "idle": 52.38300037384033,
@@ -12,7 +12,31 @@ Object {
 }
 `;
 
-exports[`getWarningCounts: should get warning counts 1`] = `
+exports[`getSummary should get summary data between passed range 1`] = `
+Object {
+  "endTime": 289960729.717,
+  "idle": 0.6339998841285706,
+  "other": 4.653000295162201,
+  "painting": 34.8999999165535,
+  "rendering": 425.89399832487106,
+  "scripting": 208.0020015835762,
+  "startTime": 289960055.634,
+}
+`;
+
+exports[`getSummary should not throw error on second call of getSummary 1`] = `
+Object {
+  "endTime": 289961229.717,
+  "idle": 52.38300037384033,
+  "other": 9.896000564098358,
+  "painting": 69.94999980926514,
+  "rendering": 847.373997092247,
+  "scripting": 394.4800021648407,
+  "startTime": 289959855.634,
+}
+`;
+
+exports[`getWarningCounts should get warning counts 1`] = `
 Object {
   "ForcedLayout": 4683,
   "ForcedStyle": 4684,
@@ -117,17 +141,5 @@ Object {
       837,
     ],
   },
-}
-`;
-
-exports[`should get summary data between passed range 1`] = `
-Object {
-  "endTime": 289960729.717,
-  "idle": 0.6339998841285706,
-  "other": 4.653000295162201,
-  "painting": 34.8999999165535,
-  "rendering": 425.89399832487106,
-  "scripting": 208.0020015835762,
-  "startTime": 289960055.634,
 }
 `;
