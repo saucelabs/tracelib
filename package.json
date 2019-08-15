@@ -1,6 +1,6 @@
 {
   "name": "tracelib",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A Node.js library that provides Chrome DevTools trace models to parse arbitrary trace logs.",
   "main": "./build/src/index.js",
   "scripts": {
