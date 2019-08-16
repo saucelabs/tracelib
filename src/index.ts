@@ -31,6 +31,8 @@ export default class Tracelib {
         if (!mainTrack) {
             throw new Error('MainTrack is missing in traceLog')
         }
+
+        return mainTrack
     }
 
     public getMainTrackEvents(): Event[] {
