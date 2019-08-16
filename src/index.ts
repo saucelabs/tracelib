@@ -21,19 +21,22 @@ export default class Tracelib {
     }
 
     private _findMainTrack(): Track {
-        return this._performanceModel
+        const mainTrack = this._performanceModel
             .timelineModel()
             .tracks()
             .find((track: Track): boolean => Boolean(
                 track.type === TrackType.MainThread && track.forMainFrame && track.events.length
             ))
+
+        if (!mainTrack) {
+            throw new Error('MainTrack is missing in traceLog')
+        }
+
+        return mainTrack
     }
 
     public getMainTrackEvents(): Event[] {
         const mainTrack = this._findMainTrack()
-        if (!mainTrack) {
-            throw new Error('MainTrack is missing in traceLog')
-        }
         return mainTrack.events
     }
 
@@ -47,9 +50,6 @@ export default class Tracelib {
         const startTime = from || this._performanceModel.startTime
         const endTime = to || this._performanceModel.endTime
         const mainTrack = this._findMainTrack()
-        if (!mainTrack) {
-            throw new Error('MainTrack is missing in traceLog')
-        }
 
         // We are facing data mutaion issue in devtools, to avoid it cloning syncEvents
         const syncEvents = mainTrack.syncEvents().slice()
@@ -65,9 +65,6 @@ export default class Tracelib {
 
     public getWarningCounts(): StatsObject {
         const mainTrack = this._findMainTrack()
-        if (!mainTrack) {
-            throw new Error('MainTrack is missing in traceLog')
-        }
         return mainTrack.events.reduce((counter: StatsObject, event: Event): StatsObject => {
             const timelineData = TimelineData.forEvent(event)
             const warning = timelineData.warning
