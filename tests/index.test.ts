@@ -27,12 +27,6 @@ describe('getSummary', () => {
         expect(result).toMatchSnapshot()
     })
 
-    it('should throw error if main track is missing', () => {
-        const tracelib = new Tracelib([])
-        expect(() => tracelib.getSummary())
-            .toThrow(new Error('MainTrack is missing in traceLog'))
-    })
-
     it('should get summary data between passed range', () => {
         const result = trace.getSummary(289960055.634, 289960729.717)
         expect(result).toMatchSnapshot()
@@ -43,12 +37,6 @@ describe('getWarningCounts', () => {
     it('should get warning counts', () => {
         const result = trace.getWarningCounts()
         expect(result).toMatchSnapshot()
-    })
-
-    it('should throw error if main track is missing', () => {
-        const tracelib = new Tracelib([])
-        expect(() => tracelib.getWarningCounts())
-            .toThrow(new Error('MainTrack is missing in traceLog'))
     })
 })
 
@@ -64,8 +52,13 @@ describe('mainTrackEvents', () => {
     })
 
     it('should throws error if main track is missing', () => {
-        const tracelib = new Tracelib([])
-        expect(() => tracelib.getMainTrackEvents())
-            .toThrow(new Error('MainTrack is missing in traceLog'))
+        /**
+         * use tracelog with CrRenderer thread name metadata missing
+         */
+        const borkedTrace = JANK_TRACE_LOG.slice(0, -1)
+
+        const tracelib = new Tracelib(borkedTrace)
+        const result = tracelib.getMainTrackEvents()
+        expect(result.length).toEqual(56244)
     })
 })
