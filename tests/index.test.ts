@@ -52,7 +52,11 @@ describe('mainTrackEvents', () => {
     })
 
     it('should throws error if main track is missing', () => {
+        /**
+         * use tracelog with CrRenderer thread name metadata missing
+         */
         const borkedTrace = JANK_TRACE_LOG.slice(0, -1)
+
         const tracelib = new Tracelib(borkedTrace)
         const result = tracelib.getMainTrackEvents()
         expect(result.length).toEqual(56244)
