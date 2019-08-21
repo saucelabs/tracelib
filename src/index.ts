@@ -21,15 +21,22 @@ export default class Tracelib {
     }
 
     private _findMainTrack(): Track {
-        const mainTrack = this._performanceModel
+        const threads: Track[] = this._performanceModel
             .timelineModel()
             .tracks()
-            .find((track: Track): boolean => Boolean(
-                track.type === TrackType.MainThread && track.forMainFrame && track.events.length
-            ))
 
+        const mainTrack = threads.find((track: Track): boolean => Boolean(
+            track.type === TrackType.MainThread && track.forMainFrame && track.events.length
+        ))
+
+        /**
+         * If no main thread could be found, pick the thread with most events
+         * captured in it and assume this is the main track.
+         */
         if (!mainTrack) {
-            throw new Error('MainTrack is missing in traceLog')
+            return threads.slice(1).reduce(
+                (curr: Track, com: Track): Track => curr.events.length > com.events.length ? curr : com,
+                threads[0])
         }
 
         return mainTrack
