@@ -54,8 +54,8 @@ export default class Tracelib {
 
     public getSummary(from?: number, to?: number): StatsObject {
         const timelineUtils = new TimelineUIUtils()
-        const startTime = from || this._performanceModel.startTime
-        const endTime = to || this._performanceModel.endTime
+        const startTime = from || this._performanceModel.timelineModel().minimumRecordTime()
+        const endTime = to || this._performanceModel.timelineModel().maximumRecordTime()
         const mainTrack = this._findMainTrack()
 
         // We are facing data mutaion issue in devtools, to avoid it cloning syncEvents
