@@ -1,5 +1,35 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`getDetailStats should get detail stats 1`] = `
+Array [
+  "rendering",
+  "painting",
+  "other",
+  "scripting",
+  "range",
+]
+`;
+
+exports[`getDetailStats should get summary data between passed range 1`] = `
+Array [
+  "rendering",
+  "painting",
+  "other",
+  "scripting",
+  "range",
+]
+`;
+
+exports[`getDetailStats should not throw error on second call of getDetailStats 1`] = `
+Array [
+  "rendering",
+  "painting",
+  "other",
+  "scripting",
+  "range",
+]
+`;
+
 exports[`getSummary should get summary data 1`] = `
 Object {
   "endTime": 289961229.717,
