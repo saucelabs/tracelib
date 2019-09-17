@@ -1,4 +1,4 @@
-import { Range, StatsObject, CountersData } from '../devtools/types'
+import { Range, StatsObject, CountersData, StatsArray } from '../devtools/types'
 import TimelineLoader from '../devtools/loader'
 import { calcFPS } from '../devtools/utils'
 import Track, { TrackType } from '../devtools/timelineModel/track'
@@ -7,6 +7,7 @@ import PerformanceModel from '../devtools/timelineModel/performanceModel'
 import TimelineData from '../devtools/timelineModel/timelineData'
 import Event from '../devtools/tracingModel/event'
 import CountersGraph from '../devtools/timelineModel/counterGraph'
+import CustomUtils from './utils'
 
 export default class Tracelib {
     public tracelog: object
@@ -92,5 +93,25 @@ export default class Tracelib {
                 values: counters[counter].values,
             }
         }), {})
+    }
+
+    public getDetailStats(from?: number, to?: number): StatsArray {
+        const timelineUtils = new CustomUtils()
+        const startTime = from || this._performanceModel.timelineModel().minimumRecordTime()
+        const endTime = to || this._performanceModel.timelineModel().maximumRecordTime()
+        const mainTrack = this._findMainTrack()
+
+        // We are facing data mutaion issue in devtools, to avoid it cloning syncEvents
+        const syncEvents = mainTrack.syncEvents().slice()
+
+        return {
+            ...timelineUtils.detailStatsForTimeRange(
+                syncEvents, startTime, endTime
+            ),
+            range: {
+                time: [startTime, endTime],
+                value: [startTime, endTime]
+            }
+        }
     }
 }
