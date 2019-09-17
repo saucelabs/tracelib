@@ -17,7 +17,7 @@ $ npm install --save tracelib
 
 ## `getSummary`
 
-Fetch time-durations of scripting, rendering, painting from tracelogs.
+Fetch total time-durations of scripting, rendering, painting from tracelogs.
 
 ![Summary Data](./.assets/summary.png "Summary Data")
 
@@ -164,6 +164,46 @@ console.log(memoryInfo)
  *        111 ] },
  *  gpuMemoryUsedKB: { times: [], values: [] } }
  */
+```
+
+## `getDetailStats`
+
+Fetch data (timestamp and values) of scripting, rendering, painting from tracelogs.
+
+![Detail Data](./.assets/detail.png "Detail Data")
+
+```js
+import Tracelib from 'tracelib'
+import JANK_TRACE_LOG from './jankTraceLog.json'
+
+const tasks = new Tracelib(JANK_TRACE_LOG)
+const detail = tasks.getDetailStats()
+console.log(detail)
+
+/**
+ * output:
+ * {
+ *   rendering: {
+ *    times: [ 49970556.092, ..., 49972763.552 ],
+ *    values: [1, ..., 5]
+ *   },
+ *   painting: {
+ *    times: [ 49970556.092, ..., 49972763.552 ],
+ *    values: [1, ..., 5]
+ *   },
+ *   other: {
+ *    times: [ 49970556.092, ..., 49972763.552 ],
+ *    values: [1, ..., 5]
+ *   },
+ *   scripting: {
+ *    times: [ 49970556.092, ..., 49972763.552 ],
+ *    values: [1, ..., 5]
+ *   },
+ *   range: { 
+ *    times: [ 289959855.634, 289961229.717 ],
+ *    values: [ 289959855.634, 289961229.717 ]
+ *   }
+ * }
 ```
 
 # Test
