@@ -5,10 +5,6 @@ import Event from './../devtools/tracingModel/event'
 import TracingModel from './../devtools/tracingModel'
 
 export default class CustomUtils extends TimelineUIUtils {
-    public constructor() {
-        super()
-    }
-
     /**
     * @param {!Array<!SDK.TracingModel.Event>} events
     * @param {number} startTime
