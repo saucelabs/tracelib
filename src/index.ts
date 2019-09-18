@@ -1,4 +1,4 @@
-import { Range, StatsObject, CountersData, StatsArray } from '../devtools/types'
+import { Range, StatsObject, CountersData, CountersValuesTimestamp } from '../devtools/types'
 import TimelineLoader from '../devtools/loader'
 import { calcFPS } from '../devtools/utils'
 import Track, { TrackType } from '../devtools/timelineModel/track'
@@ -48,9 +48,16 @@ export default class Tracelib {
         return mainTrack.events
     }
 
-    public getFPS(): number[] {
-        return this._timelineLoader.performanceModel.frames()
-            .map(({ duration }): number => calcFPS(duration))
+    public getFPS(): CountersValuesTimestamp {
+        const fpsData: CountersValuesTimestamp = {
+            times: [],
+            values: []
+        }
+        this._timelineLoader.performanceModel.frames().forEach(({ duration, startTime }): void => {
+            fpsData.values.push(calcFPS(duration))
+            fpsData.times.push(startTime)
+        })
+        return fpsData
     }
 
     public getSummary(from?: number, to?: number): StatsObject {
@@ -95,7 +102,7 @@ export default class Tracelib {
         }), {})
     }
 
-    public getDetailStats(from?: number, to?: number): StatsArray {
+    public getDetailStats(from?: number, to?: number): CountersData {
         const timelineUtils = new CustomUtils()
         const startTime = from || this._performanceModel.timelineModel().minimumRecordTime()
         const endTime = to || this._performanceModel.timelineModel().maximumRecordTime()
@@ -109,8 +116,8 @@ export default class Tracelib {
                 syncEvents, startTime, endTime
             ),
             range: {
-                time: [startTime, endTime],
-                value: [startTime, endTime]
+                times: [startTime, endTime],
+                values: [startTime, endTime]
             }
         }
     }
