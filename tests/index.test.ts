@@ -62,3 +62,20 @@ describe('mainTrackEvents', () => {
         expect(result.length).toEqual(56244)
     })
 })
+
+describe('getDetailStats', () => {
+    it('should get detail stats', () => {
+        const result = trace.getDetailStats()
+        expect(Object.keys(result)).toMatchSnapshot()
+    })
+
+    it('should not throw error on second call of getDetailStats', () => {
+        const result = trace.getDetailStats()
+        expect(Object.keys(result)).toMatchSnapshot()
+    })
+
+    it('should get summary data between passed range', () => {
+        const result = trace.getDetailStats(289960055.634, 289960729.717)
+        expect(Object.keys(result)).toMatchSnapshot()
+    })
+})
