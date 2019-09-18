@@ -1,5 +1,5 @@
 import TimelineUIUtils from './../devtools/timelineModel/timelineUIUtils'
-import { StatsArray } from './../devtools/types'
+import { CountersData } from './../devtools/types'
 import TimelineModel from './../devtools/timelineModel'
 import Event from './../devtools/tracingModel/event'
 import TracingModel from './../devtools/tracingModel'
@@ -11,22 +11,22 @@ export default class CustomUtils extends TimelineUIUtils {
     * @param {number} endTime
     * @return {!Object<string, number>}
     */
-    public detailStatsForTimeRange(events: Event[], startTime: number, endTime: number): StatsArray {
+    public detailStatsForTimeRange(events: Event[], startTime: number, endTime: number): CountersData {
         const eventStyle = this.eventStyle.bind(this)
         const visibleEventsFilterFunc = this.visibleEventsFilter.bind(this)
 
         if (!events.length) {
             return {
                 idle: {
-                    'time': [endTime - startTime],
-                    'value': [endTime - startTime]
+                    'times': [endTime - startTime],
+                    'values': [endTime - startTime]
                 }
             }
         }
 
         // aggeregatedStats is a map by categories. For each category there's an array
         // containing sorted time points which records accumulated value of the category.
-        const aggregatedStats: StatsArray = {}
+        const aggregatedStats: CountersData = {}
         const categoryStack: string[] = []
         let lastTime = 0
         TimelineModel.forEachEvent(
@@ -54,15 +54,14 @@ export default class CustomUtils extends TimelineUIUtils {
         function updateCategory(category: string, time: number): void {
             let statsArrays = aggregatedStats[category]
             if (!statsArrays) {
-                statsArrays = { time: [], value: [] }
+                statsArrays = { times: [], values: [] }
                 aggregatedStats[category] = statsArrays
             }
-            if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time) {
+            if (statsArrays.times.length && statsArrays.times[statsArrays.times.length - 1] === time) {
                 return
             }
-            // const lastValue = statsArrays.value.length ? statsArrays.value[statsArrays.value.length - 1] : 0
-            statsArrays.value.push(time - lastTime)
-            statsArrays.time.push(time)
+            statsArrays.values.push(time - lastTime)
+            statsArrays.times.push(time)
         }
 
         /**

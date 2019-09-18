@@ -420,9 +420,11 @@ export interface CountersObject {
     [key: string]: Counter
 }
 
+export interface CountersValuesTimestamp {
+    times: number[],
+    values: number[]
+}
+
 export interface CountersData {
-    [key: string]: {
-        times: number[],
-        values: number[]
-    }
+    [key: string]: CountersValuesTimestamp
 }
