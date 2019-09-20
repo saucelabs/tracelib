@@ -79,3 +79,10 @@ describe('getDetailStats', () => {
         expect(Object.keys(result)).toMatchSnapshot()
     })
 })
+
+describe('isTraceEventsMismatch', () => {
+    it('should return false for standard traceLog', () => {
+        const result = trace.isTraceEventsMismatch()
+        expect(result).toEqual(false)
+    })
+})

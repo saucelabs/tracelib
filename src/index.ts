@@ -43,6 +43,10 @@ export default class Tracelib {
         return mainTrack
     }
 
+    public isTraceEventsMismatch(): boolean {
+        return this._performanceModel.timelineModel().isTraceEventsMismatch()
+    }
+
     public getMainTrackEvents(): Event[] {
         const mainTrack = this._findMainTrack()
         return mainTrack.events

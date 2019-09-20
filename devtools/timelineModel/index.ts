@@ -62,6 +62,7 @@ export default class TimelineModel {
     private _tracingModel: TracingModel
     private _currentTaskLayoutAndRecalcEvents: Event[]
     private _mainFrameLayerTreeId: string | number
+    private _isChidBiggerThanParent: boolean
 
     public constructor() {
         this._reset()
@@ -82,6 +83,7 @@ export default class TimelineModel {
 
         this._minimumRecordTime = 0
         this._maximumRecordTime = 0
+        this._isChidBiggerThanParent = false
     }
 
     /**
@@ -855,6 +857,7 @@ export default class TimelineModel {
     private _fixNegativeDuration(event: Event, child: Event): void {
         const epsilon = 1e-3
         if (event.selfTime < -epsilon) {
+            this._isChidBiggerThanParent = true
             console.error(
                 `Children are longer than parent at ${event.startTime} ` +
                     `(${(child.startTime - this.minimumRecordTime()).toFixed(
@@ -1597,5 +1600,9 @@ export default class TimelineModel {
             }
         }
         return zeroStartRequestsList.concat(requestsList)
+    }
+
+    public isTraceEventsMismatch(): boolean {
+        return this._isChidBiggerThanParent
     }
 }
