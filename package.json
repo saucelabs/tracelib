@@ -28,7 +28,7 @@
     "devtools"
   ],
   "author": "Christian Bromann <christian@saucelabs.com>",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/saucelabs/tracelib/issues"
   },
