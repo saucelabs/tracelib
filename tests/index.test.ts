@@ -1,5 +1,6 @@
 import Tracelib from '../src/index'
 import JANK_TRACE_LOG from './__fixtures__/jankTraceLog.json'
+import USER_TIMING_TRACE_LOG from './__fixtures__/userTimingTraceLog.json'
 
 let trace: Tracelib
 beforeAll(() => {
@@ -77,5 +78,15 @@ describe('getDetailStats', () => {
     it('should get summary data between passed range', () => {
         const result = trace.getDetailStats(289960055.634, 289960729.717)
         expect(Object.keys(result)).toMatchSnapshot()
+    })
+})
+
+describe('getUserTimingEvents', () => {
+    it('should get user timing events', () => {
+        const trace = new Tracelib(USER_TIMING_TRACE_LOG)
+
+        const result = trace.getUserTimingEvents()
+
+        expect(result.length).toEqual(8)
     })
 })

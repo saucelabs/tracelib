@@ -48,6 +48,11 @@ export default class Tracelib {
         return mainTrack.events
     }
 
+    public getUserTimingEvents(): Event[] {
+        return this.getMainTrackEvents()
+            .filter((event: Event): boolean => event.categoriesString === 'blink.user_timing')
+    }
+
     public getFPS(): CountersValuesTimestamp {
         const fpsData: CountersValuesTimestamp = {
             times: [],
