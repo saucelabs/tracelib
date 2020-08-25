@@ -58,7 +58,7 @@ $ git clone git@github.com:saucelabs/tracelib.git
 then ensure to install all project dependencies:
 
 ```sh
-$ cd traceliv
+$ cd tracelib
 $ npm install
 ```
 
