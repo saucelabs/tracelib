@@ -30,7 +30,7 @@ create a new one that you would like work on and discuss your ideas and use case
 It is always best to discuss your plans beforehand, to ensure that your contribution is in line with our goals.
 
 - Fork the repository on GitHub
-- Create a topic branch from where you want to base your work. This is usually master.
+- Create a topic branch from where you want to base your work. This is usually `main`.
 - Open a new pull request, label it `work in progress` and outline what you will be contributing
 - Make commits of logical units.
 - Make sure you sign-off on your commits `git commit -s -m "adding X to change Y"`
@@ -62,7 +62,7 @@ $ cd tracelib
 $ npm install
 ```
 
-You can find a fixture tracelog to test API changes in the [test directory](https://github.com/saucelabs/tracelib/blob/master/tests/__fixtures__/jankTraceLog.json).
+You can find a fixture tracelog to test API changes in the [test directory](https://github.com/saucelabs/tracelib/blob/main/tests/__fixtures__/jankTraceLog.json).
 
 ### Build Project
 
