@@ -3,14 +3,16 @@ import InvalidationTrackingEvent from './invalidationTrackingEvent'
 import { InvalidationMap, RecordType } from '../types'
 
 export default class InvalidationTracker {
-    public static readonly invalidationTrackingEventsSymbol: unique symbol = Symbol('invalidationTrackingEvents')
+    public static readonly invalidationTrackingEventsSymbol: unique symbol = Symbol(
+        'invalidationTrackingEvents'
+    )
     private _lastRecalcStyle: Event
     private _lastPaintWithLayer: Event
     private _didPaint: boolean
     private _invalidations: Record<number, InvalidationTrackingEvent[]>
     private _invalidationsByNodeId: Record<number, InvalidationMap[]>
 
-    public constructor () {
+    public constructor() {
         this._lastRecalcStyle = null
         this._lastPaintWithLayer = null
         this._didPaint = false
@@ -21,16 +23,14 @@ export default class InvalidationTracker {
      * @param {!SDK.TracingModel.Event} event
      * @return {?Array<!TimelineModel.InvalidationTrackingEvent>}
      */
-    public static invalidationEventsFor (
-        event: Event
-    ): InvalidationTrackingEvent[] | null {
+    public static invalidationEventsFor(event: Event): InvalidationTrackingEvent[] | null {
         return event[InvalidationTracker.invalidationTrackingEventsSymbol] || null
     }
 
     /**
      * @param {!TimelineModel.InvalidationTrackingEvent} invalidation
      */
-    public addInvalidation (invalidation: InvalidationTrackingEvent): void {
+    public addInvalidation(invalidation: InvalidationTrackingEvent): void {
         this._startNewFrameIfNeeded()
 
         if (!invalidation.nodeId) {
@@ -52,19 +52,17 @@ export default class InvalidationTracker {
         // Style invalidation events can occur before and during recalc style. didRecalcStyle
         // handles style invalidations that occur before the recalc style event but we need to
         // handle style recalc invalidations during recalc style here.
-        const styleRecalcInvalidation = (
+        const styleRecalcInvalidation =
             invalidation.type === RecordType.ScheduleStyleInvalidationTracking ||
             invalidation.type === RecordType.StyleInvalidatorInvalidationTracking ||
             invalidation.type === RecordType.StyleRecalcInvalidationTracking
-        )
 
         if (styleRecalcInvalidation) {
-            const duringRecalcStyle = (
+            const duringRecalcStyle =
                 invalidation.startTime &&
                 this._lastRecalcStyle &&
                 invalidation.startTime >= this._lastRecalcStyle.startTime &&
                 invalidation.startTime <= this._lastRecalcStyle.endTime
-            )
 
             if (duringRecalcStyle) {
                 this._associateWithLastRecalcStyleEvent(invalidation)
@@ -95,14 +93,14 @@ export default class InvalidationTracker {
     }
 
     /**
-    * @param {!SDK.TracingModel.Event} recalcStyleEvent
-    */
-    public didRecalcStyle (recalcStyleEvent: Event): void {
+     * @param {!SDK.TracingModel.Event} recalcStyleEvent
+     */
+    public didRecalcStyle(recalcStyleEvent: Event): void {
         this._lastRecalcStyle = recalcStyleEvent
         const types = [
             RecordType.ScheduleStyleInvalidationTracking,
             RecordType.StyleInvalidatorInvalidationTracking,
-            RecordType.StyleRecalcInvalidationTracking
+            RecordType.StyleRecalcInvalidationTracking,
         ]
         for (const invalidation of this._invalidationsOfTypes(types)) {
             this._associateWithLastRecalcStyleEvent(invalidation)
@@ -110,9 +108,9 @@ export default class InvalidationTracker {
     }
 
     /**
-    * @param {!TimelineModel.InvalidationTrackingEvent} invalidation
-    */
-    private _associateWithLastRecalcStyleEvent (invalidation: InvalidationTrackingEvent): void {
+     * @param {!TimelineModel.InvalidationTrackingEvent} invalidation
+     */
+    private _associateWithLastRecalcStyleEvent(invalidation: InvalidationTrackingEvent): void {
         if (invalidation.linkedRecalcStyleEvent) {
             return
         }
@@ -124,7 +122,11 @@ export default class InvalidationTracker {
              * Instead of calling _addInvalidationToEvent directly, we create synthetic
              * StyleRecalcInvalidationTracking events which will be added in _addInvalidationToEvent.
              */
-            this._addSyntheticStyleRecalcInvalidations(this._lastRecalcStyle, recalcStyleFrameId, invalidation)
+            this._addSyntheticStyleRecalcInvalidations(
+                this._lastRecalcStyle,
+                recalcStyleFrameId,
+                invalidation
+            )
         } else if (invalidation.type === RecordType.ScheduleStyleInvalidationTracking) {
             /**
              * ScheduleStyleInvalidationTracking events are only used for adding information to
@@ -138,12 +140,16 @@ export default class InvalidationTracker {
     }
 
     /**
-    * @param {!SDK.TracingModel.Event} event
-    * @param {number} frameId
-    * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
-    */
+     * @param {!SDK.TracingModel.Event} event
+     * @param {number} frameId
+     * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
+     */
     // TODO(Christian) fix typings
-    private _addSyntheticStyleRecalcInvalidations (event: Event, frameId: string, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
+    private _addSyntheticStyleRecalcInvalidations(
+        event: Event,
+        frameId: string,
+        styleInvalidatorInvalidation: InvalidationTrackingEvent
+    ): void {
         if (!styleInvalidatorInvalidation.invalidationList) {
             this._addSyntheticStyleRecalcInvalidation(
                 styleInvalidatorInvalidation.tracingEvent,
@@ -162,11 +168,13 @@ export default class InvalidationTracker {
             const setId = styleInvalidatorInvalidation.invalidationList[i]['id']
             let lastScheduleStyleRecalculation
             const emptyList: InvalidationMap[] = []
-            const nodeInvalidations = this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || emptyList
+            const nodeInvalidations =
+                this._invalidationsByNodeId[styleInvalidatorInvalidation.nodeId] || emptyList
             for (let j = 0; j < nodeInvalidations.length; j++) {
                 const invalidation = nodeInvalidations[j]
                 if (
-                    invalidation.frame !== frameId || invalidation.invalidationSet !== setId ||
+                    invalidation.frame !== frameId ||
+                    invalidation.invalidationSet !== setId ||
                     invalidation.type !== RecordType.ScheduleStyleInvalidationTracking
                 ) {
                     continue
@@ -175,7 +183,9 @@ export default class InvalidationTracker {
             }
 
             if (!lastScheduleStyleRecalculation) {
-                console.error('Failed to lookup the event that scheduled a style invalidator invalidation.')
+                console.error(
+                    'Failed to lookup the event that scheduled a style invalidator invalidation.'
+                )
                 continue
             }
 
@@ -187,10 +197,13 @@ export default class InvalidationTracker {
     }
 
     /**
-    * @param {!SDK.TracingModel.Event} baseEvent
-    * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
-    */
-    private _addSyntheticStyleRecalcInvalidation (baseEvent: Event, styleInvalidatorInvalidation: InvalidationTrackingEvent): void {
+     * @param {!SDK.TracingModel.Event} baseEvent
+     * @param {!TimelineModel.InvalidationTrackingEvent} styleInvalidatorInvalidation
+     */
+    private _addSyntheticStyleRecalcInvalidation(
+        baseEvent: Event,
+        styleInvalidatorInvalidation: InvalidationTrackingEvent
+    ): void {
         const invalidation = new InvalidationTrackingEvent(baseEvent)
         invalidation.type = RecordType.StyleRecalcInvalidationTracking
         if (styleInvalidatorInvalidation.cause.reason) {
@@ -208,14 +221,16 @@ export default class InvalidationTracker {
     }
 
     /**
-    * @param {!SDK.TracingModel.Event} layoutEvent
-    */
-    public didLayout (layoutEvent: Event): void {
+     * @param {!SDK.TracingModel.Event} layoutEvent
+     */
+    public didLayout(layoutEvent: Event): void {
         if (!layoutEvent.args.beginData) {
             return
         }
         const layoutFrameId = layoutEvent.args.beginData.frame
-        for (const invalidation of this._invalidationsOfTypes([RecordType.LayoutInvalidationTracking])) {
+        for (const invalidation of this._invalidationsOfTypes([
+            RecordType.LayoutInvalidationTracking,
+        ])) {
             if (invalidation.linkedLayoutEvent) {
                 continue
             }
@@ -227,7 +242,7 @@ export default class InvalidationTracker {
     /**
      * @param {!SDK.TracingModel.Event} paintEvent
      */
-    public didPaint (): void {
+    public didPaint(): void {
         this._didPaint = true
     }
 
@@ -236,7 +251,11 @@ export default class InvalidationTracker {
      * @param {number} eventFrameId
      * @param {!TimelineModel.InvalidationTrackingEvent} invalidation
      */
-    private _addInvalidationToEvent (event: Event, eventFrameId: number | string, invalidation: InvalidationTrackingEvent): void {
+    private _addInvalidationToEvent(
+        event: Event,
+        eventFrameId: number | string,
+        invalidation: InvalidationTrackingEvent
+    ): void {
         if (eventFrameId !== invalidation.frame) {
             return
         }
@@ -253,14 +272,14 @@ export default class InvalidationTracker {
      * @param {!Array.<string>=} types
      * @return {!Iterator.<!TimelineModel.InvalidationTrackingEvent>}
      */
-    private _invalidationsOfTypes (types: string[]): IterableIterator<InvalidationTrackingEvent> {
+    private _invalidationsOfTypes(types: string[]): IterableIterator<InvalidationTrackingEvent> {
         const invalidations = this._invalidations
         if (!types) {
             types = Object.keys(invalidations)
         }
 
         // eslint-disable-next-line
-        function* generator () {
+        function* generator() {
             for (let i = 0; i < types.length; ++i) {
                 // TODO(Christian) fix typings
                 const invalidationList = invalidations[(types as any)[i]] || []
@@ -273,7 +292,7 @@ export default class InvalidationTracker {
         return generator()
     }
 
-    private _startNewFrameIfNeeded (): void {
+    private _startNewFrameIfNeeded(): void {
         if (!this._didPaint) {
             return
         }
@@ -281,7 +300,7 @@ export default class InvalidationTracker {
         this._initializePerFrameState()
     }
 
-    private _initializePerFrameState (): void {
+    private _initializePerFrameState(): void {
         /** @type {!Object.<string, !Array.<!TimelineModel.InvalidationTrackingEvent>>} */
         this._invalidations = {}
         /** @type {!Object.<number, !Array.<!TimelineModel.InvalidationTrackingEvent>>} */

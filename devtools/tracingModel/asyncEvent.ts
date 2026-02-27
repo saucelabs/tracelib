@@ -9,7 +9,13 @@ export default class AsyncEvent extends Event {
      * @param {!TracingModel.Event} startEvent
      */
     public constructor(startEvent: Event) {
-        super(startEvent.categoriesString, startEvent.name, startEvent.phase, startEvent.startTime, startEvent.thread)
+        super(
+            startEvent.categoriesString,
+            startEvent.name,
+            startEvent.phase,
+            startEvent.startTime,
+            startEvent.thread
+        )
         this.addArgs(startEvent.args)
         this.steps = [startEvent]
     }
@@ -17,7 +23,7 @@ export default class AsyncEvent extends Event {
     /**
      * @param {!TracingModel.Event} event
      */
-    public addStep (event: Event): void {
+    public addStep(event: Event): void {
         this.steps.push(event)
 
         if (event.phase === Phase.AsyncEnd || event.phase === Phase.NestableAsyncEnd) {

@@ -28,4 +28,4 @@ export default class TracingFrameLayerTree {
     public setPaints(paints: LayerPaintEvent[]): void {
         this._paints = paints
     }
-};
+}

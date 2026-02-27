@@ -6,7 +6,7 @@ export default class CPUProfileNode extends ProfileNode {
      * @param {!Protocol.Profiler.ProfileNode} node
      * @param {number} sampleTime
      */
-    public constructor (node: ProfileNode, sampleTime: number) {
+    public constructor(node: ProfileNode, sampleTime: number) {
         /**
          * Backward compatibility for old SamplingHeapProfileNode format.
          */
@@ -15,7 +15,7 @@ export default class CPUProfileNode extends ProfileNode {
             scriptId: node.scriptId,
             url: node.url,
             lineNumber: node.lineNumber - 1,
-            columnNumber: node.columnNumber - 1
+            columnNumber: node.columnNumber - 1,
         }
 
         const callFrame = node.callFrame || nodeCallFrame
@@ -28,6 +28,7 @@ export default class CPUProfileNode extends ProfileNode {
         /**
          * Compatibility: legacy backends could provide "no reason" for optimized functions.
          */
-        this.deoptReason = node.deoptReason && node.deoptReason !== 'no reason' ? node.deoptReason : null
+        this.deoptReason =
+            node.deoptReason && node.deoptReason !== 'no reason' ? node.deoptReason : null
     }
 }

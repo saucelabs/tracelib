@@ -11,7 +11,7 @@ export enum TrackType {
     Console,
     Raster,
     GPU,
-    Other
+    Other,
 }
 
 export default class Track {
@@ -26,7 +26,7 @@ export default class Track {
 
     private _syncEvents: Event[]
 
-    public constructor () {
+    public constructor() {
         this.name = ''
         this.url = ''
         this.type = TrackType.Other
@@ -45,7 +45,7 @@ export default class Track {
     /**
      * @return {!Array<!TracingModel.Event>}
      */
-    public syncEvents (): Event[] {
+    public syncEvents(): Event[] {
         if (this.events.length) {
             return this.events
         }

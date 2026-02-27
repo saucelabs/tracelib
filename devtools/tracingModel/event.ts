@@ -17,7 +17,7 @@ export default class Event {
     public thread: Thread
     public args: Record<string, EventData>
     public selfTime: number
-    // eslint-disable-next-line
+
     public bind_id?: string
     public ordinal: number
     public [InvalidationTracker.invalidationTrackingEventsSymbol]: InvalidationTrackingEvent[]
@@ -28,7 +28,13 @@ export default class Event {
      * @param {!Phase} phase
      * @param {!Thread} thread
      */
-    public constructor (categories: string | undefined, name: string, phase: string, startTime: number, thread: Thread) {
+    public constructor(
+        categories: string | undefined,
+        name: string,
+        phase: string,
+        startTime: number,
+        thread: Thread
+    ) {
         this.categoriesString = categories || ''
         this._parsedCategories = thread.model.parsedCategoriesForString(this.categoriesString)
         this.name = name
@@ -45,14 +51,8 @@ export default class Event {
      * @param {!Thread} thread
      * @return {!Event}
      */
-    public static fromPayload (payload: TraceEvent, thread: Thread): Event {
-        const event = new Event(
-            payload.cat,
-            payload.name,
-            payload.ph,
-            payload.ts / 1000,
-            thread
-        )
+    public static fromPayload(payload: TraceEvent, thread: Thread): Event {
+        const event = new Event(payload.cat, payload.name, payload.ph, payload.ts / 1000, thread)
 
         if (payload.args) {
             event.addArgs(payload.args)
@@ -68,7 +68,7 @@ export default class Event {
         }
 
         if (payload.bind_id) {
-            // eslint-disable-next-line
+
             event.bind_id = payload.bind_id
         }
 
@@ -80,7 +80,7 @@ export default class Event {
      * @param {!Event} b
      * @return {number}
      */
-    public static compareStartTime (a: Event, b: Event): number {
+    public static compareStartTime(a: Event, b: Event): number {
         return a.startTime - b.startTime
     }
 
@@ -89,7 +89,7 @@ export default class Event {
      * @param {!Event} b
      * @return {number}
      */
-    public static orderedCompareStartTime (a: Event, b: Event): number {
+    public static orderedCompareStartTime(a: Event, b: Event): number {
         // Array.mergeOrdered coalesces objects if comparator returns 0.
         // To change this behavior this comparator return -1 in the case events
         // startTime's are equal, so both events got placed into the result array.
@@ -100,14 +100,14 @@ export default class Event {
      * @param {string} categoryName
      * @return {boolean}
      */
-    public hasCategory (categoryName: string): boolean {
+    public hasCategory(categoryName: string): boolean {
         return this._parsedCategories.has(categoryName)
     }
 
     /**
      * @param {number} endTime
      */
-    public setEndTime (endTime: number): void {
+    public setEndTime(endTime: number): void {
         if (endTime < this.startTime) {
             console.assert(false, 'Event out of order: ' + this.name)
             return
@@ -119,13 +119,15 @@ export default class Event {
     /**
      * @param {!Object} args
      */
-    public addArgs (args: EventData): void {
+    public addArgs(args: EventData): void {
         /**
          * Shallow copy args to avoid modifying original payload which may be saved to file.
          */
         for (const name in args) {
             if (name in this.args) {
-                console.error(`Same argument name (${name}) is used for begin and end phases of ${this.name}`)
+                console.error(
+                    `Same argument name (${name}) is used for begin and end phases of ${this.name}`
+                )
             }
 
             this.args[name] = (args as any)[name]
@@ -135,7 +137,7 @@ export default class Event {
     /**
      * @param {!Event} endEvent
      */
-    private _complete (endEvent: Event): void {
+    private _complete(endEvent: Event): void {
         if (endEvent.args) {
             this.addArgs(endEvent.args)
         } else {

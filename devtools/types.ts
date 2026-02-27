@@ -9,113 +9,113 @@ import TimelineCategory from './timelineModel/timelineModelFilter/timelineCatego
 import Counter from './timelineModel/counterGraph/counter'
 
 export interface TracelogArgs {
-    name?: string;
-    // eslint-disable-next-line
-    sort_index?: number;
-    snapshot?: string;
-    stackTrace?: any;
+    name?: string
+
+    sort_index?: number
+    snapshot?: string
+    stackTrace?: any
     data?: {
         args: Record<string, EventData>
-    };
+    }
 }
 
 export interface PageFramePayload {
-    frameId: string;
-    url: string;
-    name: string;
-    children: PageFrame[];
-    parent: string;
-    processes: PageFrameProcess[];
-    deletedTime: number;
+    frameId: string
+    url: string
+    name: string
+    children: PageFrame[]
+    parent: string
+    processes: PageFrameProcess[]
+    deletedTime: number
 }
 
 export interface EventData {
-    startTime?: number;
-    endTime?: number;
-    finishTime?: number;
-    cpuProfile?: Profile;
-    lines?: number[];
-    timeDeltas?: number[];
-    stackTrace?: string[];
-    url?: string;
-    frame?: string;
-    nodeId?: number;
-    name?: string;
-    nodeName?: string;
-    invalidationSet?: number;
-    invalidatedSelectorId?: string;
-    layerId?: string;
-    layerTreeId?: number;
-    changedId?: string;
-    workerThreadId?: number;
-    processId?: number;
-    workerId?: string;
-    processPseudoId?: string;
-    frameTreeNodeId?: number;
-    persistentIds?: number[];
-    changedClass?: string;
-    changedAttribute?: string;
-    changedPseudo?: string;
-    selectorPart?: string;
-    extraData?: string;
-    invalidationList?: InvalidationMap[];
-    reason?: string;
-    mimeType?: string;
-    scriptLine?: number;
-    scriptName?: string;
-    lineNumber?: number;
-    decodedBodyLength?: number;
-    encodedDataLength?: number;
-    requestMethod?: string;
-    timing?: Timing;
-    fromServiceWorker?: boolean;
-    fromCache?: boolean;
-    priority?: ResourcePriority;
-    isMainFrame?: boolean;
-    allottedMilliseconds?: number;
-    sessionId?: string;
-    page?: boolean;
-    INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string;
-    INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: { time: number };
-    frames?: PageFramePayload[];
-    // eslint-disable-next-line
-    sort_index?: number;
-    snapshot?: string;
-    sourceFrameNumber?: number;
-    needsBeginFrame?: any; // todo fix type here
-    frameId?: number | undefined;
-    parent?: string;
+    startTime?: number
+    endTime?: number
+    finishTime?: number
+    cpuProfile?: Profile
+    lines?: number[]
+    timeDeltas?: number[]
+    stackTrace?: string[]
+    url?: string
+    frame?: string
+    nodeId?: number
+    name?: string
+    nodeName?: string
+    invalidationSet?: number
+    invalidatedSelectorId?: string
+    layerId?: string
+    layerTreeId?: number
+    changedId?: string
+    workerThreadId?: number
+    processId?: number
+    workerId?: string
+    processPseudoId?: string
+    frameTreeNodeId?: number
+    persistentIds?: number[]
+    changedClass?: string
+    changedAttribute?: string
+    changedPseudo?: string
+    selectorPart?: string
+    extraData?: string
+    invalidationList?: InvalidationMap[]
+    reason?: string
+    mimeType?: string
+    scriptLine?: number
+    scriptName?: string
+    lineNumber?: number
+    decodedBodyLength?: number
+    encodedDataLength?: number
+    requestMethod?: string
+    timing?: Timing
+    fromServiceWorker?: boolean
+    fromCache?: boolean
+    priority?: ResourcePriority
+    isMainFrame?: boolean
+    allottedMilliseconds?: number
+    sessionId?: string
+    page?: boolean
+    INPUT_EVENT_LATENCY_RENDERER_SWAP_COMPONENT?: string
+    INPUT_EVENT_LATENCY_RENDERER_MAIN_COMPONENT?: { time: number }
+    frames?: PageFramePayload[]
+
+    sort_index?: number
+    snapshot?: string
+    sourceFrameNumber?: number
+    needsBeginFrame?: any // todo fix type here
+    frameId?: number | undefined
+    parent?: string
 }
 
 export interface Profile {
-    startTime?: number;
-    endTime?: number;
-    timestamps?: number[];
-    samples?: number[];
-    lines?: number[];
-    nodes?: ProfileNode[];
-    head?: ProfileNode;
-    timeDeltas?: number[];
+    startTime?: number
+    endTime?: number
+    timestamps?: number[]
+    samples?: number[]
+    lines?: number[]
+    nodes?: ProfileNode[]
+    head?: ProfileNode
+    timeDeltas?: number[]
 }
 
 export interface TraceEvent {
-    cat?: string;
-    pid: number;
-    tid: number;
-    ts: number;
-    ph: string;
-    name: string;
-    args: EventData;
-    dur?: number;
-    id?: string;
+    cat?: string
+    pid: number
+    tid: number
+    ts: number
+    ph: string
+    name: string
+    args: EventData
+    dur?: number
+    id?: string
     id2?: {
-        global?: string;
-        local?: string;
-    } | void;
-    scope?: string;
-    // eslint-disable-next-line
-    bind_id?: string;
-    s?: string;
+        global?: string
+        local?: string
+    } | void
+    scope?: string
+
+    bind_id?: string
+    s?: string
 }
 
 export interface InvalidationCause {
@@ -128,31 +128,35 @@ export interface InvalidationMap {
 }
 
 export interface Timing {
-    blocked: number;
-    dns: number;
-    ssl: number;
-    connect: number;
-    send: number;
-    wait: number;
-    receive: number;
-    // eslint-disable-next-line
-    _blocked_queueing: number;
-    // eslint-disable-next-line
-    _blocked_proxy: (number|undefined);
-    pushStart: number;
-    requestTime: number;
+    blocked: number
+    dns: number
+    ssl: number
+    connect: number
+    send: number
+    wait: number
+    receive: number
+
+    _blocked_queueing: number
+
+    _blocked_proxy: number | undefined
+    pushStart: number
+    requestTime: number
 }
 
 export enum ResourcePriority {
-    VeryLow, Low, Medium, High, VeryHigh
+    VeryLow,
+    Low,
+    Medium,
+    High,
+    VeryHigh,
 }
 
 export interface CallFrame {
-    functionName: string;
-    scriptId: string;
-    url: string;
-    lineNumber: number;
-    columnNumber: number;
+    functionName: string
+    scriptId: string
+    url: string
+    lineNumber: number
+    columnNumber: number
 }
 
 export enum RecordType {
@@ -369,7 +373,7 @@ export interface FPS {
 }
 
 export interface PicturePromise {
-    rect: number[],
+    rect: number[]
     serializedPicture: string
 }
 
@@ -378,7 +382,7 @@ export interface FrameById {
 }
 
 export interface ThreadData {
-    thread: Thread,
+    thread: Thread
     time: number
 }
 
@@ -386,8 +390,8 @@ export enum TimelineSelectionType {
     Frame,
     NetworkRequest,
     TraceEvent,
-    Range
-};
+    Range,
+}
 
 export interface StatsObject {
     [key: string]: number
@@ -406,12 +410,12 @@ export enum NetworkCategory {
     Script,
     Style,
     Media,
-    Other
-};
+    Other,
+}
 
 export interface StatsArray {
     [key: string]: {
-        time: number[],
+        time: number[]
         value: number[]
     }
 }
@@ -421,7 +425,7 @@ export interface CountersObject {
 }
 
 export interface CountersValuesTimestamp {
-    times: number[],
+    times: number[]
     values: number[]
 }
 

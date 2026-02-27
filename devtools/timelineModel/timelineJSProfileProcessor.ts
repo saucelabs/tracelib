@@ -2,7 +2,11 @@ import CPUProfileDataModel from '../cpuProfileDataModel/index'
 import Thread from '../tracingModel/thread'
 import TimelineModel from './index'
 import Event from '../tracingModel/event'
-import TracingModel, { DevToolsTimelineEventCategory, Phase, MetadataEvent } from '../tracingModel/index'
+import TracingModel, {
+    DevToolsTimelineEventCategory,
+    Phase,
+    MetadataEvent,
+} from '../tracingModel/index'
 import Runtime from '../runtime'
 import { TraceEvent, RecordType, EventData } from '../types'
 import Common from '../common/index'
@@ -19,7 +23,10 @@ export default class TimelineJSProfileProcessor {
      * @return {!Array<!SDK.TracingModel.Event>}
      */
 
-    public static generateTracingEventsFromCpuProfile(jsProfileModel: CPUProfileDataModel, thread: Thread): Event[] {
+    public static generateTracingEventsFromCpuProfile(
+        jsProfileModel: CPUProfileDataModel,
+        thread: Thread
+    ): Event[] {
         const idleNode = jsProfileModel.idleNode
         const programNode = jsProfileModel.programNode
         const gcNode = jsProfileModel.gcNode
@@ -41,12 +48,13 @@ export default class TimelineJSProfileProcessor {
 
             let callFrames = nodeToStackMap.get(node)
             if (!callFrames) {
-                callFrames = /** @type {!Array<!Protocol.Runtime.CallFrame>} */ (new Array(node.depth + 1))
+                callFrames = /** @type {!Array<!Protocol.Runtime.CallFrame>} */ new Array(
+                    node.depth + 1
+                )
                 nodeToStackMap.set(node, callFrames)
                 for (let j = 0; node.parent; node = node.parent) {
-                    callFrames[j++] = /** @type {!Protocol.Runtime.CallFrame} */ (node)
+                    callFrames[j++] = /** @type {!Protocol.Runtime.CallFrame} */ node
                 }
-
             }
             const jsSampleEvent = new Event(
                 DevToolsTimelineEventCategory,
@@ -162,9 +170,10 @@ export default class TimelineJSProfileProcessor {
         function extractStackTrace(e: Event): void {
             const recordTypes = RecordType
             /** @type {!Array<!Protocol.Runtime.CallFrame>} */
-            const callFrames = e.name === recordTypes.JSSample
-                ? e.args['data']['stackTrace'].slice().reverse()
-                : jsFramesStack.map((frameEvent): any => frameEvent.args['data'])
+            const callFrames =
+                e.name === recordTypes.JSSample
+                    ? e.args['data']['stackTrace'].slice().reverse()
+                    : jsFramesStack.map((frameEvent): any => frameEvent.args['data'])
 
             filterStackFrames(callFrames)
             const endTime = e.endTime || e.startTime
@@ -203,13 +212,13 @@ export default class TimelineJSProfileProcessor {
          */
         function isJSInvocationEvent(e: Event): boolean {
             switch (e.name) {
-            case RecordType.RunMicrotasks:
-            case RecordType.FunctionCall:
-            case RecordType.EvaluateScript:
-            case RecordType.EvaluateModule:
-            case RecordType.EventDispatch:
-            case RecordType.V8Execute:
-                return true
+                case RecordType.RunMicrotasks:
+                case RecordType.FunctionCall:
+                case RecordType.EvaluateScript:
+                case RecordType.EvaluateModule:
+                case RecordType.EventDispatch:
+                case RecordType.V8Execute:
+                    return true
             }
             return false
         }
@@ -233,7 +242,6 @@ export default class TimelineJSProfileProcessor {
             if (parent && isJSInvocationEvent(parent)) {
                 extractStackTrace(e)
             }
-
         }
 
         /**
@@ -324,7 +332,14 @@ export default class TimelineJSProfileProcessor {
             }
 
             if (!programEvent) {
-                programEvent = appendEvent('MessageLoop::RunTask', {}, currentTime, 0, 'X', 'toplevel')
+                programEvent = appendEvent(
+                    'MessageLoop::RunTask',
+                    {},
+                    currentTime,
+                    0,
+                    'X',
+                    'toplevel'
+                )
             }
 
             if (name === '(program)') {
@@ -333,14 +348,18 @@ export default class TimelineJSProfileProcessor {
                     functionEvent = null
                 }
             } else if (!functionEvent) {
-                functionEvent = appendEvent('FunctionCall', { data: { sessionId: '1' } }, currentTime)
+                functionEvent = appendEvent(
+                    'FunctionCall',
+                    { data: { sessionId: '1' } },
+                    currentTime
+                )
             }
         }
         closeEvents()
         appendEvent('CpuProfile', { data: { cpuProfile: profile } }, profile.endTime, 0, 'I')
         return events
 
-        function closeEvents (): void {
+        function closeEvents(): void {
             if (programEvent) {
                 programEvent.dur = currentTime - programEvent.ts
             }
@@ -360,8 +379,15 @@ export default class TimelineJSProfileProcessor {
          * @param {string=} cat
          * @return {!SDK.TracingManager.TraceEvent}
          */
-        function appendEvent(name: string, args: any, ts: number, dur?: number, ph?: string, cat?: string): TraceEvent {
-            const event: TraceEvent = /** @type {!SDK.TracingManager.TraceEvent} */ ({
+        function appendEvent(
+            name: string,
+            args: any,
+            ts: number,
+            dur?: number,
+            ph?: string,
+            cat?: string
+        ): TraceEvent {
+            const event: TraceEvent = /** @type {!SDK.TracingManager.TraceEvent} */ {
                 cat: cat || 'disabled-by-default-devtools.timeline',
                 name,
                 ph: ph || 'X',
@@ -369,7 +395,7 @@ export default class TimelineJSProfileProcessor {
                 tid,
                 ts,
                 args,
-            })
+            }
             if (dur) {
                 event.dur = dur
             }

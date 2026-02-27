@@ -203,7 +203,11 @@ export function calcFPS(frameDuration: number): number {
  * @this {Array.<!S>}
  * @template T,S
  */
-export function binaryIndexOf<T>(array1: T[], value: number, comparator: (startTime: any, e: any) => number): number {
+export function binaryIndexOf<T>(
+    array1: T[],
+    value: number,
+    comparator: (startTime: any, e: any) => number
+): number {
     const index = lowerBound(array1, value, comparator)
     return index < array1.length && comparator(value, array1[index]) === 0 ? index : -1
 }
@@ -250,4 +254,4 @@ export function constrain(num: number, min: number, max: number): number {
         num = max
     }
     return num
-};
+}

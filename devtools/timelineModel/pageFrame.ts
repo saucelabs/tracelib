@@ -1,10 +1,10 @@
 import { EventData } from '../types'
 
 export interface PageFrameProcess {
-    time: number;
-    processId: number;
-    processPseudoId?: string;
-    url: string;
+    time: number
+    processId: number
+    processPseudoId?: string
+    url: string
 }
 
 export default class PageFrame {
@@ -20,7 +20,7 @@ export default class PageFrame {
     /**
      * @param {!Object} payload
      */
-    public constructor (payload: EventData) {
+    public constructor(payload: EventData) {
         this.frameId = payload.frame
         this.url = payload.url || ''
         this.name = payload.name
@@ -37,14 +37,14 @@ export default class PageFrame {
      * @param {number} time
      * @param {!Object} payload
      */
-    public update (time: number, payload: EventData): void {
+    public update(time: number, payload: EventData): void {
         this.url = payload['url'] || ''
         this.name = payload['name']
         this.processes.push({
             time,
             processId: payload.processId ? payload.processId : -1,
             processPseudoId: payload.processId ? '' : payload.processPseudoId,
-            url: payload.url || ''
+            url: payload.url || '',
         })
     }
 
@@ -52,7 +52,7 @@ export default class PageFrame {
      * @param {string} processPseudoId
      * @param {number} processId
      */
-    public processReady (processPseudoId: string, processId: number): void {
+    public processReady(processPseudoId: string, processId: number): void {
         for (const process of this.processes) {
             if (process.processPseudoId === processPseudoId) {
                 process.processPseudoId = ''
@@ -64,7 +64,7 @@ export default class PageFrame {
     /**
      * @param {!TimelineModel.TimelineModel.PageFrame} child
      */
-    public addChild (child: PageFrame): void {
+    public addChild(child: PageFrame): void {
         this.children.push(child)
         child.parent = this
     }

@@ -9,13 +9,13 @@ export default class Settings {
         const setting = this._moduleSettings.get(settingName)
         if (!setting) {
             return {
-                get: (): null => null
+                get: (): null => null,
             }
         }
         return setting
     }
 
-    public get (): boolean {
+    public get(): boolean {
         return true
     }
 }

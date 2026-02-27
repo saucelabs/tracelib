@@ -52,18 +52,33 @@ export default class TimelineUIUtils {
         eventStyles[type.Program] = new TimelineRecordStyle('Other', other)
         eventStyles[type.Animation] = new TimelineRecordStyle('Animation', rendering)
         eventStyles[type.EventDispatch] = new TimelineRecordStyle('Event', scripting)
-        eventStyles[type.RequestMainThreadFrame] = new TimelineRecordStyle('Request Main Thread Frame', rendering, true)
+        eventStyles[type.RequestMainThreadFrame] = new TimelineRecordStyle(
+            'Request Main Thread Frame',
+            rendering,
+            true
+        )
         eventStyles[type.BeginFrame] = new TimelineRecordStyle('Frame Start', rendering, true)
-        eventStyles[type.BeginMainThreadFrame] = new TimelineRecordStyle('Frame Start (main thread)', rendering, true)
+        eventStyles[type.BeginMainThreadFrame] = new TimelineRecordStyle(
+            'Frame Start (main thread)',
+            rendering,
+            true
+        )
         eventStyles[type.DrawFrame] = new TimelineRecordStyle('Draw Frame', rendering, true)
         eventStyles[type.HitTest] = new TimelineRecordStyle('Hit Test', rendering)
         eventStyles[type.ScheduleStyleRecalculation] = new TimelineRecordStyle(
             'Schedule Style Recalculation',
             rendering
         )
-        eventStyles[type.RecalculateStyles] = new TimelineRecordStyle('Recalculate Style', rendering)
+        eventStyles[type.RecalculateStyles] = new TimelineRecordStyle(
+            'Recalculate Style',
+            rendering
+        )
         eventStyles[type.UpdateLayoutTree] = new TimelineRecordStyle('Recalculate Style', rendering)
-        eventStyles[type.InvalidateLayout] = new TimelineRecordStyle('Invalidate Layout', rendering, true)
+        eventStyles[type.InvalidateLayout] = new TimelineRecordStyle(
+            'Invalidate Layout',
+            rendering,
+            true
+        )
         eventStyles[type.Layout] = new TimelineRecordStyle('Layout', rendering)
         eventStyles[type.PaintSetup] = new TimelineRecordStyle('Paint Setup', painting)
         eventStyles[type.PaintImage] = new TimelineRecordStyle('Paint Image', painting, true)
@@ -74,33 +89,76 @@ export default class TimelineUIUtils {
         eventStyles[type.ScrollLayer] = new TimelineRecordStyle('Scroll', rendering)
         eventStyles[type.CompositeLayers] = new TimelineRecordStyle('Composite Layers', painting)
         eventStyles[type.ParseHTML] = new TimelineRecordStyle('Parse HTML', loading)
-        eventStyles[type.ParseAuthorStyleSheet] = new TimelineRecordStyle('Parse Stylesheet', loading)
+        eventStyles[type.ParseAuthorStyleSheet] = new TimelineRecordStyle(
+            'Parse Stylesheet',
+            loading
+        )
         eventStyles[type.TimerInstall] = new TimelineRecordStyle('Install Timer', scripting)
         eventStyles[type.TimerRemove] = new TimelineRecordStyle('Remove Timer', scripting)
         eventStyles[type.TimerFire] = new TimelineRecordStyle('Timer Fired', scripting)
-        eventStyles[type.XHRReadyStateChange] = new TimelineRecordStyle('XHR Ready State Change', scripting)
+        eventStyles[type.XHRReadyStateChange] = new TimelineRecordStyle(
+            'XHR Ready State Change',
+            scripting
+        )
         eventStyles[type.XHRLoad] = new TimelineRecordStyle('XHR Load', scripting)
         eventStyles[type.CompileScript] = new TimelineRecordStyle('Compile Script', scripting)
         eventStyles[type.EvaluateScript] = new TimelineRecordStyle('Evaluate Script', scripting)
         eventStyles[type.CompileModule] = new TimelineRecordStyle('Compile Module', scripting)
         eventStyles[type.EvaluateModule] = new TimelineRecordStyle('Evaluate Module', scripting)
-        eventStyles[type.ParseScriptOnBackground] = new TimelineRecordStyle('Parse Script', scripting)
-        eventStyles[type.WasmStreamFromResponseCallback] = new TimelineRecordStyle('Streaming Wasm Response', scripting)
-        eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle('Compiled Wasm Module', scripting)
-        eventStyles[type.WasmCachedModule] = new TimelineRecordStyle('Cached Wasm Module', scripting)
-        eventStyles[type.WasmModuleCacheHit] = new TimelineRecordStyle('Wasm Module Cache Hit', scripting)
-        eventStyles[type.WasmModuleCacheInvalid] = new TimelineRecordStyle('Wasm Module Cache Invalid', scripting)
-        eventStyles[type.FrameStartedLoading] = new TimelineRecordStyle('Frame Started Loading', loading, true)
+        eventStyles[type.ParseScriptOnBackground] = new TimelineRecordStyle(
+            'Parse Script',
+            scripting
+        )
+        eventStyles[type.WasmStreamFromResponseCallback] = new TimelineRecordStyle(
+            'Streaming Wasm Response',
+            scripting
+        )
+        eventStyles[type.WasmCompiledModule] = new TimelineRecordStyle(
+            'Compiled Wasm Module',
+            scripting
+        )
+        eventStyles[type.WasmCachedModule] = new TimelineRecordStyle(
+            'Cached Wasm Module',
+            scripting
+        )
+        eventStyles[type.WasmModuleCacheHit] = new TimelineRecordStyle(
+            'Wasm Module Cache Hit',
+            scripting
+        )
+        eventStyles[type.WasmModuleCacheInvalid] = new TimelineRecordStyle(
+            'Wasm Module Cache Invalid',
+            scripting
+        )
+        eventStyles[type.FrameStartedLoading] = new TimelineRecordStyle(
+            'Frame Started Loading',
+            loading,
+            true
+        )
         eventStyles[type.MarkLoad] = new TimelineRecordStyle('Onload Event', scripting, true)
-        eventStyles[type.MarkDOMContent] = new TimelineRecordStyle('DOMContentLoaded Event', scripting, true)
+        eventStyles[type.MarkDOMContent] = new TimelineRecordStyle(
+            'DOMContentLoaded Event',
+            scripting,
+            true
+        )
         eventStyles[type.MarkFirstPaint] = new TimelineRecordStyle('First Paint', painting, true)
-        eventStyles[type.MarkFCP] = new TimelineRecordStyle('First Contentful Paint', rendering, true)
-        eventStyles[type.MarkFMP] = new TimelineRecordStyle('First Meaningful Paint', rendering, true)
+        eventStyles[type.MarkFCP] = new TimelineRecordStyle(
+            'First Contentful Paint',
+            rendering,
+            true
+        )
+        eventStyles[type.MarkFMP] = new TimelineRecordStyle(
+            'First Meaningful Paint',
+            rendering,
+            true
+        )
         eventStyles[type.TimeStamp] = new TimelineRecordStyle('Timestamp', scripting)
         eventStyles[type.ConsoleTime] = new TimelineRecordStyle('Console Time', scripting)
         eventStyles[type.UserTiming] = new TimelineRecordStyle('User Timing', scripting)
         eventStyles[type.ResourceSendRequest] = new TimelineRecordStyle('Send Request', loading)
-        eventStyles[type.ResourceReceiveResponse] = new TimelineRecordStyle('Receive Response', loading)
+        eventStyles[type.ResourceReceiveResponse] = new TimelineRecordStyle(
+            'Receive Response',
+            loading
+        )
         eventStyles[type.ResourceFinish] = new TimelineRecordStyle('Finish Loading', loading)
         eventStyles[type.ResourceReceivedData] = new TimelineRecordStyle('Receive Data', loading)
         eventStyles[type.RunMicrotasks] = new TimelineRecordStyle('Run Microtasks', scripting)
@@ -109,14 +167,35 @@ export default class TimelineUIUtils {
         eventStyles[type.MajorGC] = new TimelineRecordStyle('Major GC', scripting)
         eventStyles[type.MinorGC] = new TimelineRecordStyle('Minor GC', scripting)
         eventStyles[type.JSFrame] = new TimelineRecordStyle('JS Frame', scripting)
-        eventStyles[type.RequestAnimationFrame] = new TimelineRecordStyle('Request Animation Frame', scripting)
-        eventStyles[type.CancelAnimationFrame] = new TimelineRecordStyle('Cancel Animation Frame', scripting)
-        eventStyles[type.FireAnimationFrame] = new TimelineRecordStyle('Animation Frame Fired', scripting)
-        eventStyles[type.RequestIdleCallback] = new TimelineRecordStyle('Request Idle Callback', scripting)
-        eventStyles[type.CancelIdleCallback] = new TimelineRecordStyle('Cancel Idle Callback', scripting)
-        eventStyles[type.FireIdleCallback] = new TimelineRecordStyle('Fire Idle Callback', scripting)
+        eventStyles[type.RequestAnimationFrame] = new TimelineRecordStyle(
+            'Request Animation Frame',
+            scripting
+        )
+        eventStyles[type.CancelAnimationFrame] = new TimelineRecordStyle(
+            'Cancel Animation Frame',
+            scripting
+        )
+        eventStyles[type.FireAnimationFrame] = new TimelineRecordStyle(
+            'Animation Frame Fired',
+            scripting
+        )
+        eventStyles[type.RequestIdleCallback] = new TimelineRecordStyle(
+            'Request Idle Callback',
+            scripting
+        )
+        eventStyles[type.CancelIdleCallback] = new TimelineRecordStyle(
+            'Cancel Idle Callback',
+            scripting
+        )
+        eventStyles[type.FireIdleCallback] = new TimelineRecordStyle(
+            'Fire Idle Callback',
+            scripting
+        )
         eventStyles[type.WebSocketCreate] = new TimelineRecordStyle('Create WebSocket', scripting)
-        eventStyles[type.WebSocketSendHandshakeRequest] = new TimelineRecordStyle('Send WebSocket Handshake', scripting)
+        eventStyles[type.WebSocketSendHandshakeRequest] = new TimelineRecordStyle(
+            'Send WebSocket Handshake',
+            scripting
+        )
         eventStyles[type.WebSocketReceiveHandshakeResponse] = new TimelineRecordStyle(
             'Receive WebSocket Handshake',
             scripting
@@ -166,10 +245,10 @@ export default class TimelineUIUtils {
         const nativeGroup = TimelineJSProfileProcessor.nativeGroup(frame.functionName)
         const groups = NativeGroups
         switch (nativeGroup) {
-        case groups.Compile:
-            return 'Compile'
-        case groups.Parse:
-            return 'Parse'
+            case groups.Compile:
+                return 'Compile'
+            case groups.Parse:
+                return 'Parse'
         }
         return frame.functionName
     }
@@ -222,7 +301,9 @@ export default class TimelineUIUtils {
             return url
         }
         const stackTrace = data && data['stackTrace']
-        const frame: any = (stackTrace && stackTrace.length && stackTrace[0]) || TimelineData.forEvent(event).topFrame()
+        const frame: any =
+            (stackTrace && stackTrace.length && stackTrace[0]) ||
+            TimelineData.forEvent(event).topFrame()
         return (frame && frame.url) || null
     }
 
@@ -242,11 +323,16 @@ export default class TimelineUIUtils {
         if (event.hasCategory(Category.LatencyInfo)) {
             /** @const */
             const prefix = 'InputLatency::'
-            const inputEventType = event.name.startsWith(prefix) ? event.name.substr(prefix.length) : event.name
+            const inputEventType = event.name.startsWith(prefix)
+                ? event.name.substr(prefix.length)
+                : event.name
             const displayName = TimelineUIUtils.inputEventDisplayName(
                 /** @type {!TimelineModel.TimelineIRModel.InputEvents} */ inputEventType
             )
-            return { title: displayName || inputEventType, category: this.categories()['scripting'] }
+            return {
+                title: displayName || inputEventType,
+                category: this.categories()['scripting'],
+            }
         }
         let result = eventStyles[event.name]
         if (!result) {
@@ -297,27 +383,27 @@ export default class TimelineUIUtils {
     public static networkRequestCategory(request: NetworkRequest): NetworkCategory {
         const categories = NetworkCategory
         switch (request.mimeType) {
-        case 'text/html':
-            return categories.HTML
-        case 'application/javascript':
-        case 'application/x-javascript':
-        case 'text/javascript':
-            return categories.Script
-        case 'text/css':
-            return categories.Style
-        case 'audio/ogg':
-        case 'image/gif':
-        case 'image/jpeg':
-        case 'image/png':
-        case 'image/svg+xml':
-        case 'image/webp':
-        case 'image/x-icon':
-        case 'font/opentype':
-        case 'font/woff2':
-        case 'application/font-woff':
-            return categories.Media
-        default:
-            return categories.Other
+            case 'text/html':
+                return categories.HTML
+            case 'application/javascript':
+            case 'application/x-javascript':
+            case 'text/javascript':
+                return categories.Script
+            case 'text/css':
+                return categories.Style
+            case 'audio/ogg':
+            case 'image/gif':
+            case 'image/jpeg':
+            case 'image/png':
+            case 'image/svg+xml':
+            case 'image/webp':
+            case 'image/x-icon':
+            case 'font/opentype':
+            case 'font/woff2':
+            case 'application/font-woff':
+                return categories.Media
+            default:
+                return categories.Other
         }
     }
 
@@ -328,16 +414,16 @@ export default class TimelineUIUtils {
     public static networkCategoryColor(category: NetworkCategory): string {
         const categories = NetworkCategory
         switch (category) {
-        case categories.HTML:
-            return 'hsl(214, 67%, 66%)'
-        case categories.Script:
-            return 'hsl(43, 83%, 64%)'
-        case categories.Style:
-            return 'hsl(256, 67%, 70%)'
-        case categories.Media:
-            return 'hsl(109, 33%, 55%)'
-        default:
-            return 'hsl(0, 0%, 70%)'
+            case categories.HTML:
+                return 'hsl(214, 67%, 66%)'
+            case categories.Script:
+                return 'hsl(43, 83%, 64%)'
+            case categories.Style:
+                return 'hsl(256, 67%, 70%)'
+            case categories.Media:
+                return 'hsl(109, 33%, 55%)'
+            default:
+                return 'hsl(0, 0%, 70%)'
         }
     }
 
@@ -352,118 +438,118 @@ export default class TimelineUIUtils {
         const eventArgs: any = event.args
         const eventData = eventArgs['data']
         switch (event.name) {
-        case recordType.GCEvent:
-        case recordType.MajorGC:
-        case recordType.MinorGC: {
-            const delta = eventArgs['usedHeapSizeBefore'] - eventArgs['usedHeapSizeAfter']
-            detailsText = `${delta} collected`
-            break
-        }
-        case recordType.FunctionCall:
-            if (eventData) {
-                detailsText = linkifyLocationAsText(
-                    eventData['scriptId'],
-                    eventData['lineNumber'],
-                    eventData['columnNumber']
-                )
+            case recordType.GCEvent:
+            case recordType.MajorGC:
+            case recordType.MinorGC: {
+                const delta = eventArgs['usedHeapSizeBefore'] - eventArgs['usedHeapSizeAfter']
+                detailsText = `${delta} collected`
+                break
             }
-            break
-        case recordType.JSFrame:
-            detailsText = TimelineUIUtils.frameDisplayName(eventData)
-            break
-        case recordType.EventDispatch:
-            detailsText = eventData ? eventData['type'] : null
-            break
-        case recordType.Paint: {
-            const width = TimelineUIUtils.quadWidth(eventData.clip)
-            const height = TimelineUIUtils.quadHeight(eventData.clip)
-            if (width && height) {
-                detailsText = `${width}\xa0\u00d7\xa0${height}`
+            case recordType.FunctionCall:
+                if (eventData) {
+                    detailsText = linkifyLocationAsText(
+                        eventData['scriptId'],
+                        eventData['lineNumber'],
+                        eventData['columnNumber']
+                    )
+                }
+                break
+            case recordType.JSFrame:
+                detailsText = TimelineUIUtils.frameDisplayName(eventData)
+                break
+            case recordType.EventDispatch:
+                detailsText = eventData ? eventData['type'] : null
+                break
+            case recordType.Paint: {
+                const width = TimelineUIUtils.quadWidth(eventData.clip)
+                const height = TimelineUIUtils.quadHeight(eventData.clip)
+                if (width && height) {
+                    detailsText = `${width}\xa0\u00d7\xa0${height}`
+                }
+                break
             }
-            break
-        }
-        case recordType.ParseHTML: {
-            const startLine = eventArgs['beginData']['startLine']
-            const endLine = eventArgs['endData'] && eventArgs['endData']['endLine']
-            const url = eventArgs['beginData']['url']
-            if (endLine >= 0) {
-                detailsText = `${url}, ${startLine + 1}, ${endLine + 1}`
-            } else {
-                detailsText = `${url} [${startLine + 1}\u2026]`
+            case recordType.ParseHTML: {
+                const startLine = eventArgs['beginData']['startLine']
+                const endLine = eventArgs['endData'] && eventArgs['endData']['endLine']
+                const url = eventArgs['beginData']['url']
+                if (endLine >= 0) {
+                    detailsText = `${url}, ${startLine + 1}, ${endLine + 1}`
+                } else {
+                    detailsText = `${url} [${startLine + 1}\u2026]`
+                }
+                break
             }
-            break
-        }
-        case recordType.CompileModule:
-            detailsText = eventArgs['fileName']
-            break
-        case recordType.CompileScript:
-        case recordType.EvaluateScript: {
-            const url = eventData && eventData['url']
-            if (url) {
-                detailsText = url + ':' + (eventData['lineNumber'] + 1)
+            case recordType.CompileModule:
+                detailsText = eventArgs['fileName']
+                break
+            case recordType.CompileScript:
+            case recordType.EvaluateScript: {
+                const url = eventData && eventData['url']
+                if (url) {
+                    detailsText = url + ':' + (eventData['lineNumber'] + 1)
+                }
+                break
             }
-            break
-        }
-        case recordType.WasmCompiledModule:
-        case recordType.WasmModuleCacheHit: {
-            const url = eventArgs['url']
-            if (url) {
-                detailsText = url
+            case recordType.WasmCompiledModule:
+            case recordType.WasmModuleCacheHit: {
+                const url = eventArgs['url']
+                if (url) {
+                    detailsText = url
+                }
+                break
             }
-            break
-        }
 
-        case recordType.ParseScriptOnBackground:
-        case recordType.XHRReadyStateChange:
-        case recordType.XHRLoad: {
-            const url = eventData['url']
-            if (url) {
-                detailsText = url
+            case recordType.ParseScriptOnBackground:
+            case recordType.XHRReadyStateChange:
+            case recordType.XHRLoad: {
+                const url = eventData['url']
+                if (url) {
+                    detailsText = url
+                }
+                break
             }
-            break
-        }
-        case recordType.TimeStamp:
-            detailsText = eventData['message']
-            break
+            case recordType.TimeStamp:
+                detailsText = eventData['message']
+                break
 
-        case recordType.WebSocketCreate:
-        case recordType.WebSocketSendHandshakeRequest:
-        case recordType.WebSocketReceiveHandshakeResponse:
-        case recordType.WebSocketDestroy:
-        case recordType.ResourceSendRequest:
-        case recordType.ResourceReceivedData:
-        case recordType.ResourceReceiveResponse:
-        case recordType.ResourceFinish:
-        case recordType.PaintImage:
-        case recordType.DecodeImage:
-        case recordType.ResizeImage:
-        case recordType.DecodeLazyPixelRef: {
-            const url = TimelineData.forEvent(event).url
-            if (url) {
-                detailsText = url
+            case recordType.WebSocketCreate:
+            case recordType.WebSocketSendHandshakeRequest:
+            case recordType.WebSocketReceiveHandshakeResponse:
+            case recordType.WebSocketDestroy:
+            case recordType.ResourceSendRequest:
+            case recordType.ResourceReceivedData:
+            case recordType.ResourceReceiveResponse:
+            case recordType.ResourceFinish:
+            case recordType.PaintImage:
+            case recordType.DecodeImage:
+            case recordType.ResizeImage:
+            case recordType.DecodeLazyPixelRef: {
+                const url = TimelineData.forEvent(event).url
+                if (url) {
+                    detailsText = url
+                }
+                break
             }
-            break
-        }
 
-        case recordType.EmbedderCallback:
-            detailsText = eventData['callbackName']
-            break
+            case recordType.EmbedderCallback:
+                detailsText = eventData['callbackName']
+                break
 
-        case recordType.Animation:
-            detailsText = eventData && eventData['name']
-            break
+            case recordType.Animation:
+                detailsText = eventData && eventData['name']
+                break
 
-        case recordType.AsyncTask:
-            detailsText = eventData ? eventData['name'] : null
-            break
+            case recordType.AsyncTask:
+                detailsText = eventData ? eventData['name'] : null
+                break
 
-        default:
-            if (event.hasCategory(Category.Console)) {
-                detailsText = null
-            } else {
-                detailsText = linkifyTopCallFrameAsText()
-            }
-            break
+            default:
+                if (event.hasCategory(Category.Console)) {
+                    detailsText = null
+                } else {
+                    detailsText = linkifyTopCallFrameAsText()
+                }
+                break
         }
 
         return detailsText
@@ -474,7 +560,11 @@ export default class TimelineUIUtils {
          * @param {number} columnNumber
          * @return {?string}
          */
-        function linkifyLocationAsText(scriptId: string, lineNumber: number, columnNumber: number): string {
+        function linkifyLocationAsText(
+            scriptId: string,
+            lineNumber: number,
+            columnNumber: number
+        ): string {
             return null
         }
 
@@ -511,8 +601,14 @@ export default class TimelineUIUtils {
         }
 
         buildRangeStatsCacheIfNeeded(events)
-        const aggregatedStats = subtractStats(aggregatedStatsAtTime(endTime), aggregatedStatsAtTime(startTime))
-        const aggregatedTotal: any = Object.values(aggregatedStats).reduce((a: any, b: any): number => a + b, 0)
+        const aggregatedStats = subtractStats(
+            aggregatedStatsAtTime(endTime),
+            aggregatedStatsAtTime(startTime)
+        )
+        const aggregatedTotal: any = Object.values(aggregatedStats).reduce(
+            (a: any, b: any): number => a + b,
+            0
+        )
         aggregatedStats['idle'] = Math.max(0, endTime - startTime - aggregatedTotal)
         return aggregatedStats
 
@@ -586,7 +682,8 @@ export default class TimelineUIUtils {
              */
             function filterForStats(): any {
                 const visibleEventsFilter = visibleEventsFilterFunc()
-                return (event: Event): any => visibleEventsFilter.accept(event) || TracingModel.isTopLevelEvent(event)
+                return (event: Event): any =>
+                    visibleEventsFilter.accept(event) || TracingModel.isTopLevelEvent(event)
             }
 
             /**
@@ -599,10 +696,15 @@ export default class TimelineUIUtils {
                     statsArrays = { time: [], value: [] }
                     aggregatedStats[category] = statsArrays
                 }
-                if (statsArrays.time.length && statsArrays.time[statsArrays.time.length - 1] === time) {
+                if (
+                    statsArrays.time.length &&
+                    statsArrays.time[statsArrays.time.length - 1] === time
+                ) {
                     return
                 }
-                const lastValue = statsArrays.value.length ? statsArrays.value[statsArrays.value.length - 1] : 0
+                const lastValue = statsArrays.value.length
+                    ? statsArrays.value[statsArrays.value.length - 1]
+                    : 0
                 statsArrays.value.push(lastValue + time - lastTime)
                 statsArrays.time.push(time)
             }
@@ -629,7 +731,9 @@ export default class TimelineUIUtils {
              */
             function onStartEvent(e: Event): void {
                 const category = eventStyle(e).category.name
-                const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null
+                const parentCategory = categoryStack.length
+                    ? categoryStack[categoryStack.length - 1]
+                    : null
                 if (category !== parentCategory) {
                     categoryChange(parentCategory, category, e.startTime)
                 }
@@ -641,7 +745,9 @@ export default class TimelineUIUtils {
              */
             function onEndEvent(e: Event): void {
                 const category = categoryStack.pop()
-                const parentCategory = categoryStack.length ? categoryStack[categoryStack.length - 1] : null
+                const parentCategory = categoryStack.length
+                    ? categoryStack[categoryStack.length - 1]
+                    : null
                 if (category !== parentCategory) {
                     categoryChange(category, parentCategory, e.endTime)
                 }
@@ -744,7 +850,13 @@ export default class TimelineUIUtils {
             return this._categories
         }
         this._categories = {
-            loading: new TimelineCategory('loading', 'Loading', true, 'hsl(214, 67%, 74%)', 'hsl(214, 67%, 66%)'),
+            loading: new TimelineCategory(
+                'loading',
+                'Loading',
+                true,
+                'hsl(214, 67%, 74%)',
+                'hsl(214, 67%, 66%)'
+            ),
             scripting: new TimelineCategory(
                 'scripting',
                 'ScriptingYo3',
@@ -752,11 +864,41 @@ export default class TimelineUIUtils {
                 'hsl(43, 83%, 72%)',
                 'hsl(43, 83%, 64%) '
             ),
-            rendering: new TimelineCategory('rendering', 'Rendering', true, 'hsl(256, 67%, 76%)', 'hsl(256, 67%, 70%)'),
-            painting: new TimelineCategory('painting', 'Painting', true, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-            gpu: new TimelineCategory('gpu', 'GPU', false, 'hsl(109, 33%, 64%)', 'hsl(109, 33%, 55%)'),
-            async: new TimelineCategory('async', 'Async', false, 'hsl(0, 100%, 50%)', 'hsl(0, 100%, 40%)'),
-            other: new TimelineCategory('other', 'System', false, 'hsl(0, 0%, 87%)', 'hsl(0, 0%, 79%)'),
+            rendering: new TimelineCategory(
+                'rendering',
+                'Rendering',
+                true,
+                'hsl(256, 67%, 76%)',
+                'hsl(256, 67%, 70%)'
+            ),
+            painting: new TimelineCategory(
+                'painting',
+                'Painting',
+                true,
+                'hsl(109, 33%, 64%)',
+                'hsl(109, 33%, 55%)'
+            ),
+            gpu: new TimelineCategory(
+                'gpu',
+                'GPU',
+                false,
+                'hsl(109, 33%, 64%)',
+                'hsl(109, 33%, 55%)'
+            ),
+            async: new TimelineCategory(
+                'async',
+                'Async',
+                false,
+                'hsl(0, 100%, 50%)',
+                'hsl(0, 100%, 40%)'
+            ),
+            other: new TimelineCategory(
+                'other',
+                'System',
+                false,
+                'hsl(0, 0%, 87%)',
+                'hsl(0, 0%, 79%)'
+            ),
             idle: new TimelineCategory('idle', 'Idle', false, 'hsl(0, 0%, 98%)', 'hsl(0, 0%, 98%)'),
         }
         return this._categories
@@ -767,7 +909,9 @@ export default class TimelineUIUtils {
      * @return {number}
      */
     public static quadWidth(quad: number[]): number {
-        return Math.round(Math.sqrt(Math.pow(quad[0] - quad[2], 2) + Math.pow(quad[1] - quad[3], 2)))
+        return Math.round(
+            Math.sqrt(Math.pow(quad[0] - quad[2], 2) + Math.pow(quad[1] - quad[3], 2))
+        )
     }
 
     /**
@@ -775,7 +919,9 @@ export default class TimelineUIUtils {
      * @return {number}
      */
     public static quadHeight(quad: number[]): number {
-        return Math.round(Math.sqrt(Math.pow(quad[0] - quad[6], 2) + Math.pow(quad[1] - quad[7], 2)))
+        return Math.round(
+            Math.sqrt(Math.pow(quad[0] - quad[6], 2) + Math.pow(quad[1] - quad[7], 2))
+        )
     }
 
     /**
@@ -785,16 +931,16 @@ export default class TimelineUIUtils {
     public static markerShortTitle(event: Event): string {
         const recordTypes = RecordType
         switch (event.name) {
-        case recordTypes.MarkDOMContent:
-            return 'DCL'
-        case recordTypes.MarkLoad:
-            return 'L'
-        case recordTypes.MarkFirstPaint:
-            return 'FP'
-        case recordTypes.MarkFCP:
-            return 'FCP'
-        case recordTypes.MarkFMP:
-            return 'FMP'
+            case recordTypes.MarkDOMContent:
+                return 'DCL'
+            case recordTypes.MarkLoad:
+                return 'L'
+            case recordTypes.MarkFirstPaint:
+                return 'FP'
+            case recordTypes.MarkFCP:
+                return 'FCP'
+            case recordTypes.MarkFMP:
+                return 'FMP'
         }
         return null
     }

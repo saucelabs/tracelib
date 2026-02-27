@@ -3,17 +3,20 @@ import TimelineData from './timelineData'
 import Event from '../tracingModel/event'
 import { RecordType } from '../types'
 
-type Initiatior = Map<string, {
-    causes: string[],
-    joinBy: string
-}>
+type Initiatior = Map<
+    string,
+    {
+        causes: string[]
+        joinBy: string
+    }
+>
 
 export default class TimelineAsyncEventTracker {
     private static _asyncEvents: Initiatior
     private _initiatorByType: Map<number | string, Map<string, Event>> // todo
     private static _typeToInitiator: Map<RecordType | string, RecordType>
 
-    public constructor () {
+    public constructor() {
         TimelineAsyncEventTracker._initialize()
         /** @type {!Map<!TimelineModel.TimelineModel.RecordType, !Map<string, !SDK.TracingModel.Event>>} */
         this._initiatorByType = new Map()
@@ -30,7 +33,7 @@ export default class TimelineAsyncEventTracker {
         /**
          * ToDo: type events
          */
-        const events:Initiatior = new Map()
+        const events: Initiatior = new Map()
         events.set(RecordType.TimerInstall, {
             causes: [RecordType.TimerFire],
             joinBy: 'timerId',
@@ -77,7 +80,9 @@ export default class TimelineAsyncEventTracker {
      */
     public processEvent(event: Event): void {
         /** @type {!TimelineModel.TimelineModel.RecordType} */
-        let initiatorType: RecordType | string = TimelineAsyncEventTracker._typeToInitiator.get(event.name)
+        let initiatorType: RecordType | string = TimelineAsyncEventTracker._typeToInitiator.get(
+            event.name
+        )
         const isInitiator = !initiatorType
 
         if (!initiatorType) {

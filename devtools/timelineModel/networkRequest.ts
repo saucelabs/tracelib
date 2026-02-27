@@ -20,9 +20,8 @@ export default class NetworkRequest {
     /**
      * @param {!SDK.TracingModel.Event} event
      */
-    public constructor (event: Event) {
-        this.startTime =
-            event.name === RecordType.ResourceSendRequest ? event.startTime : 0
+    public constructor(event: Event) {
+        this.startTime = event.name === RecordType.ResourceSendRequest ? event.startTime : 0
         this.endTime = Infinity
         this.encodedDataLength = 0
         this.decodedBodyLength = 0
@@ -66,10 +65,8 @@ export default class NetworkRequest {
 
         if (
             !this.responseTime &&
-            (
-                event.name === recordType.ResourceReceiveResponse ||
-                event.name === recordType.ResourceReceivedData
-            )
+            (event.name === recordType.ResourceReceiveResponse ||
+                event.name === recordType.ResourceReceivedData)
         ) {
             this.responseTime = event.startTime
         }

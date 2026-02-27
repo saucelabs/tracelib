@@ -27,14 +27,14 @@ export enum Phase {
     Sample = 'P',
     CreateObject = 'N',
     SnapshotObject = 'O',
-    DeleteObject = 'D'
+    DeleteObject = 'D',
 }
 
 export enum MetadataEvent {
     ProcessSortIndex = 'process_sort_index',
     ProcessName = 'process_name',
     ThreadSortIndex = 'thread_sort_index',
-    ThreadName = 'thread_name'
+    ThreadName = 'thread_name',
 }
 
 export const LegacyTopLevelEventCategory = 'toplevel'
@@ -43,8 +43,8 @@ export const DevToolsTimelineEventCategory = 'disabled-by-default-devtools.timel
 export const FrameLifecycleEventCategory = 'cc,devtools'
 
 export default class TracingModel {
-    private _processById: Map<number|string, Process>
-    private _processByName: Map<string|number, Process>
+    private _processById: Map<number | string, Process>
+    private _processByName: Map<string | number, Process>
     private _minimumRecordTime: number
     private _maximumRecordTime: number
     private _devToolsMetadataEvents: Event[]
@@ -71,7 +71,7 @@ export default class TracingModel {
      * @param {string} phase
      * @return {boolean}
      */
-    public static isNestableAsyncPhase (phase: string): boolean {
+    public static isNestableAsyncPhase(phase: string): boolean {
         return (
             phase === Phase.NestableAsyncBegin ||
             phase === Phase.NestableAsyncEnd ||
@@ -83,7 +83,7 @@ export default class TracingModel {
      * @param {string} phase
      * @return {boolean}
      */
-    public static isAsyncBeginPhase (phase: string): boolean {
+    public static isAsyncBeginPhase(phase: string): boolean {
         return phase === Phase.AsyncBegin || phase === Phase.NestableAsyncBegin
     }
 
@@ -91,7 +91,7 @@ export default class TracingModel {
      * @param {string} phase
      * @return {boolean}
      */
-    public static isAsyncPhase (phase: string): boolean {
+    public static isAsyncPhase(phase: string): boolean {
         return (
             TracingModel.isNestableAsyncPhase(phase) ||
             phase === Phase.AsyncBegin ||
@@ -105,7 +105,7 @@ export default class TracingModel {
      * @param {string} phase
      * @return {boolean}
      */
-    public static isFlowPhase (phase: string): boolean {
+    public static isFlowPhase(phase: string): boolean {
         return phase === Phase.FlowBegin || phase === Phase.FlowStep || phase === Phase.FlowEnd
     }
 
@@ -113,7 +113,7 @@ export default class TracingModel {
      * @param {!TracingModel.Event} event
      * @return {boolean}
      */
-    public static isTopLevelEvent (event: TracingEvent): boolean {
+    public static isTopLevelEvent(event: TracingEvent): boolean {
         return (
             (event.hasCategory(DevToolsTimelineEventCategory) && event.name === 'RunTask') ||
             event.hasCategory(LegacyTopLevelEventCategory) ||
@@ -125,7 +125,7 @@ export default class TracingModel {
      * @param {!TracingManager.EventPayload} payload
      * @return {string|undefined}
      */
-    public static extractId (payload: TraceEvent): string | undefined {
+    public static extractId(payload: TraceEvent): string | undefined {
         const scope = payload.scope || ''
         if (typeof payload.id2 === 'undefined') {
             return scope && payload.id ? `${scope}@${payload.id}` : payload.id
@@ -150,7 +150,7 @@ export default class TracingModel {
      * re-use between modules. This really belongs to a higher level, since it
      * is specific to chrome's usage of tracing.
      */
-    public static browserMainThread (tracingModel: TracingModel): Thread | null {
+    public static browserMainThread(tracingModel: TracingModel): Thread | null {
         const processes = tracingModel.sortedProcesses()
         // Avoid warning for an empty model.
         if (!processes.length) {
@@ -160,17 +160,15 @@ export default class TracingModel {
         const browserProcesses = []
         const browserMainThreads = []
         for (const process of processes) {
-            if (
-                process
-                    .name()
-                    .toLowerCase()
-                    .endsWith('browser')
-            ) {
+            if (process.name().toLowerCase().endsWith('browser')) {
                 browserProcesses.push(process)
             }
 
-            browserMainThreads.push(...process.sortedThreads().filter(
-                (t: Thread): boolean => t.name() === browserMainThreadName))
+            browserMainThreads.push(
+                ...process
+                    .sortedThreads()
+                    .filter((t: Thread): boolean => t.name() === browserMainThreadName)
+            )
         }
         if (browserMainThreads.length === 1) {
             return browserMainThreads[0]
@@ -186,21 +184,23 @@ export default class TracingModel {
             return tracingStartedInBrowser[0].thread
         }
 
-        console.error('Failed to find browser main thread in trace, some timeline features may be unavailable')
+        console.error(
+            'Failed to find browser main thread in trace, some timeline features may be unavailable'
+        )
         return null
     }
 
     /**
      * @return {!Array.<!Event>}
      */
-    public devToolsMetadataEvents (): Event[] {
+    public devToolsMetadataEvents(): Event[] {
         return this._devToolsMetadataEvents
     }
 
     /**
      * @param {!Array.<!TracingManager.EventPayload>} events
      */
-    public addEvents (events: TraceEvent[]): void {
+    public addEvents(events: TraceEvent[]): void {
         for (let i = 0; i < events.length; ++i) {
             this._addEvent(events[i])
         }
@@ -218,7 +218,7 @@ export default class TracingModel {
     /**
      * @param {number} offset
      */
-    public adjustTime (offset: number): void {
+    public adjustTime(offset: number): void {
         this._minimumRecordTime += offset
         this._maximumRecordTime += offset
         for (const process of this._processById.values()) {
@@ -242,7 +242,7 @@ export default class TracingModel {
     /**
      * @param {!TraceEvent} payload
      */
-    private _addEvent (payload: TraceEvent): void {
+    private _addEvent(payload: TraceEvent): void {
         let process = this._processById.get(payload.pid)
         if (!process) {
             process = new Process(this, payload.pid)
@@ -255,7 +255,9 @@ export default class TracingModel {
         if (
             timestamp &&
             (!this._minimumRecordTime || timestamp < this._minimumRecordTime) &&
-            (payload.ph === Phase.Begin || payload.ph === Phase.Complete || payload.ph === Phase.Instant)
+            (payload.ph === Phase.Begin ||
+                payload.ph === Phase.Complete ||
+                payload.ph === Phase.Instant)
         ) {
             this._minimumRecordTime = timestamp
         }
@@ -288,28 +290,29 @@ export default class TracingModel {
         }
 
         switch (payload.name) {
-        case MetadataEvent.ProcessSortIndex:
-            // TODO(Christian) fix typings
-            process.setSortIndex(payload.args['sort_index'] as number)
-            break
-        case MetadataEvent.ProcessName:
-            const processName = payload.args['name']
-            process.setName(processName)
-            this._processByName.set(processName, process)
-            break
-        case MetadataEvent.ThreadSortIndex:
-            process.threadById(payload.tid).setSortIndex(payload.args['sort_index'])
-            break
-        case MetadataEvent.ThreadName:
-            process.threadById(payload.tid).setName(payload.args['name'])
-            break
+            case MetadataEvent.ProcessSortIndex:
+                // TODO(Christian) fix typings
+                process.setSortIndex(payload.args['sort_index'] as number)
+                break
+            case MetadataEvent.ProcessName: {
+                const processName = payload.args['name']
+                process.setName(processName)
+                this._processByName.set(processName, process)
+                break
+            }
+            case MetadataEvent.ThreadSortIndex:
+                process.threadById(payload.tid).setSortIndex(payload.args['sort_index'])
+                break
+            case MetadataEvent.ThreadName:
+                process.threadById(payload.tid).setName(payload.args['name'])
+                break
         }
     }
 
     /**
      * @param {!Event} event
      */
-    private _addSampleEvent (event: Event): void {
+    private _addSampleEvent(event: Event): void {
         const id = `${event.thread.process().id()}:${event.id}`
         const group = this._profileGroups.get(id)
 
@@ -325,28 +328,28 @@ export default class TracingModel {
      * @param {!Event} event
      * @return {?ProfileEventsGroup}
      */
-    public profileGroup (event: Event): ProfileEventsGroup | null {
+    public profileGroup(event: Event): ProfileEventsGroup | null {
         return this._profileGroups.get(`${event.thread.process().id()}:${event.id}`) || null
     }
 
     /**
      * @return {number}
      */
-    public minimumRecordTime (): number {
+    public minimumRecordTime(): number {
         return this._minimumRecordTime
     }
 
     /**
      * @return {number}
      */
-    public maximumRecordTime (): number {
+    public maximumRecordTime(): number {
         return this._maximumRecordTime
     }
 
     /**
      * @return {!Array.<!Process>}
      */
-    public sortedProcesses (): Process[] {
+    public sortedProcesses(): Process[] {
         return Process.sort([...this._processById.values()])
     }
 
@@ -354,7 +357,7 @@ export default class TracingModel {
      * @param {string} name
      * @return {?Process}
      */
-    public processByName (name: string): Process | undefined {
+    public processByName(name: string): Process | undefined {
         return this._processByName.get(name)
     }
 
@@ -362,7 +365,7 @@ export default class TracingModel {
      * @param {number} pid
      * @return {?Process}
      */
-    public processById (pid: number): Process | null {
+    public processById(pid: number): Process | null {
         return this._processById.get(pid) || null
     }
 
@@ -371,7 +374,7 @@ export default class TracingModel {
      * @param {string} threadName
      * @return {?Thread}
      */
-    public threadByName (processName: string, threadName: string): Thread | null {
+    public threadByName(processName: string, threadName: string): Thread | null {
         const process = this.processByName(processName)
         return process && process.threadByName(threadName)
     }
@@ -390,7 +393,7 @@ export default class TracingModel {
         this._closeOpenAsyncEvents()
     }
 
-    private _closeOpenAsyncEvents (): void {
+    private _closeOpenAsyncEvents(): void {
         for (const event of this._openAsyncEvents.values()) {
             event.setEndTime(this._maximumRecordTime)
             // FIXME: remove this once we figure a better way to convert async console
@@ -438,8 +441,16 @@ export default class TracingModel {
             const lastStep = asyncEvent.steps[asyncEvent.steps.length - 1]
             if (lastStep.phase !== phase.AsyncBegin && lastStep.phase !== event.phase) {
                 console.assert(
-                    false, 'Async event step phase mismatch: ' + lastStep.phase + ' at ' + lastStep.startTime + ' vs. ' +
-                event.phase + ' at ' + event.startTime)
+                    false,
+                    'Async event step phase mismatch: ' +
+                        lastStep.phase +
+                        ' at ' +
+                        lastStep.startTime +
+                        ' vs. ' +
+                        event.phase +
+                        ' at ' +
+                        event.startTime
+                )
                 return
             }
             asyncEvent.addStep(event)
@@ -451,45 +462,50 @@ export default class TracingModel {
     /**
      * @param {!Event} event
      */
-    private _addNestableAsyncEvent (event: Event): void {
+    private _addNestableAsyncEvent(event: Event): void {
         const phase = Phase
         const key = event.categoriesString + '.' + event.id
         let openEventsStack = this._openNestableAsyncEvents.get(key)
 
         switch (event.phase) {
-        case phase.NestableAsyncBegin:
-            if (!openEventsStack) {
-                openEventsStack = []
-                this._openNestableAsyncEvents.set(key, openEventsStack)
-            }
-            const asyncEvent = new AsyncEvent(event)
-            openEventsStack.push(asyncEvent)
-            event.thread.addAsyncEvent(asyncEvent)
-            break
-
-        case phase.NestableAsyncInstant:
-            if (openEventsStack && openEventsStack.length) {
-                openEventsStack[openEventsStack.length - 1].addStep(event)
-            }
-            break
-
-        case phase.NestableAsyncEnd:
-            if (!openEventsStack || !openEventsStack.length) {
+            case phase.NestableAsyncBegin: {
+                if (!openEventsStack) {
+                    openEventsStack = []
+                    this._openNestableAsyncEvents.set(key, openEventsStack)
+                }
+                const asyncEvent = new AsyncEvent(event)
+                openEventsStack.push(asyncEvent)
+                event.thread.addAsyncEvent(asyncEvent)
                 break
             }
-            const top = openEventsStack.pop()
-            if (top.name !== event.name) {
-                console.error(`Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`)
+
+            case phase.NestableAsyncInstant:
+                if (openEventsStack && openEventsStack.length) {
+                    openEventsStack[openEventsStack.length - 1].addStep(event)
+                }
+                break
+
+            case phase.NestableAsyncEnd: {
+                if (!openEventsStack || !openEventsStack.length) {
+                    break
+                }
+                const top = openEventsStack.pop()
+                if (top.name !== event.name) {
+                    console.error(
+                        `Begin/end event mismatch for nestable async event, ${top.name} vs. ${event.name}, key: ${key}`
+                    )
+                    break
+                }
+                top.addStep(event)
                 break
             }
-            top.addStep(event)
         }
     }
 
     /**
      * @param {!Event} event
      */
-    public addAsyncEvent (event: Event): void {
+    public addAsyncEvent(event: Event): void {
         const key = event.categoriesString + '.' + event.name + '.' + event.id
         let asyncEvent = this._openAsyncEvents.get(key)
 
@@ -538,7 +554,7 @@ export default class TracingModel {
      * @param {string} str
      * @return {!Set<string>}
      */
-    public parsedCategoriesForString (str: string): Set<string> {
+    public parsedCategoriesForString(str: string): Set<string> {
         let parsedCategories = this._parsedCategories.get(str)
         if (!parsedCategories) {
             parsedCategories = new Set(str ? str.split(',') : [])

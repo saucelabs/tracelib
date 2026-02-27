@@ -18,9 +18,9 @@ export default class TimelineFrame {
     public mainFrameId: number | undefined
 
     /**
-    * @param {number} startTime
-    * @param {number} startTimeOffset
-    */
+     * @param {number} startTime
+     * @param {number} startTimeOffset
+     */
     public constructor(startTime: number, startTimeOffset: number) {
         this.startTime = startTime
         this.startTimeOffset = startTimeOffset
@@ -38,30 +38,30 @@ export default class TimelineFrame {
     }
 
     /**
-    * @return {boolean}
-    */
+     * @return {boolean}
+     */
     public hasWarnings(): boolean {
         return false
     }
 
     /**
-    * @param {number} endTime
-    */
+     * @param {number} endTime
+     */
     public setEndTime(endTime: number): void {
         this.endTime = endTime
         this.duration = this.endTime - this.startTime
     }
 
     /**
-    * @param {?TimelineModel.TracingFrameLayerTree} layerTree
-    */
+     * @param {?TimelineModel.TracingFrameLayerTree} layerTree
+     */
     public setLayerTree(layerTree: TracingFrameLayerTree): void {
         this.layerTree = layerTree
     }
 
     /**
-    * @param {!Object} timeByCategory
-    */
+     * @param {!Object} timeByCategory
+     */
     public addTimeForCategories(timeByCategory: TimeByCategory): void {
         for (const category in timeByCategory) {
             this.addTimeForCategory(category, timeByCategory[category])
@@ -69,11 +69,11 @@ export default class TimelineFrame {
     }
 
     /**
-    * @param {string} category
-    * @param {number} time
-    */
+     * @param {string} category
+     * @param {number} time
+     */
     public addTimeForCategory(category: string, time: number): void {
         this.timeByCategory[category] = (this.timeByCategory[category] || 0) + time
         this.cpuTime += time
     }
-};
+}

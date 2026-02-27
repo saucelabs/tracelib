@@ -15,7 +15,7 @@ export default class ProfileTreeModel {
         this.total = this._calculateTotals(this.root)
     }
 
-    private _assignDepthsAndParents (): void {
+    private _assignDepthsAndParents(): void {
         const root = this.root
         root.depth = -1
         root.parent = null
@@ -46,7 +46,7 @@ export default class ProfileTreeModel {
      * @param {!SDK.ProfileNode} root
      * @return {number}
      */
-    private _calculateTotals (root: ProfileNode): number {
+    private _calculateTotals(root: ProfileNode): number {
         const nodesToTraverse: ProfileNode[] = [root]
         const dfsList: ProfileNode[] = []
 

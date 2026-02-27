@@ -3,4 +3,3 @@ export default class ExperimentsSupport {
         return !!experimentName
     }
 }
-

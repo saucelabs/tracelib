@@ -13,7 +13,13 @@ export default class TimelineCategory {
      * @param {string} childColor
      * @param {string} color
      */
-    public constructor(name: string, title: string, visible: boolean, childColor: string, color: string) {
+    public constructor(
+        name: string,
+        title: string,
+        visible: boolean,
+        childColor: string,
+        color: string
+    ) {
         this.name = name
         this.title = title
         this.visible = visible

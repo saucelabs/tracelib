@@ -6,29 +6,29 @@ export default class LayerPaintEvent {
     private _event: Event
 
     /**
-    * @param {!SDK.TracingModel.Event} event
-    */
+     * @param {!SDK.TracingModel.Event} event
+     */
     public constructor(event: Event) {
         this._event = event
     }
 
     /**
-    * @return {string}
-    */
+     * @return {string}
+     */
     public layerId(): string {
         return this._event.args['data']['layerId']
     }
 
     /**
-    * @return {!SDK.TracingModel.Event}
-    */
+     * @return {!SDK.TracingModel.Event}
+     */
     public event(): Event {
         return this._event
     }
 
     /**
-    * @return {!Promise<?{rect: !Array<number>, serializedPicture: string}>}
-    */
+     * @return {!Promise<?{rect: !Array<number>, serializedPicture: string}>}
+     */
     public picturePromise(): Promise<PicturePromise> {
         const picture = TimelineData.forEvent(this._event).picture
         return picture.objectPromise().then((result): PicturePromise | null => {
@@ -43,8 +43,8 @@ export default class LayerPaintEvent {
     }
 
     /**
-    * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfilerSnapshot}>}
-    */
+     * @return !Promise<?{rect: !Array<number>, snapshot: !SDK.PaintProfilerSnapshot}>}
+     */
     public snapshotPromise(): Promise<any> {
         return this.picturePromise().then((picture): null | void => {
             if (!picture) {
@@ -52,4 +52,4 @@ export default class LayerPaintEvent {
             }
         })
     }
-};
+}

@@ -23,7 +23,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
     /**
      * @param {!Protocol.Profiler.Profile} profile
      */
-    public constructor (profile: Profile) {
+    public constructor(profile: Profile) {
         super()
         const isLegacyFormat = !!profile['head']
 
@@ -58,7 +58,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
     /**
      * @param {!Protocol.Profiler.Profile} profile
      */
-    private _compatibilityConversionHeadToNodes (profile: Profile): void {
+    private _compatibilityConversionHeadToNodes(profile: Profile): void {
         /** @type {!Array<!Protocol.Profiler.ProfileNode>} */
         const nodes: ProfileNode[] = []
 
@@ -66,10 +66,10 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @param {!Protocol.Profiler.ProfileNode} node
          * @return {number}
          */
-        function convertNodesTree (node: ProfileNode): number {
-            nodes.push(node);
+        function convertNodesTree(node: ProfileNode): number {
+            nodes.push(node)
             // TODO(Christian) fix typings
-            (node.children as unknown as number[]) = node.children.map(convertNodesTree)
+            ;(node.children as unknown as number[]) = node.children.map(convertNodesTree)
             return node.id
         }
 
@@ -86,7 +86,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * @param {!Protocol.Profiler.Profile} profile
      * @return {?Array<number>}
      */
-    private _convertTimeDeltas (profile: Profile): number[] {
+    private _convertTimeDeltas(profile: Profile): number[] {
         if (!profile.timeDeltas) {
             return null
         }
@@ -106,14 +106,14 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes
      * @return {!CPUProfileNode}
      */
-    private _translateProfileTree (nodes: ProfileNode[]): CPUProfileNode {
+    private _translateProfileTree(nodes: ProfileNode[]): CPUProfileNode {
         /** @type {!Map<number, !Protocol.Profiler.ProfileNode>} */
         const nodeByIdMap: Map<number, ProfileNode> = new Map()
 
         /**
          * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes
          */
-        function buildChildrenFromParents (nodes: ProfileNode[]): void {
+        function buildChildrenFromParents(nodes: ProfileNode[]): void {
             if (nodes[0].children) {
                 return
             }
@@ -122,12 +122,12 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             for (let i = 1; i < nodes.length; ++i) {
                 const node = nodes[i]
                 // TODO(Christian) fix typings
-                const parentNode = nodeByIdMap.get((node.parent as unknown as number))
+                const parentNode = nodeByIdMap.get(node.parent as unknown as number)
                 // TODO(Christian) fix typings
                 if (parentNode.children) {
-                    (parentNode.children as unknown as number[]).push(node.id)
+                    ;(parentNode.children as unknown as number[]).push(node.id)
                 } else {
-                    (parentNode.children as unknown as number[]) = [node.id]
+                    ;(parentNode.children as unknown as number[]) = [node.id]
                 }
             }
         }
@@ -136,15 +136,18 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @param {!Array<!Protocol.Profiler.ProfileNode>} nodes
          * @param {!Array<number>|undefined} samples
          */
-        function buildHitCountFromSamples (nodes: ProfileNode[], samples?: number[]): void {
+        function buildHitCountFromSamples(nodes: ProfileNode[], samples?: number[]): void {
             /**
              * hitCount not defined in ProfileNode model
              */
-            if (typeof(nodes[0].hitCount) === 'number') {
+            if (typeof nodes[0].hitCount === 'number') {
                 return
             }
 
-            console.assert(Boolean(samples), 'Error: Neither hitCount nor samples are present in profile.')
+            console.assert(
+                Boolean(samples),
+                'Error: Neither hitCount nor samples are present in profile.'
+            )
             for (let i = 0; i < nodes.length; ++i) {
                 nodes[i].hitCount = 0
             }
@@ -170,7 +173,9 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         const parentNodeStack = root.children.map((): CPUProfileNode => resultRoot)
 
         // TODO(Christian) fix typings
-        const sourceNodeStack = root.children.map((id): ProfileNode => nodeByIdMap.get(((id as unknown as number))))
+        const sourceNodeStack = root.children.map(
+            (id): ProfileNode => nodeByIdMap.get(id as unknown as number)
+        )
         while (sourceNodeStack.length) {
             let parentNode = parentNodeStack.pop()
             const sourceNode = sourceNodeStack.pop()
@@ -182,7 +187,10 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             parentNode.children.push(targetNode)
             parentNode = targetNode
             idMap.set(sourceNode.id, parentNode.id)
-            parentNodeStack.push.apply(parentNodeStack, sourceNode.children.map((): CPUProfileNode => parentNode))
+            parentNodeStack.push.apply(
+                parentNodeStack,
+                sourceNode.children.map((): CPUProfileNode => parentNode)
+            )
             /**
              * type defect
              */
@@ -196,7 +204,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         return resultRoot
     }
 
-    private _sortSamples (): void {
+    private _sortSamples(): void {
         const timestamps = this.timestamps
         if (!timestamps) {
             return
@@ -228,7 +236,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         }
     }
 
-    private _normalizeTimestamps (): void {
+    private _normalizeTimestamps(): void {
         let timestamps = this.timestamps
         if (!timestamps) {
             // Support loading old CPU profiles that are missing timestamps.
@@ -257,7 +265,8 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * Add an extra timestamp used to calculate the last sample duration.
          */
         if (this.samples.length === timestamps.length) {
-            const averageSample = (timestamps[timestamps.length - 1] - timestamps[0]) / (timestamps.length - 1)
+            const averageSample =
+                (timestamps[timestamps.length - 1] - timestamps[0]) / (timestamps.length - 1)
             this.timestamps.push(timestamps[timestamps.length - 1] + averageSample)
         }
 
@@ -265,7 +274,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         this.profileEndTime = timestamps[timestamps.length - 1]
     }
 
-    private _buildIdToNodeMap (): void {
+    private _buildIdToNodeMap(): void {
         /** @type {!Map<number, !CPUProfileNode>} */
         this._idToNode = new Map()
         const idToNode = this._idToNode
@@ -278,9 +287,13 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         }
     }
 
-    private _extractMetaNodes (): void {
+    private _extractMetaNodes(): void {
         const topLevelNodes = this.profileHead.children
-        for (let i = 0; i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode); i++) {
+        for (
+            let i = 0;
+            i < topLevelNodes.length && !(this.gcNode && this.programNode && this.idleNode);
+            i++
+        ) {
             const node = topLevelNodes[i]
             if (node.functionName === '(garbage collector)') {
                 this.gcNode = node
@@ -300,7 +313,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * between two call stacks sharing the same bottom node, it is replaced
      * with the preceeding sample.
      */
-    private _fixMissingSamples (): void {
+    private _fixMissingSamples(): void {
         const samples = this.samples
         const samplesCount = samples.length
         const idToNode = this._idToNode
@@ -315,7 +328,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @param {!SDK.ProfileNode} node
          * @return {!SDK.ProfileNode}
          */
-        function bottomNode (node: ProfileNode): ProfileNode {
+        function bottomNode(node: ProfileNode): ProfileNode {
             while (node && node.parent && node.parent.parent) {
                 node = node.parent
             }
@@ -327,7 +340,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
          * @param {number} nodeId
          * @return {boolean}
          */
-        function isSystemNode (nodeId: number): boolean {
+        function isSystemNode(nodeId: number): boolean {
             return nodeId === programNodeId || nodeId === gcNodeId || nodeId === idleNodeId
         }
 
@@ -362,9 +375,15 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * @param {number=} startTime
      * @param {number=} stopTime
      */
-    public forEachFrame (
+    public forEachFrame(
         openFrameCallback: (depth: number, node: CPUProfileNode, startTime: number) => void,
-        closeFrameCallback: (depth: number, node: CPUProfileNode, startTime: number, duration: number, selfTime: number) => void,
+        closeFrameCallback: (
+            depth: number,
+            node: CPUProfileNode,
+            startTime: number,
+            duration: number,
+            selfTime: number
+        ) => void,
         startTime?: number,
         stopTime?: number
     ): void {
@@ -446,6 +465,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
                 )
                 --stackTop
                 prevNode = gcParentNode
+                // eslint-disable-next-line no-useless-assignment
                 prevId = prevNode.id
                 gcParentNode = null
             }
@@ -495,7 +515,13 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
             const start = stackStartTimes[stackTop]
             const duration = sampleTime - start
             stackChildrenDuration[stackTop - 1] += duration
-            closeFrameCallback(gcParentNode.depth + 1, node, start, duration, duration - stackChildrenDuration[stackTop])
+            closeFrameCallback(
+                gcParentNode.depth + 1,
+                node,
+                start,
+                duration,
+                duration - stackChildrenDuration[stackTop]
+            )
             --stackTop
             prevId = gcParentNode.id
         }
@@ -519,7 +545,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
      * @param {number} index
      * @return {?CPUProfileNode}
      */
-    public nodeByIndex (index: number): CPUProfileNode {
+    public nodeByIndex(index: number): CPUProfileNode {
         return this._idToNode.get(this.samples[index]) || null
     }
 }

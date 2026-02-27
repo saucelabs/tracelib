@@ -15,7 +15,12 @@ export default class TimelineSelection {
      * @param {number} endTime
      * @param {!Object=} object
      */
-    public constructor(type: TimelineSelectionType, startTime: number, endTime: number, object?: object) {
+    public constructor(
+        type: TimelineSelectionType,
+        startTime: number,
+        endTime: number,
+        object?: object
+    ) {
         this._type = type
         this._startTime = startTime
         this._endTime = endTime
@@ -27,7 +32,12 @@ export default class TimelineSelection {
      * @return {!Timeline.TimelineSelection}
      */
     public static fromFrame(frame: TimelineFrame): TimelineSelection {
-        return new TimelineSelection(TimelineSelectionType.Frame, frame.startTime, frame.endTime, frame)
+        return new TimelineSelection(
+            TimelineSelectionType.Frame,
+            frame.startTime,
+            frame.endTime,
+            frame
+        )
     }
 
     /**

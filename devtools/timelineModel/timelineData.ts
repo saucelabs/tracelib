@@ -14,7 +14,7 @@ export default class TimelineData {
     public timeWaitingForMainThread: number | undefined
     private _initiator: Event
 
-    public constructor () {
+    public constructor() {
         this.warning = null
         this.previewElement = null
         this.url = null
@@ -61,10 +61,7 @@ export default class TimelineData {
     public stackTraceForSelfOrInitiator(): CallFrame[] | null {
         return (
             this.stackTrace ||
-            (
-                this._initiator &&
-                TimelineData.forEvent(this._initiator).stackTrace
-            )
+            (this._initiator && TimelineData.forEvent(this._initiator).stackTrace)
         )
     }
 

@@ -16,7 +16,7 @@ export default class ProfileNode {
     /**
      * @param {!Protocol.Runtime.CallFrame} callFrame
      */
-    public constructor (callFrame: CallFrame) {
+    public constructor(callFrame: CallFrame) {
         this.callFrame = callFrame
         this.callUID = `${callFrame.functionName}@${callFrame.scriptId}:${callFrame.lineNumber}:${callFrame.columnNumber}`
         this.self = 0
@@ -29,35 +29,35 @@ export default class ProfileNode {
     /**
      * @return {string}
      */
-    public get functionName (): string {
+    public get functionName(): string {
         return this.callFrame.functionName
     }
 
     /**
      * @return {string}
      */
-    public get scriptId (): string {
+    public get scriptId(): string {
         return this.callFrame.scriptId
     }
 
     /**
      * @return {string}
      */
-    public get url (): string {
+    public get url(): string {
         return this.callFrame.url
     }
 
     /**
      * @return {number}
      */
-    public get lineNumber (): number {
+    public get lineNumber(): number {
         return this.callFrame.lineNumber
     }
 
     /**
      * @return {number}
      */
-    public get columnNumber (): number {
+    public get columnNumber(): number {
         return this.callFrame.columnNumber
     }
 }

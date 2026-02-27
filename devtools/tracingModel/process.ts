@@ -12,20 +12,20 @@ export default class Process extends NamedObject {
      * @param {!TracingModel} model
      * @param {number} id
      */
-    public constructor (model: TracingModel, id: number) {
+    public constructor(model: TracingModel, id: number) {
         super(model, id)
         this._threads = new Map()
         this._threadByName = new Map()
     }
 
-    public get threads (): Map<number, Thread> {
+    public get threads(): Map<number, Thread> {
         return this._threads
     }
 
     /**
      * @return {number}
      */
-    public id (): number {
+    public id(): number {
         return this._id
     }
 
@@ -33,7 +33,7 @@ export default class Process extends NamedObject {
      * @override
      * @param {string} name
      */
-    public setName (name: string): void {
+    public setName(name: string): void {
         super._setName(name)
     }
 
@@ -41,7 +41,7 @@ export default class Process extends NamedObject {
      * @param {number} id
      * @return {!TracingModel.Thread}
      */
-    public threadById (id: number): Thread {
+    public threadById(id: number): Thread {
         let thread = this._threads.get(id)
         if (!thread) {
             thread = new Thread(this, id)
@@ -54,7 +54,7 @@ export default class Process extends NamedObject {
      * @param {string} name
      * @return {?TracingModel.Thread}
      */
-    public threadByName (name: string): Thread | null {
+    public threadByName(name: string): Thread | null {
         return this._threadByName.get(name) || null
     }
 
@@ -62,7 +62,7 @@ export default class Process extends NamedObject {
      * @param {string} name
      * @param {!TracingModel.Thread} thread
      */
-    public setThreadByName (name: string, thread: Thread): void {
+    public setThreadByName(name: string, thread: Thread): void {
         this._threadByName.set(name, thread)
     }
 
@@ -70,14 +70,14 @@ export default class Process extends NamedObject {
      * @param {!TracingManager.EventPayload} payload
      * @return {?TracingModel.Event} event
      */
-    public addEvent (payload: TraceEvent): Event | null {
+    public addEvent(payload: TraceEvent): Event | null {
         return this.threadById(payload.tid).addEvent(payload)
     }
 
     /**
      * @return {!Array.<!TracingModel.Thread>}
      */
-    public sortedThreads (): Thread[] {
+    public sortedThreads(): Thread[] {
         return Thread.sort([...this._threads.values()])
     }
 }
