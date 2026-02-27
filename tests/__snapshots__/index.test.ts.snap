@@ -1,7 +1,7 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`getDetailStats should get detail stats 1`] = `
-Array [
+[
   "rendering",
   "painting",
   "other",
@@ -11,7 +11,7 @@ Array [
 `;
 
 exports[`getDetailStats should get summary data between passed range 1`] = `
-Array [
+[
   "rendering",
   "painting",
   "other",
@@ -21,7 +21,7 @@ Array [
 `;
 
 exports[`getDetailStats should not throw error on second call of getDetailStats 1`] = `
-Array [
+[
   "rendering",
   "painting",
   "other",
@@ -31,7 +31,7 @@ Array [
 `;
 
 exports[`getSummary should get summary data 1`] = `
-Object {
+{
   "endTime": 289961229.717,
   "idle": 52.38300037384033,
   "other": 9.896000564098358,
@@ -43,7 +43,7 @@ Object {
 `;
 
 exports[`getSummary should get summary data between passed range 1`] = `
-Object {
+{
   "endTime": 289960729.717,
   "idle": 0.6339998841285706,
   "other": 4.653000295162201,
@@ -55,7 +55,7 @@ Object {
 `;
 
 exports[`getSummary should not throw error on second call of getSummary 1`] = `
-Object {
+{
   "endTime": 289961229.717,
   "idle": 52.38300037384033,
   "other": 9.896000564098358,
@@ -67,7 +67,7 @@ Object {
 `;
 
 exports[`getWarningCounts should get warning counts 1`] = `
-Object {
+{
   "ForcedLayout": 4683,
   "ForcedStyle": 4684,
   "LongRecurringHandler": 13,
@@ -75,8 +75,8 @@ Object {
 `;
 
 exports[`should get FPS 1`] = `
-Object {
-  "times": Array [
+{
+  "times": [
     289959949.734,
     289959955.22,
     289960052.234,
@@ -91,8 +91,9 @@ Object {
     289960882.274,
     289960977.634,
     289961069.395,
+    289961161.646,
   ],
-  "values": Array [
+  "values": [
     182.2821727559685,
     10.307790628308753,
     11.092131244032895,
@@ -107,34 +108,35 @@ Object {
     10.486577179634944,
     10.897876006628481,
     10.839990888916617,
+    14.69054370134433,
   ],
 }
 `;
 
 exports[`should get memory counters 1`] = `
-Object {
-  "documents": Object {
-    "times": Array [
+{
+  "documents": {
+    "times": [
       289959946.271,
     ],
-    "values": Array [
+    "values": [
       5,
     ],
   },
-  "gpuMemoryUsedKB": Object {
-    "times": Array [],
-    "values": Array [],
+  "gpuMemoryUsedKB": {
+    "times": [],
+    "values": [],
   },
-  "jsEventListeners": Object {
-    "times": Array [
+  "jsEventListeners": {
+    "times": [
       289959946.271,
     ],
-    "values": Array [
+    "values": [
       38,
     ],
   },
-  "jsHeapSizeUsed": Object {
-    "times": Array [
+  "jsHeapSizeUsed": {
+    "times": [
       289959946.271,
       289959983.488,
       289960044.53,
@@ -157,7 +159,7 @@ Object {
       289961153.41,
       289961219.984,
     ],
-    "values": Array [
+    "values": [
       22549008,
       20896736,
       21471160,
@@ -181,11 +183,11 @@ Object {
       21179632,
     ],
   },
-  "nodes": Object {
-    "times": Array [
+  "nodes": {
+    "times": [
       289959946.271,
     ],
-    "values": Array [
+    "values": [
       837,
     ],
   },

@@ -1,50 +1,51 @@
 {
-  "name": "tracelib",
-  "version": "1.0.1",
-  "description": "A Node.js library that provides Chrome DevTools trace models to parse arbitrary trace logs.",
-  "main": "./build/src/index.js",
-  "scripts": {
-    "build": "run-s clean compile",
-    "clean": "rm -rf build coverage",
-    "compile": "NODE_ENV=production tsc",
-    "prepublishOnly": "npm prune && run-s build",
-    "release": "npm run release:patch",
-    "release:patch": "np patch",
-    "release:minor": "np minor",
-    "release:major": "np major",
-    "test": "run-s test:*",
-    "test:lint": "run-p test:lint:*",
-    "test:lint:eslint": "eslint --ext ts src devtools tests",
-    "test:lint:tsc": "tsc",
-    "test:unit": "jest --coverage",
-    "watch": "tsc --watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/saucelabs/tracelib.git"
-  },
-  "keywords": [
-    "chrome",
-    "devtools"
-  ],
-  "author": "Christian Bromann <christian@saucelabs.com>",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/saucelabs/tracelib/issues"
-  },
-  "homepage": "https://github.com/saucelabs/tracelib#readme",
-  "devDependencies": {
-    "@types/jest": "^24.0.16",
-    "@typescript-eslint/eslint-plugin": "^1.13.0",
-    "@typescript-eslint/parser": "^1.13.0",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "jest": "^24.8.0",
-    "np": "^5.0.3",
-    "npm-run-all": "^4.1.5",
-    "prettier": "^1.18.2",
-    "ts-jest": "^24.0.2",
-    "typescript": "^3.5.3"
-  }
+    "name": "tracelib",
+    "version": "1.0.1",
+    "description": "A Node.js library that provides Chrome DevTools trace models to parse arbitrary trace logs.",
+    "main": "./build/src/index.js",
+    "scripts": {
+        "build": "run-s clean compile",
+        "clean": "rm -rf build coverage",
+        "compile": "NODE_ENV=production tsc",
+        "prepublishOnly": "npm prune && run-s build",
+        "release": "npm run release:patch",
+        "release:patch": "np patch",
+        "release:minor": "np minor",
+        "release:major": "np major",
+        "test": "run-s test:*",
+        "test:lint": "run-p test:lint:*",
+        "test:lint:eslint": "eslint --ext ts src devtools tests",
+        "test:lint:tsc": "tsc",
+        "test:unit": "jest --coverage",
+        "watch": "tsc --watch"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/saucelabs/tracelib.git"
+    },
+    "keywords": [
+        "chrome",
+        "devtools"
+    ],
+    "author": "Christian Bromann <christian@saucelabs.com>",
+    "license": "Apache-2.0",
+    "bugs": {
+        "url": "https://github.com/saucelabs/tracelib/issues"
+    },
+    "homepage": "https://github.com/saucelabs/tracelib#readme",
+    "devDependencies": {
+        "@eslint/js": "^10.0.0",
+        "@types/jest": "^30.0.0",
+        "@typescript-eslint/eslint-plugin": "^8.56.1",
+        "@typescript-eslint/parser": "^8.56.1",
+        "eslint": "^10.0.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-prettier": "^5.5.5",
+        "jest": "^30.2.0",
+        "np": "^11.0.2",
+        "npm-run-all": "^4.1.5",
+        "prettier": "^3.8.1",
+        "ts-jest": "^29.4.6",
+        "typescript": "^5.9.3"
+    }
 }

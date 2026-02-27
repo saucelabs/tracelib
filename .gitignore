@@ -64,7 +64,7 @@ typings/
 **/build
 /*.js
 !babel.config.js
-!.eslintrc.js
+!eslintrc.config.js
 !jest.config.js
 !prettier.config.js
 package-lock.json
