@@ -8,6 +8,7 @@ import Thread from '../tracingModel/thread'
 import TracingModel, { Phase } from '../tracingModel'
 import LayerPaintEvent from './timelineFrame/layerPaintEvent'
 import TimelineData from './timelineData'
+import Logger from '../../src/logger'
 
 type categoryMapperFunc = (any: Event) => string
 
@@ -51,6 +52,7 @@ export default class TimelineFrameModel {
      * @return {!Array<!TimelineModel.TimelineFrame>}
      */
     public frames(startTime?: number, endTime?: number): TimelineFrame[] {
+        Logger.debug('TimelineFrameModel', 'frames() called. Total frames available:', this._frames.length)
         if (!startTime && !endTime) {
             return this._frames
         }
@@ -212,12 +214,13 @@ export default class TimelineFrameModel {
             (frame.startTime !== this._frames[this._frames.length - 1].endTime ||
                 frame.startTime > frame.endTime)
         ) {
-            console.assert(
-                false,
+            Logger.error(
+                'TimelineFrameModel',
                 `Inconsistent frame time for frame ${this._frames.length} (${frame.startTime} - ${frame.endTime})`
             )
         }
         this._frames.push(frame)
+        Logger.debug('TimelineFrameModel', 'Frame added to array. Total frames:', this._frames.length, 'Duration:', frame.duration, 'ms')
         if (typeof frame.mainFrameId === 'number') {
             this._frameById[frame.mainFrameId] = frame
         }
@@ -236,6 +239,15 @@ export default class TimelineFrameModel {
      * @param {!Array<!{thread: !SDK.TracingModel.Thread, time: number}>} threadData
      */
     public addTraceEvents(target: any, events: Event[], threadData: ThreadData[]): void {
+        Logger.debug('TimelineFrameModel', 'addTraceEvents called with', events.length, 'events and', threadData.length, 'threads')
+
+        // Log a sample of event names to understand what we're working with
+        const eventNameCounts: { [key: string]: number } = {}
+        events.forEach(e => {
+            eventNameCounts[e.name] = (eventNameCounts[e.name] || 0) + 1
+        })
+        Logger.debug('TimelineFrameModel', 'Event distribution:', JSON.stringify(eventNameCounts, null, 2))
+
         this._target = target
         let j = 0
         this._currentProcessMainThread = (threadData.length && threadData[0].thread) || null
@@ -246,6 +258,21 @@ export default class TimelineFrameModel {
             this._addTraceEvent(events[i])
         }
         this._currentProcessMainThread = null
+        Logger.debug('TimelineFrameModel', 'addTraceEvents complete. layerTreeId was:', this._layerTreeId, 'Total frames:', this._frames.length)
+    }
+
+    /**
+     * Finalize frame processing by flushing any pending last frame.
+     * This should be called after all trace events have been added.
+     * @param {number} endTime - The end time to use for the last frame
+     */
+    public finalize(endTime: number): void {
+        Logger.debug('TimelineFrameModel', 'Finalizing. _lastFrame exists:', !!this._lastFrame, 'endTime:', endTime)
+        if (this._lastFrame) {
+            this._flushFrame(this._lastFrame, endTime)
+            this._lastFrame = null
+        }
+        Logger.debug('TimelineFrameModel', 'Finalization complete. Total frames:', this._frames.length)
     }
 
     /**
@@ -259,6 +286,7 @@ export default class TimelineFrameModel {
 
         if (event.name === eventNames.SetLayerTreeId) {
             this._layerTreeId = event.args['layerTreeId'] || event.args['data']['layerTreeId']
+            Logger.debug('TimelineFrameModel', 'SetLayerTreeId detected:', this._layerTreeId, 'from event:', JSON.stringify(event.args))
         } else if (
             event.phase === Phase.SnapshotObject &&
             event.name === eventNames.LayerTreeHostImplSnapshot &&
@@ -284,14 +312,21 @@ export default class TimelineFrameModel {
     private _processCompositorEvents(event: Event): void {
         const eventNames = RecordType
 
+        // Log BeginFrame and DrawFrame events
+        if (event.name === eventNames.BeginFrame || event.name === eventNames.DrawFrame) {
+            Logger.debug('TimelineFrameModel', `${event.name} event - layerTreeId in event:`, event.args['layerTreeId'], 'expected:', this._layerTreeId, 'match:', event.args['layerTreeId'] === this._layerTreeId)
+        }
+
         if (event.args['layerTreeId'] !== this._layerTreeId) {
             return
         }
 
         const timestamp = event.startTime
         if (event.name === eventNames.BeginFrame) {
+            Logger.debug('TimelineFrameModel', '✓ Processing BeginFrame at', timestamp)
             this.handleBeginFrame(timestamp)
         } else if (event.name === eventNames.DrawFrame) {
+            Logger.debug('TimelineFrameModel', '✓ Processing DrawFrame at', timestamp)
             this.handleDrawFrame(timestamp)
         } else if (event.name === eventNames.ActivateLayerTree) {
             this.handleActivateLayerTree()
