@@ -10,6 +10,7 @@ import TracingModel, {
 import Runtime from '../runtime'
 import { TraceEvent, RecordType, EventData } from '../types'
 import Common from '../common/index'
+import Logger from '../../src/logger'
 
 export enum NativeGroups {
     'Compile' = 'Compile',
@@ -39,7 +40,7 @@ export default class TimelineJSProfileProcessor {
         for (let i = 0; i < samples.length; ++i) {
             let node = jsProfileModel.nodeByIndex(i)
             if (!node) {
-                console.error(`Node with unknown id ${samples[i]} at index ${i}`)
+                Logger.error('TimelineJSProfileProcessor', `Node with unknown id ${samples[i]} at index ${i}`)
                 continue
             }
             if (node === gcNode || node === idleNode) {
@@ -103,14 +104,15 @@ export default class TimelineJSProfileProcessor {
             if (lockedJsStackDepth.length) {
                 const lockedDepth = lockedJsStackDepth[lockedJsStackDepth.length - 1]
                 if (depth < lockedDepth) {
-                    console.error(
+                    Logger.error(
+                        'TimelineJSProfileProcessor',
                         `Child stack is shallower (${depth}) than the parent stack (${lockedDepth}) at ${time}`
                     )
                     depth = lockedDepth
                 }
             }
             if (jsFramesStack.length < depth) {
-                console.error(`Trying to truncate higher than the current stack size at ${time}`)
+                Logger.error('TimelineJSProfileProcessor', `Trying to truncate higher than the current stack size at ${time}`)
                 depth = jsFramesStack.length
             }
             for (let k = 0; k < jsFramesStack.length; ++k) {

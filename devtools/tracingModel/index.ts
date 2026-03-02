@@ -6,6 +6,7 @@ import TracingEvent from './event'
 import ProfileEventsGroup from './profileEventsGroup'
 import { TraceEvent } from '../types'
 import { stableSort } from '../utils'
+import Logger from '../../src/logger'
 
 export enum Phase {
     Begin = 'B',
@@ -137,7 +138,8 @@ export default class TracingModel {
                 ? `:${scope}:${id2['global']}`
                 : `:${scope}:${payload.pid}:${id2['local']}`
         }
-        console.error(
+        Logger.error(
+            'TracingModel',
             `Unexpected id2 field at ${payload.ts / 1000}, one and only one of 'local' and 'global' should be present.`
         )
     }
@@ -184,7 +186,8 @@ export default class TracingModel {
             return tracingStartedInBrowser[0].thread
         }
 
-        console.error(
+        Logger.error(
+            'TracingModel',
             'Failed to find browser main thread in trace, some timeline features may be unavailable'
         )
         return null

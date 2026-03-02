@@ -3,6 +3,7 @@ import Thread from './thread'
 import InvalidationTracker from '../timelineModel/invalidationTracker'
 import InvalidationTrackingEvent from '../timelineModel/invalidationTrackingEvent'
 import { TraceEvent, EventData } from '../types'
+import Logger from '../../src/logger'
 
 export default class Event {
     private _parsedCategories: Set<string>
@@ -109,7 +110,7 @@ export default class Event {
      */
     public setEndTime(endTime: number): void {
         if (endTime < this.startTime) {
-            console.assert(false, 'Event out of order: ' + this.name)
+            Logger.error('TracingModel.Event', 'Event out of order:', this.name)
             return
         }
         this.endTime = endTime
@@ -125,7 +126,8 @@ export default class Event {
          */
         for (const name in args) {
             if (name in this.args) {
-                console.error(
+                Logger.error(
+                    'TracingModel.Event',
                     `Same argument name (${name}) is used for begin and end phases of ${this.name}`
                 )
             }
@@ -141,7 +143,7 @@ export default class Event {
         if (endEvent.args) {
             this.addArgs(endEvent.args)
         } else {
-            console.error(`Missing mandatory event argument 'args' at ${endEvent.startTime}`)
+            Logger.error('TracingModel.Event', `Missing mandatory event argument 'args' at ${endEvent.startTime}`)
         }
 
         this.setEndTime(endEvent.startTime)

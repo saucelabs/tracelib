@@ -2,6 +2,7 @@ import Event from './event'
 import Thread from './thread'
 import TracingModel, { Phase } from './'
 import { TraceEvent } from '../types'
+import Logger from '../../src/logger'
 
 export default class ObjectSnapshot extends Event {
     public id?: string
@@ -35,7 +36,7 @@ export default class ObjectSnapshot extends Event {
         }
 
         if (!payload.args || !payload.args['snapshot']) {
-            console.error(`Missing mandatory 'snapshot' argument at ${payload.ts / 1000}`)
+            Logger.error('TracingModel.ObjectSnapshot', `Missing mandatory 'snapshot' argument at ${payload.ts / 1000}`)
             return snapshot
         }
         if (payload.args) {

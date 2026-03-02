@@ -1,11 +1,11 @@
 import TracingModel from '../tracingModel'
 import TimelineModel from '.'
 import TimelineFrameModel from './timelineFrameModel'
-import Track, { TrackType } from './track'
+import { TrackType } from './track'
 import TimelineFrame from './timelineFrame/timelineFrame'
-import { ThreadData, WarningType, StatsObject } from '../types'
+import { ThreadData } from '../types'
 import Event from '../tracingModel/event'
-import TimelineData from './timelineData'
+import Logger from '../../src/logger'
 
 interface ExtensionTracingModel {
     title: string
@@ -23,7 +23,7 @@ export default class PerformanceModel {
     public startTime: number
     public endTime: number
 
-    public constructor () {
+    public constructor() {
         /** @type {?SDK.Target} */
         this._mainTarget = null
         /** @type {?SDK.TracingModel} */
@@ -70,16 +70,31 @@ export default class PerformanceModel {
 
         const mainTracks = this._timelineModel
             .tracks()
-            .filter((track): any => track.type === TrackType.MainThread && track.forMainFrame && track.events.length)
+            .filter(
+                (track): any =>
+                    track.type === TrackType.MainThread && track.forMainFrame && track.events.length
+            )
         const threadData = mainTracks.map((track): ThreadData => {
             const event = track.events[0]
             return { thread: event.thread, time: event.startTime }
         })
-        this._frameModel.addTraceEvents(this._mainTarget, this._timelineModel.inspectedTargetEvents(), threadData)
+        Logger.debug('PerformanceModel', 'Adding trace events to frame model. Main tracks:', mainTracks.length, 'Thread data:', threadData.length)
+        this._frameModel.addTraceEvents(
+            this._mainTarget,
+            this._timelineModel.inspectedTargetEvents(),
+            threadData
+        )
+        Logger.debug('PerformanceModel', 'Trace events added to frame model')
+
+        // Finalize the frame model to flush any pending last frame
+        this._frameModel.finalize(this._tracingModel.maximumRecordTime())
+        Logger.debug('PerformanceModel', 'Frame model finalized')
 
         for (const entry of this._extensionTracingModels) {
             entry.model.adjustTime(
-                this._tracingModel.minimumRecordTime() + entry.timeOffset / 1000 - this._recordStartTime
+                this._tracingModel.minimumRecordTime() +
+                    entry.timeOffset / 1000 -
+                    this._recordStartTime
             )
         }
         this._autoWindowTimes()
@@ -95,7 +110,9 @@ export default class PerformanceModel {
         if (!this._tracingModel) {
             return
         }
-        model.adjustTime(this._tracingModel.minimumRecordTime() + timeOffset / 1000 - this._recordStartTime)
+        model.adjustTime(
+            this._tracingModel.minimumRecordTime() + timeOffset / 1000 - this._recordStartTime
+        )
     }
 
     /**
@@ -133,7 +150,7 @@ export default class PerformanceModel {
      * @param {!Timeline.PerformanceModel.Window} window
      * @param {boolean=} animate
      */
-    public setWindow(option: {left: number, right: number}) : void {
+    public setWindow(option: { left: number; right: number }): void {
         this.startTime = option.left
         this.endTime = option.right
     }
@@ -148,7 +165,10 @@ export default class PerformanceModel {
             }
         }
         if (!tasks.length) {
-            this.setWindow({ left: timelineModel.minimumRecordTime(), right: timelineModel.maximumRecordTime() })
+            this.setWindow({
+                left: timelineModel.minimumRecordTime(),
+                right: timelineModel.maximumRecordTime(),
+            })
             return
         }
 

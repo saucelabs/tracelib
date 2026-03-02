@@ -3,6 +3,7 @@ import ProfileNode from '../profileTreeModel/profileNode'
 import ProfileTreeModel from '../profileTreeModel'
 import { lowerBound, stableSort } from '../utils'
 import { Profile } from '../types'
+import Logger from '../../src/logger'
 
 export default class CPUProfileDataModel extends ProfileTreeModel {
     public profileStartTime: number
@@ -144,10 +145,9 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
                 return
             }
 
-            console.assert(
-                Boolean(samples),
-                'Error: Neither hitCount nor samples are present in profile.'
-            )
+            if (!samples) {
+                Logger.error('CPUProfileDataModel', 'Error: Neither hitCount nor samples are present in profile.')
+            }
             for (let i = 0; i < nodes.length; ++i) {
                 nodes[i].hitCount = 0
             }
@@ -365,7 +365,7 @@ export default class CPUProfileDataModel extends ProfileTreeModel {
         }
 
         if (count) {
-            console.warn(`DevTools: CPU profile parser is fixing ${count} missing samples.`)
+            Logger.debug('CPUProfileDataModel', `CPU profile parser is fixing ${count} missing samples.`)
         }
     }
 

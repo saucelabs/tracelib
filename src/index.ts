@@ -8,36 +8,68 @@ import TimelineData from '../devtools/timelineModel/timelineData'
 import Event from '../devtools/tracingModel/event'
 import CountersGraph from '../devtools/timelineModel/counterGraph'
 import CustomUtils from './utils'
+import Logger from './logger'
+
+export interface TracelibOptions {
+    debug?: boolean
+    range?: Range
+}
 
 export default class Tracelib {
     public tracelog: object
     private _timelineLoader: TimelineLoader
     private _performanceModel: PerformanceModel
 
-    public constructor (tracelog: object, range?: Range) {
+    public constructor(tracelog: object, options?: TracelibOptions | Range) {
+        // Support legacy signature: constructor(tracelog, range)
+        // and new signature: constructor(tracelog, options)
+        if (options && 'debug' in options) {
+            if (options.debug !== undefined) {
+                Logger.setDebugMode(options.debug)
+            }
+        }
+
         this.tracelog = tracelog
         this._timelineLoader = new TimelineLoader(this.tracelog)
         this._timelineLoader.init()
         this._performanceModel = this._timelineLoader.performanceModel
     }
 
-    private _findMainTrack(): Track {
-        const threads: Track[] = this._performanceModel
-            .timelineModel()
-            .tracks()
+    /**
+     * Enable or disable debug logging
+     */
+    public static setDebugMode(enabled: boolean): void {
+        Logger.setDebugMode(enabled)
+    }
 
-        const mainTrack = threads.find((track: Track): boolean => Boolean(
-            track.type === TrackType.MainThread && track.forMainFrame && track.events.length
-        ))
+    /**
+     * Check if debug mode is enabled
+     */
+    public static isDebugEnabled(): boolean {
+        return Logger.isDebugEnabled()
+    }
+
+    private _findMainTrack(): Track {
+        const threads: Track[] = this._performanceModel.timelineModel().tracks()
+
+        const mainTrack = threads.find((track: Track): boolean =>
+            Boolean(
+                track.type === TrackType.MainThread && track.forMainFrame && track.events.length
+            )
+        )
 
         /**
          * If no main thread could be found, pick the thread with most events
          * captured in it and assume this is the main track.
          */
         if (!mainTrack) {
-            return threads.slice(1).reduce(
-                (curr: Track, com: Track): Track => curr.events.length > com.events.length ? curr : com,
-                threads[0])
+            return threads
+                .slice(1)
+                .reduce(
+                    (curr: Track, com: Track): Track =>
+                        curr.events.length > com.events.length ? curr : com,
+                    threads[0]
+                )
         }
 
         return mainTrack
@@ -49,14 +81,17 @@ export default class Tracelib {
     }
 
     public getFPS(): CountersValuesTimestamp {
+        const frames = this._timelineLoader.performanceModel.frames()
+        Logger.debug('Tracelib', 'getFPS called. Frames available:', frames.length)
         const fpsData: CountersValuesTimestamp = {
             times: [],
-            values: []
+            values: [],
         }
-        this._timelineLoader.performanceModel.frames().forEach(({ duration, startTime }): void => {
+        frames.forEach(({ duration, startTime }): void => {
             fpsData.values.push(calcFPS(duration))
             fpsData.times.push(startTime)
         })
+        Logger.debug('Tracelib', 'getFPS result - values:', fpsData.values.length, 'times:', fpsData.times.length)
         return fpsData
     }
 
@@ -70,9 +105,7 @@ export default class Tracelib {
         const syncEvents = mainTrack.syncEvents().slice()
 
         return {
-            ...timelineUtils.statsForTimeRange(
-                syncEvents, startTime, endTime
-            ),
+            ...timelineUtils.statsForTimeRange(syncEvents, startTime, endTime),
             startTime,
             endTime,
         }
@@ -93,13 +126,16 @@ export default class Tracelib {
     public getMemoryCounters(): CountersData {
         const counterGraph = new CountersGraph()
         const counters = counterGraph.setModel(this._performanceModel, this._findMainTrack())
-        return Object.keys(counters).reduce((acc, counter): CountersData => ({
-            ...acc,
-            [counter]: {
-                times: counters[counter].times,
-                values: counters[counter].values,
-            }
-        }), {})
+        return Object.keys(counters).reduce(
+            (acc, counter): CountersData => ({
+                ...acc,
+                [counter]: {
+                    times: counters[counter].times,
+                    values: counters[counter].values,
+                },
+            }),
+            {}
+        )
     }
 
     public getDetailStats(from?: number, to?: number): CountersData {
@@ -112,13 +148,11 @@ export default class Tracelib {
         const syncEvents = mainTrack.syncEvents().slice()
 
         return {
-            ...timelineUtils.detailStatsForTimeRange(
-                syncEvents, startTime, endTime
-            ),
+            ...timelineUtils.detailStatsForTimeRange(syncEvents, startTime, endTime),
             range: {
                 times: [startTime, endTime],
-                values: [startTime, endTime]
-            }
+                values: [startTime, endTime],
+            },
         }
     }
 }

@@ -3,12 +3,42 @@ import JANK_TRACE_LOG from './__fixtures__/jankTraceLog.json'
 
 let trace: Tracelib
 beforeAll(() => {
+    // Ensure debug is off for main tests
+    Tracelib.setDebugMode(false)
     trace = new Tracelib(JANK_TRACE_LOG)
 })
 
 test('should contain traceLog', () => {
     const sampleTrace = new Tracelib({ foo: 'bar' })
     expect(sampleTrace.tracelog).toEqual({ foo: 'bar' })
+})
+
+describe('debug mode', () => {
+    it('should be disabled by default', () => {
+        expect(Tracelib.isDebugEnabled()).toBe(false)
+    })
+
+    it('should enable debug mode via static method', () => {
+        Tracelib.setDebugMode(true)
+        expect(Tracelib.isDebugEnabled()).toBe(true)
+        Tracelib.setDebugMode(false)
+        expect(Tracelib.isDebugEnabled()).toBe(false)
+    })
+
+    it('should enable debug mode via constructor option', () => {
+        const debugTrace = new Tracelib(JANK_TRACE_LOG, { debug: true })
+        expect(Tracelib.isDebugEnabled()).toBe(true)
+        expect(debugTrace.tracelog).toBeDefined()
+        Tracelib.setDebugMode(false)
+    })
+
+    it('should work with debug mode enabled', () => {
+        const debugTrace = new Tracelib(JANK_TRACE_LOG, { debug: true })
+        const result = debugTrace.getFPS()
+        expect(result.times.length).toBeGreaterThan(0)
+        expect(result.values.length).toBeGreaterThan(0)
+        Tracelib.setDebugMode(false)
+    })
 })
 
 test('should get FPS', () => {

@@ -27,6 +27,7 @@ import {
 } from '../types'
 
 import { upperBound, stableSort, pushAll, mergeOrIntersect, lowerBound } from '../utils'
+import Logger from '../../src/logger'
 
 export const WorkerThreadName = 'DedicatedWorker thread'
 export const WorkerThreadNameLegacy = 'DedicatedWorker Thread'
@@ -494,7 +495,9 @@ export default class TimelineModel {
             } else if (event.name === DevToolsMetadataEvent.TracingSessionIdForWorker) {
                 workersDevToolsMetadataEvents.push(event)
             } else if (event.name === DevToolsMetadataEvent.TracingStartedInBrowser) {
-                console.assert(!this._mainFrameNodeId, 'Multiple sessions in trace')
+                if (this._mainFrameNodeId) {
+                    Logger.error('TimelineModel', 'Multiple sessions in trace')
+                }
                 // TODO(Christian) fix typings
                 this._mainFrameNodeId = event.args.frameTreeNodeId as any
             }
@@ -536,7 +539,8 @@ export default class TimelineModel {
         }
 
         if (mismatchingIds.size) {
-            console.error(
+            Logger.error(
+                'TimelineModel',
                 'Timeline recording was started in more than one page simultaneously. Session id mismatch: ' +
                     this._sessionId +
                     ' and ' +
@@ -624,7 +628,7 @@ export default class TimelineModel {
 
             const profileGroup = tracingModel.profileGroup(cpuProfileEvent)
             if (!profileGroup) {
-                console.error('Invalid CPU profile format.')
+                Logger.error('TimelineModel', 'Invalid CPU profile format.')
                 return null
             }
             cpuProfile = /** @type {!Protocol.Profiler.Profile} */ {
@@ -653,7 +657,7 @@ export default class TimelineModel {
                 pushAll(cpuProfile.samples, samples)
                 pushAll(cpuProfile.timeDeltas, eventData['timeDeltas'] || [])
                 if (cpuProfile.samples.length !== cpuProfile.timeDeltas.length) {
-                    console.error('Failed to parse CPU profile.')
+                    Logger.error('TimelineModel', 'Failed to parse CPU profile.')
                     return null
                 }
             }
@@ -670,7 +674,7 @@ export default class TimelineModel {
             this._cpuProfiles.push(jsProfileModel)
             return jsProfileModel
         } catch (e) {
-            console.error('Failed to parse CPU profile.')
+            Logger.error('TimelineModel', 'Failed to parse CPU profile.')
         }
         return null
     }
@@ -800,7 +804,8 @@ export default class TimelineModel {
     private _fixNegativeDuration(event: Event, child: Event): void {
         const epsilon = 1e-3
         if (event.selfTime < -epsilon) {
-            console.error(
+            Logger.error(
+                'TimelineModel',
                 `Children are longer than parent at ${event.startTime} ` +
                     `(${(child.startTime - this.minimumRecordTime()).toFixed(
                         3

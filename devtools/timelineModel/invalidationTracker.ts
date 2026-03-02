@@ -1,6 +1,7 @@
 import Event from '../tracingModel/event'
 import InvalidationTrackingEvent from './invalidationTrackingEvent'
 import { InvalidationMap, RecordType } from '../types'
+import Logger from '../../src/logger'
 
 export default class InvalidationTracker {
     public static readonly invalidationTrackingEventsSymbol: unique symbol = Symbol(
@@ -34,8 +35,8 @@ export default class InvalidationTracker {
         this._startNewFrameIfNeeded()
 
         if (!invalidation.nodeId) {
-            console.error('Invalidation lacks node information.')
-            console.error(invalidation)
+            Logger.error('InvalidationTracker', 'Invalidation lacks node information.')
+            Logger.error('InvalidationTracker', invalidation)
             return
         }
 
@@ -159,8 +160,8 @@ export default class InvalidationTracker {
         }
 
         if (!styleInvalidatorInvalidation.nodeId) {
-            console.error('Invalidation lacks node information.')
-            console.error(styleInvalidatorInvalidation)
+            Logger.error('InvalidationTracker', 'Invalidation lacks node information.')
+            Logger.error('InvalidationTracker', styleInvalidatorInvalidation)
             return
         }
 
@@ -183,7 +184,8 @@ export default class InvalidationTracker {
             }
 
             if (!lastScheduleStyleRecalculation) {
-                console.error(
+                Logger.error(
+                    'InvalidationTracker',
                     'Failed to lookup the event that scheduled a style invalidator invalidation.'
                 )
                 continue

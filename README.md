@@ -13,6 +13,59 @@ To install the package to your project, run:
 $ npm install --save tracelib
 ```
 
+# Debug Mode
+
+Tracelib includes detailed logging for troubleshooting trace parsing and FPS calculation.
+Debug mode is **disabled by default** to keep console output clean.
+
+## Enable Debug Logging
+
+### Via Constructor Option
+
+```js
+import Tracelib from 'tracelib'
+import TRACE_LOG from './trace.json'
+
+const tasks = new Tracelib(TRACE_LOG, { debug: true })
+const fps = tasks.getFPS()
+// Debug output will be logged to console
+```
+
+### Via Environment Variable
+
+```bash
+# Using TRACELIB_DEBUG
+TRACELIB_DEBUG=true node your-script.js
+
+# Or using DEBUG (if you use the debug pattern)
+DEBUG=tracelib node your-script.js
+```
+
+### Programmatically
+
+```js
+import Tracelib from 'tracelib'
+
+// Enable debug mode globally
+Tracelib.setDebugMode(true)
+
+const tasks = new Tracelib(TRACE_LOG)
+const fps = tasks.getFPS()
+
+// Disable debug mode
+Tracelib.setDebugMode(false)
+```
+
+### Check Debug Status
+
+```js
+import Tracelib from 'tracelib'
+
+if (Tracelib.isDebugEnabled()) {
+    console.log('Debug mode is ON')
+}
+```
+
 # Usage
 
 ## `getSummary`
@@ -219,7 +272,7 @@ console.log(detail)
  *    times: [ 49970556.092, ..., 49972763.552 ],
  *    values: [1, ..., 5]
  *   },
- *   range: { 
+ *   range: {
  *    times: [ 289959855.634, 289961229.717 ],
  *    values: [ 289959855.634, 289961229.717 ]
  *   }

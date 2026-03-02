@@ -6,6 +6,7 @@ import ObjectSnapshot from './objectSnapshot'
 import TracingModel, { Phase } from './'
 import { TraceEvent } from '../types'
 import { stableSort, remove } from '../utils'
+import Logger from '../../src/logger'
 
 export default class Thread extends NamedObject {
     public ordinal: number
@@ -44,7 +45,8 @@ export default class Thread extends NamedObject {
                     }
                     const top: any = stack.pop()
                     if (top.name !== e.name || top.categoriesString !== e.categoriesString) {
-                        console.error(
+                        Logger.error(
+                            'TracingModel.Thread',
                             'B/E events mismatch at ' +
                                 top.startTime +
                                 ' (' +
